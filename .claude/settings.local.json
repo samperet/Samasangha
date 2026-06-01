@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest *)",
+      "Read(//Users/samperet/Documents/**)",
+      "Bash(mv samasanga-temp/* samasanga-temp/.* /Users/samperet/Documents/SamaSanga/)",
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(npx tsc *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(npm run *)",
+      "Bash(node -e \"const { PrismaClient } = require\\('@prisma/client'\\); const c = new PrismaClient\\({datasourceUrl: 'postgresql://x'}\\); console.log\\('ok'\\)\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

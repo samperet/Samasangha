@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String
+  metaDesc  String?
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String       @unique
+  content     String
+  excerpt     String?
+  category    PostCategory
+  published   Boolean      @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  mediaItems  Media[]
+}
+
+enum PostCategory {
+  DHARMA_GEM
+  TALK
+  DANCE_ARTICLE
+  DANCE_INTERVIEW
+  ORIGINAL_DANCE
+  RESOURCE
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  isOnline    Boolean   @default(false)
+  isRetreat   Boolean   @default(false)
+  registerUrl String?
+  flyerUrl    String?
+  featured    Boolean   @default(false)
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model Album {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String?
+  coverUrl    String?
+  year        Int?
+  buyUrl      String?
+  tracks      Track[]
+  published   Boolean @default(false)
+}
+
+model Track {
+  id       String  @id @default(cuid())
+  title    String
+  duration Int?
+  audioUrl String?
+  order    Int
+  album    Album   @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId  String
+}
+
+model MusicVideo {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  description  String?
+  youtubeUrl   String?
+  thumbnailUrl String?
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model Teacher {
+  id        String  @id @default(cuid())
+  name      String
+  slug      String  @unique
+  bio       String
+  photoUrl  String?
+  order     Int     @default(0)
+  published Boolean @default(true)
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  active    Boolean  @default(true)
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  mimeType  String
+  size      Int
+  alt       String?
+  createdAt DateTime @default(now())
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?
+}
