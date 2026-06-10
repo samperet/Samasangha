@@ -1,44 +1,54 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
-  Calendar,
-  FileText,
-  Music,
-  Users,
-  Mail,
-  Image,
-  LogOut,
-  BookOpen,
+  LayoutDashboard, Calendar, FileText, Music,
+  Users, Mail, ImageIcon, LogOut, BookOpen,
 } from "lucide-react";
 
 const links = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/events", label: "Events", icon: Calendar },
-  { href: "/admin/posts", label: "Posts & Teachings", icon: FileText },
-  { href: "/admin/albums", label: "Albums & Music", icon: Music },
-  { href: "/admin/teachers", label: "Teachers", icon: BookOpen },
-  { href: "/admin/media", label: "Media Library", icon: Image },
-  { href: "/admin/contacts", label: "Contact Inbox", icon: Mail },
-  { href: "/admin/subscribers", label: "Subscribers", icon: Users },
+  { href: "/admin",             label: "Dashboard",         icon: LayoutDashboard, exact: true },
+  { href: "/admin/events",      label: "Events",             icon: Calendar },
+  { href: "/admin/posts",       label: "Posts & teachings",  icon: FileText },
+  { href: "/admin/albums",      label: "Albums & music",     icon: Music },
+  { href: "/admin/teachers",    label: "Teachers",           icon: BookOpen },
+  { href: "/admin/media",       label: "Media library",      icon: ImageIcon },
+  { href: "/admin/contacts",    label: "Contact inbox",      icon: Mail },
+  { href: "/admin/subscribers", label: "Subscribers",        icon: Users },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-60 bg-[#1a2744] text-white flex flex-col min-h-screen">
-      <div className="p-5 border-b border-white/10">
-        <Link href="/admin" className="block">
-          <span className="font-bold text-[#c9a84c] text-lg">SamaSangha</span>
-          <p className="text-white/50 text-xs mt-0.5">Admin Dashboard</p>
+    <aside
+      className="w-56 flex flex-col min-h-screen shrink-0"
+      style={{
+        background: "var(--parch-100)",
+        borderRight: "1px solid var(--surface-border)",
+      }}
+    >
+      {/* Logo */}
+      <div className="px-5 py-5" style={{ borderBottom: "1px solid var(--surface-border)" }}>
+        <Link href="/admin" className="flex items-center gap-2.5">
+          <Image src="/assets/samasangha-winged-heart.png" alt="" width={22} height={22} className="opacity-70" />
+          <div>
+            <span className="font-serif text-base block" style={{ color: "var(--ink-900)", lineHeight: 1.1 }}>
+              SamaSangha
+            </span>
+            <span className="text-[10px] uppercase tracking-widest" style={{ color: "var(--fg3)" }}>
+              Admin
+            </span>
+          </div>
         </Link>
       </div>
-      <nav className="flex-1 p-4 space-y-1">
+
+      {/* Nav */}
+      <nav className="flex-1 p-3 space-y-0.5">
         {links.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
           return (
@@ -46,32 +56,45 @@ export default function AdminSidebar() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors",
+                "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors duration-150",
                 active
-                  ? "bg-[#c9a84c]/20 text-[#c9a84c]"
-                  : "text-white/70 hover:text-white hover:bg-white/5"
+                  ? "font-medium"
+                  : "hover:bg-parch-200"
               )}
+              style={
+                active
+                  ? { background: "var(--gold-100)", color: "var(--gold-700)" }
+                  : { color: "var(--ink-700)" }
+              }
             >
-              <Icon size={16} />
+              <Icon size={15} />
               {label}
             </Link>
           );
         })}
       </nav>
-      <div className="p-4 border-t border-white/10">
+
+      {/* Footer */}
+      <div className="p-3 space-y-0.5" style={{ borderTop: "1px solid var(--surface-border)" }}>
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-3 px-3 py-2 rounded text-sm text-white/50 hover:text-white transition-colors mb-1"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors duration-150"
+          style={{ color: "var(--fg3)" }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-700)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--fg3)")}
         >
-          View Site ↗
+          View site ↗
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-3 py-2 rounded text-sm text-white/50 hover:text-white transition-colors w-full"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm w-full transition-colors duration-150 text-left"
+          style={{ color: "var(--fg3)" }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-700)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--fg3)")}
         >
-          <LogOut size={16} />
-          Sign Out
+          <LogOut size={15} />
+          Sign out
         </button>
       </div>
     </aside>

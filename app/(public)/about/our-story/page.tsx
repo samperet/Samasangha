@@ -13,26 +13,14 @@ export default async function OurStoryPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-[#1a2744] mb-8">Our Story</h1>
+      <h1 className="text-4xl font-bold text-stone-800 mb-10">Our Story</h1>
       {content ? (
-        <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+        <div
+          className="prose prose-stone max-w-none leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
       ) : (
-        <div className="prose prose-lg max-w-none text-gray-600">
-          <p>
-            SamaSangha — meaning &ldquo;community of listening&rdquo; — is the local sangha of the
-            Northeast Sufi Circle, a regional center of the Inayati Order in Massachusetts.
-          </p>
-          <p>
-            For decades, seekers in the Greater Boston area have gathered to practice
-            zikr (the remembrance of God), study Sufi teachings, dance the Dances of
-            Universal Peace, and support one another on the mystical path.
-          </p>
-          <p>
-            Our community is open-hearted, non-dogmatic, and welcoming to all who feel
-            called to the path of love, harmony, and beauty — regardless of background
-            or tradition.
-          </p>
-        </div>
+        <p className="text-stone-400 italic">Coming soon.</p>
       )}
     </div>
   );

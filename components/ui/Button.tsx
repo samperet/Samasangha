@@ -8,27 +8,25 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg";
 }
 
+const variantStyles: Record<string, React.CSSProperties> = {
+  primary:   { background: "var(--gold-600)", color: "var(--fg-on-gold)", boxShadow: "var(--shadow-sm)" },
+  secondary: { background: "var(--lapis-700)", color: "var(--fg-on-dark)" },
+  ghost:     { background: "transparent", color: "var(--crimson-700)", border: "1px solid var(--surface-border)" },
+  danger:    { background: "#dc2626", color: "#fff" },
+};
+
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", ...props }, ref) => {
+  ({ className, variant = "primary", size = "md", style, ...props }, ref) => {
     return (
       <button
         ref={ref}
+        style={{ ...variantStyles[variant], ...style }}
         className={cn(
-          "inline-flex items-center justify-center rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
+          "inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none",
           {
-            "bg-[#c9a84c] hover:bg-[#b8973b] text-white focus:ring-[#c9a84c]":
-              variant === "primary",
-            "bg-[#1a2744] hover:bg-[#243560] text-white focus:ring-[#1a2744]":
-              variant === "secondary",
-            "bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-300":
-              variant === "ghost",
-            "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500":
-              variant === "danger",
-          },
-          {
-            "px-3 py-1.5 text-sm": size === "sm",
-            "px-4 py-2 text-sm": size === "md",
-            "px-6 py-3 text-base": size === "lg",
+            "px-3 py-1.5 text-sm rounded-md": size === "sm",
+            "px-4 py-2 text-sm rounded-lg": size === "md",
+            "px-6 py-3 text-base rounded-lg": size === "lg",
           },
           className
         )}

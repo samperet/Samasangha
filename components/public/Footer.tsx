@@ -1,50 +1,102 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1a2744] text-white/80 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer style={{ background: "var(--bg-ink)", color: "var(--fg-on-dark)" }} className="mt-auto">
+      {/* Calligraphy divider */}
+      <div className="flex items-center justify-center py-8 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.14)" }}>
+        <div className="flex items-center gap-4">
+          <span style={{ width: 72, height: 1, background: "var(--gold-700)", opacity: 0.5, display: "block" }} />
+          <Image
+            src="/assets/heart-wing-calligraphy-gold.png"
+            alt=""
+            width={120}
+            height={36}
+            className="opacity-70"
+          />
+          <span style={{ width: 72, height: 1, background: "var(--gold-700)", opacity: 0.5, display: "block" }} />
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-5 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* Brand */}
         <div>
-          <h3 className="text-[#c9a84c] font-bold text-lg mb-3">SamaSangha</h3>
-          <p className="text-sm leading-relaxed">
-            Northeast Sufi Circle — a community on the path of love, harmony, and
-            beauty. Based in Massachusetts.
+          <div className="flex items-center gap-2 mb-3">
+            <Image src="/assets/samasangha-winged-heart.png" alt="" width={22} height={22} className="opacity-80" />
+            <span className="font-serif text-lg" style={{ color: "var(--gold-400)" }}>SamaSangha</span>
+          </div>
+          <p className="text-sm leading-relaxed footer-muted">
+            Northeast Sufi Circle — a community on the path of love, harmony, and beauty.
+            Gathering in Cambridge, Massachusetts since 1972.
           </p>
         </div>
+
+        {/* Links */}
         <div>
-          <h4 className="font-semibold mb-3 text-white">Quick Links</h4>
-          <ul className="space-y-1 text-sm">
+          <p className="eyebrow mb-4" style={{ color: "var(--gold-600)" }}>Explore</p>
+          <ul className="space-y-2 text-sm">
             {[
-              ["About Us", "/about"],
-              ["Teachings", "/teachings"],
-              ["Events", "/events"],
-              ["Dances of Universal Peace", "/teachings/dances"],
-              ["Music", "/teachings/music"],
+              ["Our story", "/about/our-story"],
+              ["Tuesday practice", "/teachings/tuesday-practice"],
+              ["Upcoming events", "/events/upcoming"],
+              ["Music & recordings", "/teachings/music"],
               ["Contact", "/contact"],
             ].map(([label, href]) => (
               <li key={href}>
-                <Link href={href} className="hover:text-[#c9a84c] transition-colors">
-                  {label}
-                </Link>
+                <Link href={href} className="footer-link">{label}</Link>
               </li>
             ))}
           </ul>
         </div>
+
+        {/* Connect */}
         <div>
-          <h4 className="font-semibold mb-3 text-white">Stay Connected</h4>
-          <p className="text-sm mb-2">
-            Join our mailing list for news and upcoming events.
+          <p className="eyebrow mb-4" style={{ color: "var(--gold-600)" }}>Stay connected</p>
+          <p className="text-sm leading-relaxed mb-5 footer-muted">
+            Receive word of gatherings, retreats, and teachings — a few times a season.
           </p>
           <Link
             href="/contact"
-            className="inline-block mt-2 px-4 py-2 bg-[#c9a84c] hover:bg-[#b8973b] text-white text-sm rounded transition-colors"
+            className="footer-cta inline-block text-sm font-semibold px-5 py-2.5 rounded-lg"
           >
-            Subscribe
+            Join the mailing list
           </Link>
+
+          <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(201,162,44,.12)" }}>
+            <p className="text-xs mb-3 footer-muted">Support the community</p>
+            <a
+              href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-donate inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-lg"
+            >
+              ♡ Donate
+            </a>
+          </div>
         </div>
       </div>
-      <div className="border-t border-white/10 text-center text-xs py-4 text-white/40">
-        © {new Date().getFullYear()} SamaSangha / Northeast Sufi Circle. All rights reserved.
+
+      {/* Prayer */}
+      <div
+        className="text-center py-6 px-4"
+        style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}
+      >
+        <p
+          className="font-serif italic"
+          style={{ color: "var(--gold-400)", opacity: 0.75, fontSize: "0.95rem", lineHeight: 1.8 }}
+        >
+          May all Beings be Well · May all Beings be Happy<br />
+          Peace · Peace · Peace
+        </p>
+      </div>
+
+      {/* Bottom bar */}
+      <div
+        className="text-center text-xs py-5 px-4"
+        style={{ borderTop: "1px solid rgba(201,162,44,.10)", color: "var(--fg-on-dark)", opacity: 0.35 }}
+      >
+        © {new Date().getFullYear()} SamaSangha
       </div>
     </footer>
   );

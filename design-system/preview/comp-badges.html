@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>comp-badges.html</title><link rel="stylesheet" href="_card.css"><style>
+.btn{font-family:var(--sans-body);font-weight:600;font-size:0.95rem;border-radius:8px;padding:11px 22px;border:1px solid transparent;cursor:pointer;transition:all .25s ease;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--gold-600);color:var(--fg-on-gold);box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:var(--gold-700)}
+.btn-cool{background:var(--lapis-700);color:#fff}
+.btn-cool:hover{background:var(--lapis-900)}
+.btn-ghost{background:transparent;color:var(--crimson-700);border-color:var(--surface-border)}
+.btn-ghost:hover{border-color:var(--gold-500);color:var(--crimson-900)}
+.btn-pill{border-radius:999px;background:transparent;border-color:var(--gold-500);color:var(--gold-700);padding:10px 24px}
+.btn-pill:hover{background:var(--gold-100)}
+.field{font-family:var(--sans-body);font-size:0.95rem;padding:11px 14px;border-radius:8px;border:1px solid var(--surface-border);background:#fff;width:230px;color:var(--fg1)}
+.field::placeholder{color:var(--fg3)}
+.field:focus{outline:none;border-color:var(--gold-500);box-shadow:0 0 0 3px var(--gold-100)}
+.flabel{font-size:0.78rem;font-weight:600;letter-spacing:.04em;color:var(--fg2);margin-bottom:6px;display:block}
+.badge{font-family:var(--sans-body);font-size:0.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
+.badge::before{content:"";width:5px;height:5px;border-radius:999px;background:currentColor;display:inline-block}
+.b-gold{color:var(--gold-700)}
+.b-lapis{color:var(--lapis-700)}
+.b-terra{color:var(--terra-700)}
+.b-line{color:var(--fg3)}
+.ucard{background:#fff;border:1px solid var(--surface-border);border-radius:14px;box-shadow:var(--shadow-md);overflow:hidden;width:280px}
+.ucard .top{height:5px;background:linear-gradient(90deg,var(--gold-500),var(--gold-300))}
+.ucard .body{padding:18px 20px}
+</style></head><body><p class="card-label">Badges &amp; tags</p>
+<div class="row" style="gap:10px">
+<span class="badge b-gold">Practice</span>
+<span class="badge b-lapis">Talk</span>
+<span class="badge b-terra">Retreat</span>
+<span class="badge b-line">Recording</span>
+</div></body></html>

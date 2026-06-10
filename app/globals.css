@@ -1,34 +1,334 @@
 @import "tailwindcss";
 
+/* ── Design tokens ──────────────────────────────────────────────── */
 :root {
-  --gold: #c9a84c;
-  --gold-light: #e8c97a;
-  --deep-blue: #1a2744;
-  --cream: #f9f5ef;
-  --text: #2c2c2c;
+  --gold-900: #6e4d12;
+  --gold-700: #9c7421;
+  --gold-600: #c4922b;
+  --gold-500: #d9a436;
+  --gold-400: #e8be5c;
+  --gold-300: #f0cf82;
+  --gold-200: #f6e3b3;
+  --gold-100: #faf0d6;
+
+  --lapis-900: #15264a;
+  --lapis-700: #1f3a6e;
+  --lapis-600: #2a4d8c;
+  --lapis-400: #5478b6;
+  --lapis-200: #aebfdc;
+  --lapis-100: #dde4f1;
+
+  --crimson-900: #5e1714;
+  --crimson-700: #8f2a23;
+  --crimson-500: #b5362b;
+  --crimson-300: #d97a6c;
+
+  --terra-700: #b34635;
+  --terra-500: #d05a47;
+  --terra-300: #e6917f;
+  --terra-100: #f6ddd4;
+
+  --parch-50:  #fbf7ec;
+  --parch-100: #f6eedc;
+  --parch-200: #ece0c6;
+  --parch-300: #ddcaa6;
+  --ink-700:   #5a4f3f;
+  --ink-800:   #3d3527;
+  --ink-900:   #2a2118;
+
+  --bg:             var(--parch-50);
+  --bg-raised:      #ffffff;
+  --bg-cream:       var(--parch-100);
+  --bg-ink:         #1c1710;
+  --surface-border: #e6dcc4;
+  --fg1:  var(--ink-900);
+  --fg2:  var(--ink-700);
+  --fg3:  #8a7f6b;
+  --fg-on-dark: #f4ead2;
+  --fg-on-gold: #3a2a08;
+  --link:       var(--crimson-700);
+  --link-hover: var(--crimson-900);
+  --accent:        var(--gold-600);
+  --accent-strong: var(--gold-700);
+
+  --shadow-sm: 0 1px 2px rgba(58,42,8,.06), 0 1px 3px rgba(58,42,8,.08);
+  --shadow-md: 0 4px 14px rgba(58,42,8,.10), 0 2px 6px rgba(58,42,8,.06);
+  --shadow-lg: 0 14px 40px rgba(42,33,24,.16), 0 4px 12px rgba(42,33,24,.08);
 }
 
+/* ── Tailwind theme tokens ───────────────────────────────────────── */
+@theme {
+  --font-sans:  var(--font-sans, 'Mulish', -apple-system, sans-serif);
+  --font-serif: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
+
+  --color-gold-900: #6e4d12;
+  --color-gold-700: #9c7421;
+  --color-gold-600: #c4922b;
+  --color-gold-500: #d9a436;
+  --color-gold-400: #e8be5c;
+  --color-gold-300: #f0cf82;
+  --color-gold-200: #f6e3b3;
+  --color-gold-100: #faf0d6;
+  --color-lapis-900: #15264a;
+  --color-lapis-700: #1f3a6e;
+  --color-lapis-600: #2a4d8c;
+  --color-lapis-400: #5478b6;
+  --color-lapis-200: #aebfdc;
+  --color-lapis-100: #dde4f1;
+  --color-crimson-900: #5e1714;
+  --color-crimson-700: #8f2a23;
+  --color-crimson-500: #b5362b;
+  --color-crimson-300: #d97a6c;
+  --color-terra-700: #b34635;
+  --color-terra-500: #d05a47;
+  --color-terra-100: #f6ddd4;
+  --color-parch-50:  #fbf7ec;
+  --color-parch-100: #f6eedc;
+  --color-parch-200: #ece0c6;
+  --color-ink-900: #2a2118;
+  --color-ink-800: #3d3527;
+  --color-ink-700: #5a4f3f;
+  --color-ink-600: #8a7f6b;
+  --color-surface-border: #e6dcc4;
+  --color-bg-ink:   #1c1710;
+  --color-bg-parch: #fbf7ec;
+}
+
+/* ── Base element styles ────────────────────────────────────────── */
 body {
-  color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
-  background: #ffffff;
+  background: var(--bg);
+  color: var(--fg1);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--fg1);
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover { color: var(--link-hover); }
+
+blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--lapis-700);
+  border-left: 3px solid var(--gold-400);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+/* ── Reusable classes ────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-700);
+}
+
+/* Card with a thin gradient gold top-rule */
+.brand-card {
+  background: #fff;
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.brand-card::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-300));
+}
+
+/* ── Prose overrides ─────────────────────────────────────────────── */
+.prose { color: var(--fg1); }
 .prose h1, .prose h2, .prose h3 {
-  font-family: Georgia, serif;
-  color: var(--deep-blue);
+  font-family: var(--font-serif);
+  color: var(--ink-900);
+}
+.prose a { color: var(--crimson-700); }
+.prose a:hover { color: var(--crimson-900); }
+.prose blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--lapis-700);
+  border-left-color: var(--gold-400);
 }
 
-.tiptap {
-  outline: none;
-  min-height: 300px;
-  padding: 1rem;
-}
-
+/* ── Tiptap ──────────────────────────────────────────────────────── */
+.tiptap { outline: none; min-height: 300px; padding: 1rem; }
 .tiptap p.is-editor-empty:first-child::before {
   color: #adb5bd;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
+}
+
+/* ── Footer helpers ──────────────────────────────────────────────── */
+.footer-muted {
+  color: var(--fg-on-dark);
+  opacity: 0.62;
+}
+.footer-link {
+  color: var(--fg-on-dark);
+  opacity: 0.65;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.footer-link:hover {
+  color: var(--gold-300) !important;
+  opacity: 1;
+}
+.footer-cta {
+  background: var(--gold-600);
+  color: var(--fg-on-gold);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s ease;
+}
+.footer-cta:hover {
+  background: var(--gold-700);
+  color: var(--fg-on-gold) !important;
+}
+
+.footer-donate {
+  background: transparent;
+  border: 1px solid rgba(201,162,44,.35);
+  color: var(--gold-400);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.footer-donate:hover {
+  background: rgba(201,162,44,.1);
+  border-color: rgba(201,162,44,.6);
+  color: var(--gold-300) !important;
+}
+
+/* Teacher/lineage card hover */
+.teacher-card {
+  background: #fff;
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+.teacher-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes heartFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Sliding scale range input thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gold-600);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+  margin-top: -9px;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gold-600);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: transparent;
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+/* ── Music player ───────────────────────────────────────────────── */
+@keyframes eqBounce {
+  0%, 100% { height: 30%; }
+  50%      { height: 100%; }
+}
+.eq-bar {
+  height: 30%;
+  animation: eqBounce 0.9s ease-in-out infinite;
+}
+
+@keyframes playerSlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.player-bar-enter {
+  animation: playerSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Compact volume slider inside the player bar.
+   Selectors are prefixed with input[type="range"] to out-rank the global
+   sliding-scale thumb rule above (which would otherwise win on specificity). */
+input[type="range"].player-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #4a4232;
+  accent-color: var(--gold-500);
+  cursor: pointer;
+}
+input[type="range"].player-volume::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: transparent;
+}
+/* Volume dragger = the SamaSangha winged-heart emblem (2.2:1 aspect). */
+input[type="range"].player-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 40px;
+  height: 18px;
+  border: none;
+  border-radius: 0;
+  background: url("/sufi-heart.png") center / contain no-repeat;
+  background-color: transparent;
+  box-shadow: none;
+  cursor: grab;
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+  /* center the 18px-tall thumb on the 4px track: (4 - 18) / 2 */
+  margin-top: -7px;
+}
+input[type="range"].player-volume:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
+input[type="range"].player-volume::-moz-range-thumb {
+  width: 40px;
+  height: 18px;
+  border: none;
+  border-radius: 0;
+  background: url("/sufi-heart.png") center / contain no-repeat;
+  background-color: transparent;
+  box-shadow: none;
+  cursor: grab;
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+}
+input[type="range"].player-volume::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #4a4232;
 }

@@ -4,11 +4,10 @@ import Link from "next/link";
 export const metadata: Metadata = { title: "Teachings" };
 
 const sections = [
-  { title: "Dharma Gems", href: "/teachings/dharma-gems", desc: "Short teachings and reflections from the tradition." },
+  { title: "Dharma Gems", href: "https://www.youtube.com/playlist?list=PLzy2sDRtoSh-5GiHJ2E3biLDBhOXDcprd", desc: "Short teachings and reflections from the tradition." },
   { title: "Tuesday Practice", href: "/teachings/tuesday-practice", desc: "Our weekly online practice gathering." },
   { title: "Talks", href: "/teachings/talks", desc: "Recordings and transcripts of teachings." },
   { title: "Deepening", href: "/teachings/deepening", desc: "Programs for sustained study and practice." },
-  { title: "Dances of Universal Peace", href: "/teachings/dances", desc: "Sacred circle dances from world traditions." },
   { title: "Music", href: "/teachings/music", desc: "Albums, tracks, and music videos." },
 ];
 

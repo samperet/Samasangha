@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>comp-buttons.html</title><link rel="stylesheet" href="_card.css"><style>
+.obtn{
+  position:relative; width:462px; min-height:80px;
+  display:flex; align-items:center;
+  padding:16px 32px; border:none; cursor:pointer;
+  background:transparent; text-align:left;
+  font-family:var(--sans-body); transition:transform .2s ease, filter .25s ease;
+}
+.obtn:hover{ transform:translateY(-1px); }
+.obtn:active{ transform:translateY(1px); }
+.obtn .fill{ position:absolute; inset:0; border-radius:13px; z-index:0; transition:filter .25s ease; }
+.obtn .frame{ position:absolute; inset:0; z-index:1; pointer-events:none; }
+.obtn .content{ position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between; gap:18px; width:100%; }
+.obtn .title{ font-family:var(--serif-display); font-weight:600; font-size:1.42rem; line-height:1.04; white-space:nowrap; }
+.obtn .vrule{ width:1px; height:38px; flex-shrink:0; opacity:.55; }
+.obtn .ctx{ display:flex; flex-direction:column; gap:2px; text-align:right; }
+.obtn .ctx span{ font-family:var(--sans-body); font-size:0.72rem; letter-spacing:.07em; text-transform:uppercase; white-space:nowrap; line-height:1.35; }
+.obtn .ctx .c1{ font-weight:700; }
+.obtn .ctx .c2{ opacity:.72; }
+
+/* PRIMARY — gilded */
+.obtn-primary .fill{ background:linear-gradient(180deg,var(--gold-500),var(--gold-600)); box-shadow:var(--shadow-md); }
+.obtn-primary:hover .fill{ filter:brightness(1.05); }
+.obtn-primary .title{ color:var(--fg-on-gold); }
+.obtn-primary .ctx span{ color:var(--gold-900); }
+
+/* COOL — lapis */
+.obtn-cool .fill{ background:linear-gradient(180deg,var(--lapis-600),var(--lapis-900)); box-shadow:var(--shadow-md); }
+.obtn-cool:hover .fill{ filter:brightness(1.1); }
+.obtn-cool .title{ color:var(--gold-200); }
+.obtn-cool .ctx .c1{ color:var(--gold-200); }
+.obtn-cool .ctx .c2{ color:var(--lapis-200); }
+
+/* GHOST — parchment */
+.obtn-ghost .fill{ background:var(--parch-100); box-shadow:var(--shadow-sm); }
+.obtn-ghost:hover .fill{ filter:brightness(.985); }
+.obtn-ghost .title{ color:var(--fg1); }
+.obtn-ghost .ctx .c1{ color:var(--crimson-700); }
+.obtn-ghost .ctx .c2{ color:var(--fg2); }
+
+.stack{ display:flex; flex-direction:column; gap:18px; }
+</style></head><body>
+<p class="card-label">Buttons — ceremonial, framed, context at right</p>
+<div class="stack" id="stack"></div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <g id="ornFrame">
+    <!-- triple keyline -->
+    <rect x="3" y="3" width="456" height="76" rx="15" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.32"/>
+    <rect x="7" y="7" width="448" height="68" rx="12" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.9"/>
+    <rect x="12" y="12" width="438" height="58" rx="8" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/>
+    <!-- corner floral diamonds -->
+    <text x="21" y="25" text-anchor="middle" font-size="14" fill="currentColor">&#10070;</text>
+    <text x="441" y="25" text-anchor="middle" font-size="14" fill="currentColor">&#10070;</text>
+    <text x="21" y="61" text-anchor="middle" font-size="14" fill="currentColor">&#10070;</text>
+    <text x="441" y="61" text-anchor="middle" font-size="14" fill="currentColor">&#10070;</text>
+    <!-- centered florettes breaking each rule -->
+    <text x="231" y="12.5" text-anchor="middle" font-size="14" fill="currentColor">&#10022;</text>
+    <text x="231" y="76" text-anchor="middle" font-size="14" fill="currentColor">&#10022;</text>
+    <text x="9.5" y="46" text-anchor="middle" font-size="11" fill="currentColor">&#10022;</text>
+    <text x="452.5" y="46" text-anchor="middle" font-size="11" fill="currentColor">&#10022;</text>
+    <!-- flanking dots beside top & bottom florettes -->
+    <circle cx="197" cy="7" r="1.4" fill="currentColor"/><circle cx="265" cy="7" r="1.4" fill="currentColor"/>
+    <circle cx="197" cy="75" r="1.4" fill="currentColor"/><circle cx="265" cy="75" r="1.4" fill="currentColor"/>
+  </g>
+</defs></svg>
+<script>
+const btns = [
+  { v:"primary", title:"Find a gathering", c1:"Sundays \u00b7 5pm", c2:"Cambridge", frame:"var(--gold-900)" },
+  { v:"cool", title:"Listen in SamaSangha", c1:"Talks & practices", c2:"Anytime", frame:"var(--gold-300)" },
+  { v:"ghost", title:"Join a retreat", c1:"Seasonal", c2:"Limited seats", frame:"var(--gold-600)" },
+];
+document.getElementById('stack').innerHTML = btns.map(b=>`
+  <button class="obtn obtn-${b.v}">
+    <span class="fill"></span>
+    <svg class="frame" viewBox="0 0 462 82" preserveAspectRatio="none" style="color:${b.frame}">
+      <use href="#ornFrame"/>
+    </svg>
+    <span class="content">
+      <span class="title">${b.title}</span>
+      <span class="vrule" style="background:${b.frame}"></span>
+      <span class="ctx"><span class="c1">${b.c1}</span><span class="c2">${b.c2}</span></span>
+    </span>
+  </button>`).join('');
+</script>
+</body></html>

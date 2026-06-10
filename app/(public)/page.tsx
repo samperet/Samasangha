@@ -1,14 +1,15 @@
 import Link from "next/link";
+import InvocationCarousel from "@/components/public/InvocationCarousel";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { formatDateShort } from "@/lib/utils";
-import SubscribeForm from "@/components/public/SubscribeForm";
+import { formatDateRange } from "@/lib/utils";
 
 export const revalidate = 60;
 
-async function getFeaturedEvents() {
+async function getUpcomingRetreats() {
   try {
     return await prisma.event.findMany({
-      where: { published: true, featured: true, startDate: { gte: new Date() } },
+      where: { published: true, isRetreat: true, startDate: { gt: new Date() } },
       orderBy: { startDate: "asc" },
       take: 3,
     });
@@ -17,160 +18,322 @@ async function getFeaturedEvents() {
   }
 }
 
+function GoldRule() {
+  return (
+    <div className="flex items-center justify-center gap-3 py-2" aria-hidden>
+      <span style={{ width: 56, height: 1, background: "var(--gold-500)", opacity: 0.5, display: "block" }} />
+      <span style={{ color: "var(--gold-500)", fontSize: "0.85rem", opacity: 0.75 }}>✦</span>
+      <span style={{ width: 56, height: 1, background: "var(--gold-500)", opacity: 0.5, display: "block" }} />
+    </div>
+  );
+}
+
 export default async function HomePage() {
-  const events = await getFeaturedEvents();
+  const retreats = await getUpcomingRetreats();
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative bg-[#1a2744] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#c9a84c] to-transparent" />
-        <div className="relative max-w-4xl mx-auto px-4 py-28 text-center">
-          <p className="text-[#c9a84c] text-sm uppercase tracking-widest mb-4">
-            Northeast Sufi Circle
-          </p>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Toward the One
-          </h1>
-          <p className="text-xl md:text-2xl text-white/80 italic mb-8">
-            The Perfection of Love, Harmony, and Beauty
-          </p>
-          <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto mb-10">
-            SamaSangha is a Sufi spiritual community in Massachusetts offering
-            teachings, music, retreats, and the Dances of Universal Peace.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              href="/events/upcoming"
-              className="px-8 py-3 bg-[#c9a84c] hover:bg-[#b8973b] text-white rounded font-medium transition-colors"
+      {/* ── 100vh masthead — homepage only ────────────────────────── */}
+      <div
+        className="relative flex items-center justify-center overflow-hidden px-5"
+        style={{
+          height: "calc(100vh - 44px)",
+          background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
+        }}
+      >
+        {/* Gold halo */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute", top: "-60px", left: "50%", transform: "translateX(-50%)",
+            width: "min(680px, 90vw)", height: "560px", borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(217,164,54,0.20) 0%, rgba(217,164,54,0) 62%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div className="relative w-full" style={{ maxWidth: "min(80vw, 800px)" }}>
+          <InvocationCarousel />
+        </div>
+      </div>
+
+      {/* ── About us ───────────────────────────────────────────── */}
+      <section
+        role="region"
+        aria-label="About SamaSangha"
+        className="relative py-14 px-5 text-center overflow-hidden"
+        style={{
+          backgroundImage: "url('/assets/lotus-background-sama3.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+
+        <div className="relative z-10 max-w-2xl mx-auto">
+          {/* Combined card: image on top (top corners rounded), text below
+              (bottom corners rounded). overflow-hidden unifies them into one. */}
+          <div
+            className="rounded-2xl overflow-hidden mx-auto"
+            style={{ maxWidth: 480, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
+          >
+            <Image
+              src="/assets/AHHA.png"
+              alt="Abraham and Halima"
+              width={480}
+              height={320}
+              className="block w-full"
+            />
+            <blockquote
+              className="font-serif not-italic text-center"
+              style={{
+                fontSize: "clamp(1.15rem, 2.5vw, 1.5rem)",
+                fontWeight: 500,
+                lineHeight: 1.6,
+                color: "var(--ink-900)",
+                padding: "1.75rem 2rem",
+                margin: 0,
+                background: "rgba(255,255,255,0.97)",
+              }}
             >
-              Upcoming Events
-            </Link>
-            <Link
-              href="/about/our-story"
-              className="px-8 py-3 border border-white/40 hover:border-white text-white rounded font-medium transition-colors"
-            >
-              Our Story
-            </Link>
+              SamaSangha is the community of seekers who have gathered in Massachusetts, and also
+              far and wide, with the guidance of Sufi Murshids Halima and Abraham.
+            </blockquote>
           </div>
         </div>
       </section>
 
-      {/* New here? */}
-      <section className="bg-[#f9f5ef] py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-[#1a2744] mb-4">New Here? Start Here.</h2>
-          <p className="text-gray-600 max-w-xl mx-auto mb-8">
-            Whether you&apos;re drawn by the music, the teachings, or simply a quiet
-            longing — you are welcome. SamaSangha is the local community of the
-            Northeast Sufi Circle, part of the Inayati Order founded by Hazrat
-            Inayat Khan.
-          </p>
-          <div className="grid md:grid-cols-3 gap-6 text-left mt-8">
-            {[
-              {
-                title: "Our Lineage",
-                desc: "Discover the Sufi tradition of Hazrat Inayat Khan and how it flows into our community.",
-                href: "/about/lineage",
-              },
-              {
-                title: "Tuesday Practice",
-                desc: "Join our weekly online gathering for zikr, meditation, and community.",
-                href: "/teachings/tuesday-practice",
-              },
-              {
-                title: "Dances of Universal Peace",
-                desc: "Sacred circle dances drawing from all spiritual traditions — open to everyone.",
-                href: "/teachings/dances",
-              },
-            ].map((card) => (
-              <Link
-                key={card.href}
-                href={card.href}
-                className="block bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
-              >
-                <h3 className="font-bold text-[#1a2744] mb-2 group-hover:text-[#c9a84c] transition-colors">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-gray-600">{card.desc}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Events */}
-      {events.length > 0 && (
-        <section className="py-16 max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#1a2744] mb-8 text-center">
-            Upcoming Events
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <Link
-                key={event.id}
-                href={`/events/upcoming`}
-                className="block rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                {event.flyerUrl && (
-                  <img
-                    src={event.flyerUrl}
-                    alt={event.title}
-                    className="w-full h-40 object-cover"
-                  />
-                )}
-                <div className="p-5">
-                  <p className="text-[#c9a84c] text-xs font-medium uppercase tracking-wide mb-1">
-                    {formatDateShort(event.startDate)}
-                    {event.isRetreat && " · Retreat"}
+      {/* ── Tuesday Practice ───────────────────────────────────── */}
+      <section
+        role="region"
+        aria-label="Tuesday Practice"
+        className="py-16 md:py-20 px-5"
+        style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)", borderBottom: "1px solid var(--surface-border)" }}
+      >
+        <div className="max-w-2xl mx-auto">
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
+          >
+            <div className="h-1" style={{ background: "linear-gradient(90deg, var(--gold-500), var(--gold-300))" }} />
+            <div className="p-7">
+              {/* Text + image in one row */}
+              <div className="flex gap-6 items-start mb-5">
+                <div className="flex-1 min-w-0">
+                  <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>Weekly practice</p>
+                  <h2 className="font-serif mb-4" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
+                    Tuesday Practice
+                  </h2>
+                  <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
+                    Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
+                    Sufi practice and meditation — zikr, breath, and heart awakening. All are welcome.
                   </p>
-                  <h3 className="font-bold text-[#1a2744] mb-2">{event.title}</h3>
-                  {event.location && (
-                    <p className="text-sm text-gray-500">{event.location}</p>
-                  )}
+                  <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
+                    Our intentions are toward 7 generations, toward Peace on Earth. Practice is free,
+                    supported by dana.
+                  </p>
                 </div>
-              </Link>
-            ))}
+                <div className="shrink-0 flex flex-col items-center gap-3">
+                  <Image
+                    src="/assets/TuesdayPractice.png"
+                    alt="Tuesday Practice — people in a circle"
+                    width={140}
+                    height={140}
+                    className="rounded-xl"
+                  />
+                  <Link
+                    href="/teachings/tuesday-practice"
+                    className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
+                    style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                  >
+                    Join Tuesday Practice →
+                  </Link>
+                </div>
+              </div>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>When</dt>
+                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Every Tuesday, 9 AM EST</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Where</dt>
+                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Online via Zoom</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Cost</dt>
+                  <dd style={{ color: "var(--fg2)" }}>Free — dana welcome</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Open to</dt>
+                  <dd style={{ color: "var(--fg2)" }}>All, no experience needed</dd>
+                </div>
+              </dl>
+            </div>
           </div>
-          <div className="text-center mt-8">
-            <Link
-              href="/events/upcoming"
-              className="inline-block px-6 py-2 border border-[#1a2744] text-[#1a2744] hover:bg-[#1a2744] hover:text-white rounded transition-colors"
-            >
-              View All Events
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {/* About / Relationship */}
-      <section className="bg-[#1a2744] text-white py-16">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4 text-[#c9a84c]">
-            SamaSangha & the Northeast Sufi Circle
-          </h2>
-          <p className="text-white/80 leading-relaxed mb-6">
-            SamaSangha is the local sangha (community) of the Northeast Sufi Circle,
-            a regional branch of the Inayati Order. We gather for weekly practices,
-            seasonal retreats, music, and the universal sacred dances — all in the
-            spirit of Hazrat Inayat Khan&apos;s teaching that the whole of creation is
-            God&apos;s symphony.
-          </p>
-          <Link href="/about" className="text-[#c9a84c] hover:underline font-medium">
-            Learn more about us →
-          </Link>
         </div>
       </section>
 
-      {/* Mailing list */}
-      <section className="bg-[#f9f5ef] py-12">
-        <div className="max-w-xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-[#1a2744] mb-2">Stay in Touch</h2>
-          <p className="text-gray-600 mb-6 text-sm">
-            Receive updates on events, teachings, and community news.
-          </p>
-          <div className="flex justify-center">
-            <SubscribeForm />
+      {/* ── Cambridge Dances of Universal Peace ─────────────────── */}
+      <section
+        role="region"
+        aria-label="Cambridge Dances of Universal Peace"
+        className="py-16 md:py-20 px-5"
+        style={{ background: "var(--bg)", borderTop: "1px solid var(--surface-border)" }}
+      >
+        <div className="max-w-2xl mx-auto">
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
+          >
+            <div className="h-1" style={{ background: "linear-gradient(90deg, var(--gold-500), var(--gold-300))" }} />
+            <div className="p-7">
+              {/* Text + image in one row */}
+              <div className="flex gap-6 items-start mb-5">
+                <div className="flex-1 min-w-0">
+                  <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>Monthly gathering</p>
+                  <h2 className="font-serif mb-4" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
+                    Dances of Universal Peace
+                  </h2>
+                  <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
+                    Sacred circle dances drawing from the spiritual traditions of the world — Hindu,
+                    Buddhist, Sufi, Christian, Jewish, and Indigenous. Singing and moving together,
+                    we embrace the unity at the heart of all paths.
+                  </p>
+                  <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
+                    The Dances of Universal Peace are held in trust by the Sufi Ruhaniat International
+                    for the benefit of all people. No experience required — only your presence.
+                  </p>
+                </div>
+                <div className="shrink-0 flex flex-col items-center gap-3">
+                  <Image
+                    src="/assets/UDPcircle.png"
+                    alt="Dances of Universal Peace circle"
+                    width={140}
+                    height={140}
+                    className="rounded-xl"
+                  />
+                </div>
+              </div>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>When</dt>
+                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Third Saturday · 7:30–9:45 PM</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Where</dt>
+                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Friends Meeting House, Cambridge</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Contribution</dt>
+                  <dd style={{ color: "var(--fg2)" }}>$10–15 suggested</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Led by</dt>
+                  <dd style={{ color: "var(--fg2)" }}>Abraham, Halima & Friends</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Upcoming Retreats ───────────────────────────────────── */}
+      <section
+        role="region"
+        aria-label="Upcoming retreats"
+        className="py-16 md:py-20 px-5"
+        style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-10 text-center">
+            <p className="eyebrow mb-2">Gatherings</p>
+            <h2 className="font-serif" style={{ fontSize: "2.25rem", fontWeight: 500, color: "var(--ink-900)" }}>
+              Upcoming retreats
+            </h2>
+          </div>
+
+          {retreats.length === 0 ? (
+            <p className="text-center text-sm" style={{ color: "var(--fg2)" }}>
+              No upcoming retreats scheduled.{" "}
+              <Link href="/contact" className="underline underline-offset-2" style={{ color: "var(--crimson-700)" }}>
+                Join the mailing list to be notified.
+              </Link>
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {retreats.map((event) => (
+                <div
+                  key={event.id}
+                  className="rounded-[14px] overflow-hidden relative"
+                  style={{ background: "#fff", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
+                >
+                  <div className="h-1" style={{ background: "linear-gradient(90deg, var(--gold-500), var(--gold-300))" }} />
+                  <div className="px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5">
+                    {event.isRetreat && (
+                      <span
+                        className="absolute top-5 right-6 text-xs font-semibold uppercase hidden sm:block"
+                        style={{ letterSpacing: "0.14em", color: "var(--fg3)" }}
+                      >
+                        Retreat
+                      </span>
+                    )}
+                    <div className="sm:w-44 shrink-0">
+                      <p className="text-sm font-semibold" style={{ color: "var(--gold-700)" }}>
+                        {formatDateRange(event.startDate, event.endDate)}
+                      </p>
+                      {(event.location || event.isOnline) && (
+                        <p className="text-xs mt-1.5" style={{ color: "var(--fg2)" }}>
+                          {event.isOnline ? "Online" : event.location}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3
+                        className="font-serif leading-snug mb-2 pr-20"
+                        style={{ fontSize: "1.25rem", fontWeight: 500, color: "var(--ink-900)" }}
+                      >
+                        {event.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "var(--fg2)" }}>
+                        {event.description}
+                      </p>
+                    </div>
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end gap-3 shrink-0">
+                      {event.registerUrl && (
+                        <a
+                          href={event.registerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-semibold px-5 py-2.5 rounded-lg whitespace-nowrap"
+                          style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                        >
+                          Register
+                        </a>
+                      )}
+                      {event.flyerUrl && (
+                        <a
+                          href={event.flyerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs underline underline-offset-2 whitespace-nowrap"
+                          style={{ color: "var(--fg3)" }}
+                        >
+                          View flyer
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/events/upcoming"
+              className="text-sm font-medium underline underline-offset-4"
+              style={{ color: "var(--crimson-700)" }}
+            >
+              All upcoming events →
+            </Link>
           </div>
         </div>
       </section>

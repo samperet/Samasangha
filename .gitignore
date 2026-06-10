@@ -44,3 +44,8 @@ next-env.d.ts
 
 /app/generated/prisma
 /public/uploads
+
+# music audio files (large; re-download via prisma/seed-albums.ts sources — see public/music/README.md)
+/public/music/*
+!/public/music/covers
+!/public/music/README.md

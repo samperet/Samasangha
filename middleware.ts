@@ -1,15 +1,19 @@
-import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export default auth((req) => {
-  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
-  const isLoginPage = req.nextUrl.pathname === "/admin/login";
+export function middleware(request: NextRequest) {
+  const isLoginPage = request.nextUrl.pathname === "/admin/login";
+  if (isLoginPage) return NextResponse.next();
 
-  if (isAdminRoute && !isLoginPage && !req.auth) {
-    return NextResponse.redirect(new URL("/admin/login", req.url));
+  // NextAuth v5 session cookie names
+  const session =
+    request.cookies.get("authjs.session-token") ??
+    request.cookies.get("__Secure-authjs.session-token");
+
+  if (!session) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/admin/:path*"],

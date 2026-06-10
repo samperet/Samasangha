@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { formatDate } from "@/lib/utils";
+import { formatDateRange } from "@/lib/utils";
 import Link from "next/link";
 
 export const metadata: Metadata = { title: "Upcoming Events" };
@@ -22,42 +22,78 @@ export default async function UpcomingEventsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-[#1a2744] mb-2">Upcoming Events</h1>
-      <p className="text-gray-500 mb-10">Join us for practices, teachings, and retreats.</p>
+      <h1 className="text-4xl font-bold text-stone-800 mb-2">Upcoming Events</h1>
+      <p className="text-stone-500 mb-12">Practices, retreats, and gatherings open to all.</p>
 
       {events.length === 0 ? (
-        <p className="text-gray-400 italic">No upcoming events at this time. Check back soon.</p>
+        <div className="text-stone-400 italic">
+          <p>No upcoming events scheduled.</p>
+          <Link href="/contact" className="text-stone-500 hover:text-stone-800 underline underline-offset-2 mt-2 inline-block transition-colors">
+            Join the mailing list to be notified →
+          </Link>
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {events.map((event) => (
-            <div key={event.id} className="border rounded-lg overflow-hidden flex flex-col md:flex-row">
-              {event.flyerUrl && (
-                <img src={event.flyerUrl} alt={event.title} className="w-full md:w-48 h-48 object-cover" />
+            <div
+              key={event.id}
+              className="relative rounded-2xl border border-stone-200 bg-white px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5"
+            >
+              {event.isRetreat && (
+                <span className="absolute top-5 right-6 text-xs font-semibold uppercase tracking-widest text-stone-400">
+                  Retreat
+                </span>
               )}
-              <div className="p-6 flex-1">
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <div>
-                    <p className="text-[#c9a84c] text-sm font-medium mb-1">
-                      {formatDate(event.startDate)}
-                      {event.endDate && ` – ${formatDate(event.endDate)}`}
-                    </p>
-                    <h2 className="text-xl font-bold text-[#1a2744]">{event.title}</h2>
-                    {event.location && <p className="text-gray-500 text-sm mt-1">{event.location}</p>}
-                    {event.isOnline && <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded mt-1 inline-block">Online</span>}
-                    {event.isRetreat && <span className="text-xs bg-[#c9a84c]/20 text-[#c9a84c] px-2 py-0.5 rounded mt-1 inline-block ml-1">Retreat</span>}
-                  </div>
-                  {event.registerUrl && (
-                    <a
-                      href={event.registerUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 bg-[#c9a84c] hover:bg-[#b8973b] text-white text-sm rounded whitespace-nowrap"
-                    >
-                      Register
-                    </a>
-                  )}
-                </div>
-                <p className="text-gray-600 mt-3 text-sm leading-relaxed line-clamp-3">{event.description}</p>
+              <div className="sm:w-44 shrink-0">
+                <p className="text-sm font-medium text-stone-500 leading-snug">
+                  {formatDateRange(event.startDate, event.endDate)}
+                </p>
+                {(event.location || event.isOnline) && (
+                  <p className="text-sm text-stone-400 mt-1">
+                    {event.isOnline ? "Online" : event.location}
+                  </p>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-stone-800 pr-16 leading-snug mb-2">
+                  <Link href={`/events/${event.slug}`} className="hover:underline" style={{ color: "var(--ink-900)" }}>
+                    {event.title}
+                  </Link>
+                </h3>
+                <p className="text-sm text-stone-500 leading-relaxed line-clamp-2">
+                  {event.description}
+                </p>
+              </div>
+              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-3 shrink-0 sm:pt-0.5">
+                {event.registrationEnabled ? (
+                  <Link
+                    href={`/events/${event.slug}/register`}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-200"
+                    style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
+                  >
+                    Register
+                  </Link>
+                ) : event.registerUrl ? (
+                  <a
+                    href={event.registerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap"
+                    style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
+                  >
+                    Register
+                  </a>
+                ) : null}
+                {event.flyerUrl && (
+                  <a
+                    href={event.flyerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-stone-400 hover:text-stone-700 underline underline-offset-2 transition-colors whitespace-nowrap"
+                  >
+                    View flyer
+                  </a>
+                )}
               </div>
             </div>
           ))}

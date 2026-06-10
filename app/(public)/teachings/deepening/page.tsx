@@ -13,17 +13,14 @@ export default async function DeepeningPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-[#1a2744] mb-8">Deepening</h1>
+      <h1 className="text-4xl font-bold text-stone-800 mb-10">Deepening</h1>
       {content ? (
-        <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+        <div
+          className="prose prose-stone max-w-none leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
       ) : (
-        <div className="prose prose-lg max-w-none text-gray-600">
-          <p>
-            The Deepening programs offer sustained study and practice for those who feel
-            called to go deeper into the Sufi path — through guided coursework, mentorship,
-            and community.
-          </p>
-        </div>
+        <p className="text-stone-400 italic">Details coming soon.</p>
       )}
     </div>
   );

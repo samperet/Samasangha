@@ -1,0 +1,205 @@
+/* ============================================================
+   NORTHEAST SUFIS / SamaSangha — Color & Type Foundations
+   Sufi Ruhaniat lineage · Clarity · Wisdom · Love
+   ------------------------------------------------------------
+   Palette is drawn from real brand assets:
+   illuminated Qur'an manuscripts (lapis + gold + crimson),
+   the Heart-and-Wings emblem, and the gold Bodhi/Dharma tree
+   on a terracotta ground.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  /* ---------- BRAND CORE ---------- */
+  /* Gold / saffron — the lineage's primary metal, from gilded
+     illumination, the winged-heart star, and the Dharma tree. */
+  --gold-900: #6e4d12;
+  --gold-700: #9c7421;
+  --gold-600: #c4922b;   /* primary brand gold */
+  --gold-500: #d9a436;
+  --gold-400: #e8be5c;
+  --gold-300: #f0cf82;
+  --gold-200: #f6e3b3;
+  --gold-100: #faf0d6;
+
+  /* Lapis — manuscript ground blue, the night of contemplation. */
+  --lapis-900: #15264a;
+  --lapis-700: #1f3a6e;   /* secondary brand blue */
+  --lapis-600: #2a4d8c;
+  --lapis-400: #5478b6;
+  --lapis-200: #aebfdc;
+  --lapis-100: #dde4f1;
+
+  /* Crimson — sacred red of the heart and seal medallions. */
+  --crimson-900: #5e1714;
+  --crimson-700: #8f2a23;  /* deep accent */
+  --crimson-500: #b5362b;
+  --crimson-300: #d97a6c;
+
+  /* Terracotta — the warm earth ground of the Dharma tree. */
+  --terra-700: #b34635;
+  --terra-500: #d05a47;   /* warm coral ground */
+  --terra-300: #e6917f;
+  --terra-100: #f6ddd4;
+
+  /* ---------- PARCHMENT NEUTRALS (warm, never grey) ---------- */
+  --parch-50:  #fbf7ec;   /* page / lightest */
+  --parch-100: #f6eedc;   /* card cream */
+  --parch-200: #ece0c6;
+  --parch-300: #ddcaa6;
+  --ink-700:   #5a4f3f;   /* muted brown text */
+  --ink-800:   #3d3527;
+  --ink-900:   #2a2118;   /* primary text — warm near-black */
+
+  /* ---------- SEMANTIC SURFACES ---------- */
+  --bg:          var(--parch-50);
+  --bg-raised:   #ffffff;
+  --bg-cream:    var(--parch-100);
+  --bg-ink:      #1c1710;     /* deep mode / footers */
+  --surface-border: #e6dcc4;
+
+  /* ---------- SEMANTIC TEXT ---------- */
+  --fg1: var(--ink-900);      /* primary */
+  --fg2: var(--ink-700);      /* secondary / muted */
+  --fg3: #8a7f6b;             /* tertiary / captions */
+  --fg-on-dark:  #f4ead2;
+  --fg-on-gold:  #3a2a08;
+  --link:        var(--crimson-700);
+  --link-hover:  var(--crimson-900);
+
+  /* ---------- SEMANTIC ACCENTS ---------- */
+  --accent:        var(--gold-600);
+  --accent-strong: var(--gold-700);
+  --accent-cool:   var(--lapis-700);
+  --accent-warm:   var(--terra-500);
+
+  /* ---------- TYPE FAMILIES ---------- */
+  --serif-display: 'Cormorant Garamond', 'Hoefler Text', Georgia, serif;
+  --sans-body: 'Mulish', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --serif-body: 'Cormorant Garamond', Georgia, serif;
+
+  /* ---------- TYPE SCALE ---------- */
+  --fs-eyebrow: 0.78rem;   /* letterspaced label */
+  --fs-small:   0.875rem;
+  --fs-body:    1.0625rem; /* 17px reading */
+  --fs-lead:    1.3125rem;
+  --fs-h4:      1.5rem;
+  --fs-h3:      2rem;
+  --fs-h2:      2.75rem;
+  --fs-h1:      4rem;
+  --fs-display: 5.5rem;
+
+  --lh-tight: 1.08;
+  --lh-snug:  1.25;
+  --lh-body:  1.6;
+  --lh-loose: 1.75;
+
+  --tracking-eyebrow: 0.22em;
+  --tracking-tight: -0.01em;
+
+  /* ---------- RADII ---------- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 14px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+
+  /* ---------- SHADOWS (warm-tinted, soft) ---------- */
+  --shadow-sm: 0 1px 2px rgba(58,42,8,0.06), 0 1px 3px rgba(58,42,8,0.08);
+  --shadow-md: 0 4px 14px rgba(58,42,8,0.10), 0 2px 6px rgba(58,42,8,0.06);
+  --shadow-lg: 0 14px 40px rgba(42,33,24,0.16), 0 4px 12px rgba(42,33,24,0.08);
+  --ring-gold: 0 0 0 1px var(--gold-300);
+
+  /* ---------- SPACING (8pt rhythm) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --space-12: 96px;
+
+  --maxw-prose: 68ch;
+  --maxw-content: 1180px;
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES
+   ============================================================ */
+
+body {
+  background: var(--bg);
+  color: var(--fg1);
+  font-family: var(--sans-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.eyebrow {
+  font-family: var(--sans-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+
+h1, .h1 {
+  font-family: var(--serif-display);
+  font-weight: 500;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg1);
+}
+.display {
+  font-family: var(--serif-display);
+  font-weight: 500;
+  font-size: var(--fs-display);
+  line-height: 1.02;
+}
+h2, .h2 {
+  font-family: var(--serif-display);
+  font-weight: 500;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+h3, .h3 {
+  font-family: var(--serif-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+h4, .h4 {
+  font-family: var(--sans-body);
+  font-weight: 700;
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+.lead {
+  font-family: var(--serif-body);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-loose);
+  color: var(--fg2);
+}
+p { color: var(--fg1); }
+.muted { color: var(--fg2); }
+a { color: var(--link); text-decoration: none; }
+a:hover { color: var(--link-hover); }
+
+blockquote, .quote {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  line-height: 1.4;
+  color: var(--lapis-700);
+}
