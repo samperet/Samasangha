@@ -1,5 +1,6 @@
 import Link from "next/link";
 import InvocationCarousel from "@/components/public/InvocationCarousel";
+import CommunityCollage from "@/components/public/CommunityCollage";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
@@ -37,7 +38,9 @@ export default async function HomePage() {
       <div
         className="relative flex items-center justify-center overflow-hidden px-5"
         style={{
-          height: "calc(100vh - 44px)",
+          // Header chrome is now heart banner (~120px) + sticky menu (~75px)
+          height: "calc(100vh - 200px)",
+          minHeight: 420,
           background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
         }}
       >
@@ -51,7 +54,7 @@ export default async function HomePage() {
             pointerEvents: "none",
           }}
         />
-        <div className="relative w-full" style={{ maxWidth: "min(80vw, 800px)" }}>
+        <div className="relative w-full" style={{ maxWidth: "min(94vw, 1280px)" }}>
           <InvocationCarousel />
         </div>
       </div>
@@ -68,11 +71,13 @@ export default async function HomePage() {
         }}
       >
 
-        <div className="relative z-10 max-w-2xl mx-auto">
+        {/* Section 2: center card flanked by community photos. Click a photo
+            to open the lightbox (handled by CommunityCollage). */}
+        <CommunityCollage>
           {/* Combined card: image on top (top corners rounded), text below
               (bottom corners rounded). overflow-hidden unifies them into one. */}
           <div
-            className="rounded-2xl overflow-hidden mx-auto"
+            className="w-full shrink-0 rounded-2xl overflow-hidden"
             style={{ maxWidth: 480, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
           >
             <Image
@@ -92,23 +97,24 @@ export default async function HomePage() {
                 padding: "1.75rem 2rem",
                 margin: 0,
                 background: "rgba(255,255,255,0.97)",
+                borderLeft: "none",
               }}
             >
               SamaSangha is the community of seekers who have gathered in Massachusetts, and also
               far and wide, with the guidance of Sufi Murshids Halima and Abraham.
             </blockquote>
           </div>
-        </div>
+        </CommunityCollage>
       </section>
 
-      {/* ── Tuesday Practice ───────────────────────────────────── */}
+      {/* ── Tuesday Practice & Dances — side by side when they fit ── */}
       <section
         role="region"
-        aria-label="Tuesday Practice"
+        aria-label="Regular gatherings"
         className="py-16 md:py-20 px-5"
         style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)", borderBottom: "1px solid var(--surface-border)" }}
       >
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch">
           <div
             className="rounded-2xl overflow-hidden"
             style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
@@ -168,17 +174,8 @@ export default async function HomePage() {
               </dl>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── Cambridge Dances of Universal Peace ─────────────────── */}
-      <section
-        role="region"
-        aria-label="Cambridge Dances of Universal Peace"
-        className="py-16 md:py-20 px-5"
-        style={{ background: "var(--bg)", borderTop: "1px solid var(--surface-border)" }}
-      >
-        <div className="max-w-2xl mx-auto">
+          {/* Cambridge Dances of Universal Peace */}
           <div
             className="rounded-2xl overflow-hidden"
             style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}

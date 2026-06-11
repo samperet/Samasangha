@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Calendar, FileText, Music,
-  Users, Mail, ImageIcon, LogOut, BookOpen,
+  Users, Mail, ImageIcon, LogOut, BookOpen, Home,
 } from "lucide-react";
 
 const links = [
@@ -23,6 +22,13 @@ const links = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function signOut() {
+    await fetch("/api/admin/login", { method: "DELETE" });
+    router.push("/admin/login");
+    router.refresh();
+  }
 
   return (
     <aside
@@ -35,7 +41,7 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="px-5 py-5" style={{ borderBottom: "1px solid var(--surface-border)" }}>
         <Link href="/admin" className="flex items-center gap-2.5">
-          <Image src="/assets/samasangha-winged-heart.png" alt="" width={22} height={22} className="opacity-70" />
+          <Image src="/assets/sufi-heart-banner.png" alt="" width={600} height={272} className="w-auto h-8" />
           <div>
             <span className="font-serif text-base block" style={{ color: "var(--ink-900)", lineHeight: 1.1 }}>
               SamaSangha
@@ -78,16 +84,16 @@ export default function AdminSidebar() {
       <div className="p-3 space-y-0.5" style={{ borderTop: "1px solid var(--surface-border)" }}>
         <Link
           href="/"
-          target="_blank"
           className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors duration-150"
           style={{ color: "var(--fg3)" }}
           onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-700)")}
           onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--fg3)")}
         >
-          View site ↗
+          <Home size={15} />
+          Home
         </Link>
         <button
-          onClick={() => signOut({ callbackUrl: "/admin/login" })}
+          onClick={signOut}
           className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm w-full transition-colors duration-150 text-left"
           style={{ color: "var(--fg3)" }}
           onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-700)")}

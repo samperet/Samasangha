@@ -3,16 +3,19 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import RegistrationActions from "./RegistrationActions";
+import { CheckInBox, RoomSelect, RoomsManager } from "./RoomingControls";
 
 async function getData(id: string) {
-  const event = await prisma.event.findUnique({
-    where: { id },
-    include: {
-      registrations: { orderBy: { createdAt: "asc" } },
-      _count: { select: { registrations: true } },
-    },
-  });
-  return event;
+  const [event, rooms] = await Promise.all([
+    prisma.event.findUnique({
+      where: { id },
+      include: {
+        registrations: { orderBy: [{ createdAt: "asc" }, { id: "asc" }], include: { room: true } },
+      },
+    }),
+    prisma.room.findMany({ orderBy: [{ order: "asc" }, { name: "asc" }] }),
+  ]);
+  return { event, rooms };
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -24,16 +27,26 @@ const STATUS_STYLES: Record<string, string> = {
 
 export default async function RegistrationsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = await getData(id).catch(() => null);
+  const { event, rooms } = await getData(id).catch(() => ({ event: null, rooms: [] }));
   if (!event) notFound();
 
+  const active = event.registrations.filter((r) => r.status !== "CANCELLED");
   const counts = {
     total: event.registrations.length,
     confirmed: event.registrations.filter((r) => r.status === "CONFIRMED").length,
     pending: event.registrations.filter((r) => r.status === "PENDING").length,
     waitlisted: event.registrations.filter((r) => r.status === "WAITLISTED").length,
     cancelled: event.registrations.filter((r) => r.status === "CANCELLED").length,
+    checkedIn: active.filter((r) => r.checkedIn).length,
   };
+
+  // Rooming overview — who sleeps where (cancelled registrations excluded)
+  const showRooming = event.isRetreat || rooms.length > 0;
+  const roomsWithOccupants = rooms.map((room) => ({
+    ...room,
+    occupantNames: active.filter((r) => r.roomId === room.id).map((r) => r.name),
+  }));
+  const unassigned = active.filter((r) => !r.roomId);
 
   return (
     <>
@@ -64,13 +77,14 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-8">
         {[
           { label: "Total", value: counts.total, color: "text-gray-800" },
           { label: "Confirmed", value: counts.confirmed, color: "text-green-700" },
           { label: "Pending", value: counts.pending, color: "text-amber-700" },
           { label: "Waitlisted", value: counts.waitlisted, color: "text-blue-700" },
           { label: "Cancelled", value: counts.cancelled, color: "text-gray-400" },
+          { label: "Checked in", value: `${counts.checkedIn} / ${active.length}`, color: "text-[#c4922b]" },
         ].map((s) => (
           <div key={s.label} className="bg-white border border-gray-200 rounded-xl px-4 py-3">
             <p className="text-xs text-gray-400 mb-1">{s.label}</p>
@@ -95,6 +109,62 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
             />
           </div>
         </div>
+      )}
+
+      {/* Rooming */}
+      {showRooming && (
+        <>
+          <RoomsManager
+            rooms={roomsWithOccupants.map(({ id, name, capacity, occupantNames }) => ({
+              id, name, capacity, occupants: occupantNames.length,
+            }))}
+          />
+
+          {rooms.length > 0 && active.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-sm font-medium text-gray-700 mb-3">Who sleeps where</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {roomsWithOccupants.map((room) => {
+                  const over = room.capacity != null && room.occupantNames.length > room.capacity;
+                  return (
+                    <div key={room.id} className="bg-white border border-gray-200 rounded-xl px-4 py-3">
+                      <div className="flex justify-between items-baseline mb-2">
+                        <p className="font-medium text-sm text-gray-800">{room.name}</p>
+                        <p className={`text-xs ${over ? "text-red-600 font-semibold" : "text-gray-400"}`}>
+                          {room.occupantNames.length}
+                          {room.capacity ? ` / ${room.capacity}` : ""}
+                          {over && " — over capacity"}
+                        </p>
+                      </div>
+                      {room.occupantNames.length === 0 ? (
+                        <p className="text-xs text-gray-300 italic">Empty</p>
+                      ) : (
+                        <ul className="text-xs text-gray-600 space-y-0.5">
+                          {room.occupantNames.map((name, i) => (
+                            <li key={i}>{name}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
+                {unassigned.length > 0 && (
+                  <div className="border border-dashed border-gray-300 rounded-xl px-4 py-3">
+                    <div className="flex justify-between items-baseline mb-2">
+                      <p className="font-medium text-sm text-gray-500">Unassigned</p>
+                      <p className="text-xs text-gray-400">{unassigned.length}</p>
+                    </div>
+                    <ul className="text-xs text-gray-500 space-y-0.5">
+                      {unassigned.map((r) => (
+                        <li key={r.id}>{r.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Table */}
@@ -125,33 +195,56 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
               <tr>
                 <th className="px-4 py-3 text-left font-medium text-gray-500">Name</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-500">Email</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-500 hidden md:table-cell">Phone</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-500 hidden lg:table-cell">Notes</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-500">Registered</th>
+                <th className="px-4 py-3 text-left font-medium text-gray-500 hidden md:table-cell">Registered</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-500">Status</th>
+                {showRooming && (
+                  <th className="px-4 py-3 text-left font-medium text-gray-500">Room</th>
+                )}
+                <th className="px-4 py-3 text-left font-medium text-gray-500">Check-in</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-500">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {event.registrations.map((reg) => (
-                <tr key={reg.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-800">{reg.name}</td>
+                <tr key={reg.id} className={`hover:bg-gray-50 ${reg.status === "CANCELLED" ? "opacity-50" : ""}`}>
+                  <td className="px-4 py-3 font-medium text-gray-800">
+                    {reg.name}
+                    {reg.phone && (
+                      <span className="block text-xs font-normal text-gray-400">{reg.phone}</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <a href={`mailto:${reg.email}`} className="text-[#8f2a23] hover:underline">
                       {reg.email}
                     </a>
                   </td>
-                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{reg.phone || "—"}</td>
                   <td className="px-4 py-3 text-gray-500 hidden lg:table-cell max-w-xs">
                     <span className="line-clamp-1 block">
                       {[reg.dietary, reg.notes].filter(Boolean).join(" · ") || "—"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(reg.createdAt)}</td>
+                  <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">{formatDate(reg.createdAt)}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[reg.status]}`}>
                       {reg.status.charAt(0) + reg.status.slice(1).toLowerCase()}
                     </span>
+                  </td>
+                  {showRooming && (
+                    <td className="px-4 py-3">
+                      {reg.status === "CANCELLED" ? (
+                        <span className="text-xs text-gray-300">—</span>
+                      ) : (
+                        <RoomSelect registrationId={reg.id} roomId={reg.roomId} rooms={rooms} />
+                      )}
+                    </td>
+                  )}
+                  <td className="px-4 py-3">
+                    {reg.status === "CANCELLED" ? (
+                      <span className="text-xs text-gray-300">—</span>
+                    ) : (
+                      <CheckInBox registrationId={reg.id} checkedIn={reg.checkedIn} />
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <RegistrationActions id={reg.id} currentStatus={reg.status} />

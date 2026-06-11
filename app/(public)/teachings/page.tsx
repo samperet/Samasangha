@@ -1,31 +1,54 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Suspense } from "react";
+import { prisma } from "@/lib/prisma";
+import TeachingsBrowser, { type TeachingItem } from "./TeachingsBrowser";
 
 export const metadata: Metadata = { title: "Teachings" };
+export const revalidate = 60;
 
-const sections = [
-  { title: "Dharma Gems", href: "https://www.youtube.com/playlist?list=PLzy2sDRtoSh-5GiHJ2E3biLDBhOXDcprd", desc: "Short teachings and reflections from the tradition." },
-  { title: "Tuesday Practice", href: "/teachings/tuesday-practice", desc: "Our weekly online practice gathering." },
-  { title: "Talks", href: "/teachings/talks", desc: "Recordings and transcripts of teachings." },
-  { title: "Deepening", href: "/teachings/deepening", desc: "Programs for sustained study and practice." },
-  { title: "Music", href: "/teachings/music", desc: "Albums, tracks, and music videos." },
-];
+// Detail routes per category — talks and dance articles keep their original
+// permalinks; everything else renders through the generic /teachings/[slug].
+function hrefFor(category: string, slug: string) {
+  switch (category) {
+    case "TALK":          return `/teachings/talks/${slug}`;
+    case "DANCE_ARTICLE": return `/teachings/dances/articles/${slug}`;
+    default:              return `/teachings/${slug}`;
+  }
+}
 
-export default function TeachingsPage() {
+async function getItems(): Promise<TeachingItem[]> {
+  try {
+    const posts = await prisma.post.findMany({
+      where: { published: true },
+      orderBy: { publishedAt: "desc" },
+      select: {
+        id: true, title: true, slug: true, excerpt: true,
+        category: true, publishedAt: true,
+      },
+    });
+    return posts.map((p) => ({
+      ...p,
+      publishedAt: p.publishedAt?.toISOString() ?? null,
+      href: hrefFor(p.category, p.slug),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export default async function TeachingsPage() {
+  const items = await getItems();
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-[#1a2744] mb-4">Teachings</h1>
-      <p className="text-gray-500 mb-10">
-        Explore the wisdom, practices, and music of our community.
+    <div className="max-w-3xl mx-auto px-4 py-16">
+      <h1 className="text-4xl font-bold text-stone-800 mb-2">Teachings</h1>
+      <p className="text-stone-500 mb-10">
+        Talks, recordings, dharma gems, articles, and dances from Abraham,
+        Halima, and the wider Ruhaniat community — all in one place.
       </p>
-      <div className="grid md:grid-cols-2 gap-6">
-        {sections.map((s) => (
-          <Link key={s.href} href={s.href} className="block p-6 border rounded-lg hover:shadow-md transition-shadow group">
-            <h2 className="font-bold text-[#1a2744] text-lg mb-2 group-hover:text-[#c9a84c] transition-colors">{s.title}</h2>
-            <p className="text-gray-500 text-sm">{s.desc}</p>
-          </Link>
-        ))}
-      </div>
+      <Suspense>
+        <TeachingsBrowser items={items} />
+      </Suspense>
     </div>
   );
 }

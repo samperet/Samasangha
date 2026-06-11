@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 
@@ -48,6 +47,7 @@ function Caret({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) 
     <button
       onClick={onClick}
       aria-label={dir === "prev" ? "Previous language" : "Next language"}
+      className="hidden sm:inline-block"
       style={{
         background: "none",
         border: "none",
@@ -74,10 +74,6 @@ export default function InvocationCarousel() {
   const [idx, setIdx]         = useState(0);
   const [visible, setVisible] = useState(true);
   const [fadeMs, setFadeMs]   = useState(FADE_MS);
-
-  const [heartHovered, setHeartHovered] = useState(false);
-  const [heartLoaded, setHeartLoaded]   = useState(false);
-  const [haloLoaded, setHaloLoaded]     = useState(false);
 
   const [heartClicks, setHeartClicks] = useState(0);
   const [showGate, setShowGate]       = useState(false);
@@ -134,72 +130,15 @@ export default function InvocationCarousel() {
       className="flex flex-col items-center text-center"
       style={{ width: "100%", paddingTop: "clamp(12px, 4vh, 56px)", paddingBottom: "clamp(12px, 4vh, 56px)", gap: 0 }}
     >
-      {/* Wordmark */}
+      {/* Heading kept for SEO/structure, visually hidden — also the quiet
+          trigger for the inner door (3 clicks). The wordmark image was removed. */}
       <h1
-        className="font-serif"
-        style={{
-          fontSize: "clamp(1.9rem, 4vw, 2.8rem)",
-          fontWeight: 600,
-          color: "var(--fg1)",
-          letterSpacing: "-0.01em",
-          margin: "0 0 clamp(6px, 1.5vh, 24px)",
-        }}
+        onClick={handleHeartClick}
+        className="select-none"
+        style={{ margin: 0, width: 96, height: 14, fontSize: 0, color: "transparent", cursor: "default" }}
       >
         SamaSangha
       </h1>
-
-      {/* Heart + halo stack */}
-      <div
-        onClick={handleHeartClick}
-        style={{
-          position: "relative",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "clamp(8px, 2vh, 28px)",
-          cursor: "default",
-        }}
-      >
-        {/* Blue halo behind */}
-        <Image
-          src="/assets/BlueHalo.png"
-          alt=""
-          aria-hidden
-          width={420}
-          height={420}
-          priority
-          onLoad={() => setHaloLoaded(true)}
-          style={{
-            position: "absolute",
-            width: "clamp(280px, min(56vw, 56vh), 560px)",
-            height: "auto",
-            pointerEvents: "none",
-            opacity: heartLoaded && haloLoaded ? 1 : 0,
-            transition: "opacity 0.4s ease",
-          }}
-        />
-        {/* Heart on top */}
-        <Image
-          src="/assets/SufiHeartwithWings.png"
-          alt="Sama Sangha — the Heart and Wings"
-          width={300}
-          height={300}
-          priority
-          onLoad={() => setHeartLoaded(true)}
-          onMouseEnter={() => setHeartHovered(true)}
-          onMouseLeave={() => setHeartHovered(false)}
-          style={{
-            position: "relative",
-            width: "clamp(220px, min(44vw, 44vh), 440px)",
-            height: "auto",
-            filter: "drop-shadow(0 12px 28px rgba(58,42,8,0.20))",
-            opacity: heartLoaded && haloLoaded ? 1 : 0,
-            transform: heartHovered ? "scale(1.07)" : "scale(1)",
-            transition: "opacity 0.4s ease, transform 0.35s ease",
-            cursor: "default",
-          }}
-        />
-      </div>
 
       {/* Secret gate */}
       {showGate && (
@@ -270,19 +209,19 @@ export default function InvocationCarousel() {
         <div
           style={{
             flex: 1,
-            minHeight: "clamp(120px, 24vh, 180px)",
+            minHeight: "clamp(220px, 42vh, 380px)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            gap: 8,
+            gap: 14,
           }}
         >
           {slide.lang !== "English" && (
             <p
               className="eyebrow"
               style={{
-                fontSize: "0.68rem",
+                fontSize: "0.85rem",
                 color: "var(--gold-600)",
                 margin: 0,
                 opacity: visible ? 1 : 0,
@@ -298,8 +237,9 @@ export default function InvocationCarousel() {
               fontFamily: "var(--font-serif)",
               fontStyle: "italic",
               fontWeight: 400,
-              fontSize: "clamp(0.85rem, 1.5vw, 1.1rem)",
-              lineHeight: 1.65,
+              fontSize: "clamp(1.5rem, 3.2vw, 2.4rem)",
+              lineHeight: 1.55,
+              maxWidth: "100%",
               color: "var(--ink-800)",
               margin: 0,
               opacity: visible ? 1 : 0,

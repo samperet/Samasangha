@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
+import YouTubeEmbed from "@/components/public/YouTubeEmbed";
 
 export const revalidate = 300;
 
@@ -153,6 +154,7 @@ export default async function DanceArticlePage({ params }: { params: Promise<{ s
 
           {/* Prose */}
           <article>
+            <YouTubeEmbed url={post.youtubeUrl} title={post.title} />
             <div
               className="prose max-w-none"
               style={{

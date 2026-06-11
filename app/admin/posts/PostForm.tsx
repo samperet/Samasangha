@@ -23,6 +23,7 @@ export default function PostForm({ post }: { post?: Post }) {
   const [form, setForm] = useState({
     title: post?.title ?? "",
     excerpt: post?.excerpt ?? "",
+    youtubeUrl: post?.youtubeUrl ?? "",
     content: post?.content ?? "",
     category: post?.category ?? "DHARMA_GEM",
     published: post?.published ?? false,
@@ -68,6 +69,17 @@ export default function PostForm({ post }: { post?: Post }) {
         <div>
           <label className="block text-sm font-medium mb-1">Excerpt / Summary</label>
           <Textarea value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} rows={2} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">YouTube link</label>
+          <Input
+            value={form.youtubeUrl}
+            onChange={(e) => set("youtubeUrl", e.target.value)}
+            placeholder="https://www.youtube.com/watch?v=…"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Optional. If set, the video is embedded at the top of the teaching page.
+          </p>
         </div>
         <div>
           <label className="block text-sm font-medium mb-2">Content *</label>

@@ -16,11 +16,12 @@ export async function GET(
   const regs = await prisma.eventRegistration.findMany({
     where: { eventId: id },
     orderBy: { createdAt: "asc" },
+    include: { room: true },
   });
 
   if (format === "csv") {
     const rows = [
-      ["Name", "Email", "Phone", "Dietary", "Notes", "Status", "Registered At"].join(","),
+      ["Name", "Email", "Phone", "Dietary", "Notes", "Status", "Room", "Checked In", "Registered At"].join(","),
       ...regs.map((r) =>
         [
           `"${r.name}"`,
@@ -29,6 +30,8 @@ export async function GET(
           `"${r.dietary ?? ""}"`,
           `"${(r.notes ?? "").replace(/"/g, '""')}"`,
           r.status,
+          `"${r.room?.name ?? ""}"`,
+          r.checkedIn ? "Yes" : "No",
           r.createdAt.toISOString(),
         ].join(",")
       ),

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import AlbumCard, { type AlbumCardData } from "@/components/public/player/AlbumCard";
 
@@ -56,6 +57,13 @@ export default async function AlbumsPage() {
           songs of remembrance. Press play on any album and keep listening as you explore the
           site. All music is offered freely; donations help us continue our work.
         </p>
+        <Link
+          href="/teachings/music/videos"
+          className="inline-flex items-center gap-1.5 mt-5 text-sm font-semibold text-crimson-700 hover:text-crimson-900 underline underline-offset-4 decoration-crimson-700/30"
+        >
+          Watch music videos
+          <span aria-hidden>→</span>
+        </Link>
       </div>
 
       {cards.length === 0 ? (

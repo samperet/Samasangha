@@ -120,7 +120,15 @@
       "Bash(xargs -0 du -h)",
       "Bash(git checkout *)",
       "Bash(git reset *)",
-      "Bash(grep -E \"\\\\.\\(m4a|mp3\\)$\")"
+      "Bash(grep -E \"\\\\.\\(m4a|mp3\\)$\")",
+      "Bash(git commit *)",
+      "Bash(grep -rhoE '`/\\(about|community|events|teachings\\)[a-zA-Z0-9/_-]*' \"app/\\(public\\)\" components/public)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "Bash(sips -g pixelWidth -g pixelHeight public/assets/blue-circle-halo.png)",
+      "Bash(sed -n '20,30p' app/layout.tsx)",
+      "Bash(sed -n '68,74p' lib/mail.ts)",
+      "Bash(sed -n '82,86p' components/public/player/AlbumPlayer.tsx)"
     ]
   }
 }

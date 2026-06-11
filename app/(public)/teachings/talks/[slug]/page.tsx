@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
+import YouTubeEmbed from "@/components/public/YouTubeEmbed";
 
 export const revalidate = 300;
 
@@ -37,16 +38,17 @@ export default async function TalkPage({ params }: { params: Promise<{ slug: str
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <Link
-        href="/teachings/talks"
+        href="/teachings?type=talks"
         className="text-sm text-stone-400 hover:text-stone-700 transition-colors mb-8 inline-block"
       >
-        ← Talks
+        ← Teachings
       </Link>
       <article>
         {post.publishedAt && (
           <p className="text-sm text-stone-400 mb-3">{formatDate(post.publishedAt)}</p>
         )}
         <h1 className="text-3xl font-bold text-stone-800 mb-8 leading-snug">{post.title}</h1>
+        <YouTubeEmbed url={post.youtubeUrl} title={post.title} />
         <div
           className="prose prose-stone max-w-none leading-relaxed"
           dangerouslySetInnerHTML={{ __html: post.content }}

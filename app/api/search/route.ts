@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { PostCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -10,13 +11,15 @@ const CATEGORY_LABELS: Record<string, string> = {
   RESOURCE: "Resource",
 };
 
+// Only categories with a live public page are surfaced in search.
+const SEARCHABLE_CATEGORIES: PostCategory[] = ["TALK", "DANCE_ARTICLE", "DANCE_INTERVIEW"];
+
 function postHref(slug: string, category: string) {
   switch (category) {
-    case "DHARMA_GEM":   return `/teachings/dharma-gems/${slug}`;
-    case "TALK":         return `/teachings/talks/${slug}`;
-    case "DANCE_ARTICLE":return `/teachings/dances/articles/${slug}`;
+    case "TALK":            return `/teachings/talks/${slug}`;
+    case "DANCE_ARTICLE":   return `/teachings/dances/articles/${slug}`;
     case "DANCE_INTERVIEW": return `/teachings/dances/interviews`;
-    default:             return `/teachings`;
+    default:                return `/teachings/talks/${slug}`;
   }
 }
 
@@ -24,10 +27,11 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
   if (q.length < 2) return NextResponse.json({ results: [] });
 
-  const [posts, events, albums, teachers, videos] = await Promise.all([
+  const [posts, events, albums, teachers, videos, tracks] = await Promise.all([
     prisma.post.findMany({
       where: {
         published: true,
+        category: { in: SEARCHABLE_CATEGORIES },
         OR: [
           { title: { contains: q, mode: "insensitive" } },
           { excerpt: { contains: q, mode: "insensitive" } },
@@ -78,6 +82,19 @@ export async function GET(req: NextRequest) {
       select: { id: true, title: true, slug: true, description: true },
       take: 4,
     }),
+    prisma.track.findMany({
+      where: {
+        title: { contains: q, mode: "insensitive" },
+        album: { published: true },
+      },
+      select: {
+        id: true,
+        title: true,
+        album: { select: { slug: true, title: true } },
+      },
+      take: 8,
+      orderBy: { order: "asc" },
+    }),
   ]);
 
   const results = [
@@ -100,6 +117,13 @@ export async function GET(req: NextRequest) {
       label: a.title,
       sublabel: "Album",
       href: `/teachings/music/albums/${a.slug}`,
+      group: "Music & Video",
+    })),
+    ...tracks.map((t) => ({
+      id: t.id,
+      label: t.title,
+      sublabel: `Song · ${t.album.title}`,
+      href: `/teachings/music/albums/${t.album.slug}`,
       group: "Music & Video",
     })),
     ...events.map((e) => ({

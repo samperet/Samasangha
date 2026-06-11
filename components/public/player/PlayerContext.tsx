@@ -172,7 +172,7 @@ export default function PlayerProvider({ children }: { children: React.ReactNode
     if (!("mediaSession" in navigator) || !current) return;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: current.title,
-      artist: "SamaSangha · Northeast Sufis",
+      artist: "Sama Sangha",
       album: current.albumTitle,
       artwork: current.coverUrl
         ? [{ src: current.coverUrl, sizes: "512x512" }]

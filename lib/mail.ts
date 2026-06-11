@@ -68,7 +68,7 @@ export async function sendRegistrationEmails({
       ${registration.dietary ? `<p><strong>Dietary notes on file:</strong> ${registration.dietary}</p>` : ""}
       ${registration.notes ? `<p><strong>Your notes:</strong> ${registration.notes}</p>` : ""}
       <p>You will receive further details closer to the event. If you need to cancel or have questions, simply reply to this email.</p>
-      <p>With gratitude,<br/>SamaSangha · Northeast Sufi Circle</p>
+      <p>With gratitude,<br/>Sama Sangha</p>
     `;
 
   await transporter.sendMail({

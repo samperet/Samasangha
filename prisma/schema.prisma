@@ -6,20 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String?
-  role      Role     @default(ADMIN)
-  createdAt DateTime @default(now())
-}
-
-enum Role {
-  ADMIN
-  EDITOR
-}
-
 model Page {
   id        String   @id @default(cuid())
   slug      String   @unique
@@ -35,6 +21,7 @@ model Post {
   slug        String       @unique
   content     String
   excerpt     String?
+  youtubeUrl  String?
   category    PostCategory
   published   Boolean      @default(false)
   publishedAt DateTime?
@@ -87,8 +74,19 @@ model EventRegistration {
   dietary   String?
   notes     String?
   status    RegistrationStatus @default(PENDING)
+  checkedIn Boolean            @default(false)
+  room      Room?              @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  roomId    String?
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
+}
+
+model Room {
+  id            String              @id @default(cuid())
+  name          String              @unique
+  capacity      Int?
+  order         Int                 @default(0)
+  registrations EventRegistration[]
 }
 
 enum RegistrationStatus {

@@ -81,7 +81,7 @@ export default function AlbumPlayer({ album }: { album: AlbumData }) {
           </p>
           <h1 className="font-serif text-4xl sm:text-5xl text-ink-900 leading-tight">{album.title}</h1>
           <p className="text-sm text-ink-600 mt-2">
-            SamaSangha · Northeast Sufis
+            Sama Sangha
             {album.year ? ` · ${album.year}` : ""}
             {playable.length > 1 ? ` · ${album.tracks.length} tracks, ${totalMinutes} min` : ""}
           </p>

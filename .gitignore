@@ -49,3 +49,7 @@ next-env.d.ts
 /public/music/*
 !/public/music/covers
 !/public/music/README.md
+
+# Dev scratch materials (not part of the site)
+/Inspiration/
+*.zip

@@ -1,30 +1,11 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
-import { authConfig } from "@/auth.config";
+import { cookies } from "next/headers";
+import { ADMIN_COOKIE, verifySessionToken } from "@/lib/admin-token";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
-  providers: [
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
-        if (!user) return null;
-        const valid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
-        if (!valid) return null;
-        return { id: user.id, email: user.email, name: user.name, role: user.role };
-      },
-    }),
-  ],
-});
+export { ADMIN_COOKIE, expectedSessionToken, getAdminPassword, verifySessionToken } from "@/lib/admin-token";
+
+/** Drop-in replacement for the old NextAuth `auth()` — truthy when signed in. */
+export async function auth() {
+  const store = await cookies();
+  const ok = await verifySessionToken(store.get(ADMIN_COOKIE)?.value);
+  return ok ? { admin: true as const } : null;
+}

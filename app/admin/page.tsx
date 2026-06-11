@@ -1,4 +1,3 @@
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
@@ -18,7 +17,6 @@ async function getStats() {
 }
 
 export default async function AdminDashboard() {
-  const session = await auth();
   const stats = await getStats();
 
   const statCards = [
@@ -36,7 +34,7 @@ export default async function AdminDashboard() {
           Dashboard
         </h1>
         <p style={{ color: "var(--fg2)", fontSize: "0.95rem" }}>
-          Welcome back{session?.user?.name ? `, ${session.user.name}` : ""}.
+          Welcome back.
         </p>
       </div>
 
