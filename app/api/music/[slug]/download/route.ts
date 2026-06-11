@@ -27,26 +27,44 @@ export async function GET(
   if (!album) return new Response("Album not found", { status: 404 });
 
   const publicDir = path.join(process.cwd(), "public");
-  const files = album.tracks
+  // Each track's audio is either a remote URL (R2) or a local /public path.
+  const entries = album.tracks
     .filter((t) => t.audioUrl)
     .map((t, i) => {
-      const rel = t.audioUrl!.replace(/^\/+/, "");
-      const abs = path.join(publicDir, rel);
-      const ext = path.extname(rel) || ".m4a";
+      const url = t.audioUrl!;
+      const remote = /^https?:\/\//i.test(url);
+      const ext = path.extname(url.split("?")[0]) || ".m4a";
       // Friendly in-zip name: "01 Track Title.m4a"
       const safeTitle = t.title.replace(/[\\/:*?"<>|]+/g, "-").trim();
       const name = `${String(i + 1).padStart(2, "0")} ${safeTitle}${ext}`;
-      return { abs, name };
+      return { remote, url, name, abs: path.join(publicDir, url.replace(/^\/+/, "")) };
     })
-    .filter((f) => fs.existsSync(f.abs));
+    .filter((e) => e.remote || fs.existsSync(e.abs));
 
-  if (files.length === 0) {
+  if (entries.length === 0) {
     return new Response("No downloadable tracks for this album", { status: 404 });
   }
 
   const archive = new ZipArchive({ store: true });
-  for (const f of files) archive.file(f.abs, { name: f.name });
-  void archive.finalize();
+
+  // Append entries sequentially: local files from disk, remote files fetched
+  // from R2 (one at a time to bound memory). Runs async while the response streams.
+  (async () => {
+    for (const e of entries) {
+      try {
+        if (e.remote) {
+          const res = await fetch(e.url);
+          if (!res.ok) continue;
+          archive.append(Buffer.from(await res.arrayBuffer()), { name: e.name });
+        } else {
+          archive.file(e.abs, { name: e.name });
+        }
+      } catch {
+        // skip a track that fails to fetch rather than aborting the whole zip
+      }
+    }
+    void archive.finalize();
+  })();
 
   const zipName = album.title.replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "");
   const body = Readable.toWeb(archive) as unknown as ReadableStream<Uint8Array>;
