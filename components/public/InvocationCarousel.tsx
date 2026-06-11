@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback } from "react";
 
 // Single-string text so CSS handles wrapping naturally — no artificial line breaks
 const SLIDES = [
@@ -75,42 +74,6 @@ export default function InvocationCarousel() {
   const [visible, setVisible] = useState(true);
   const [fadeMs, setFadeMs]   = useState(FADE_MS);
 
-  const [heartClicks, setHeartClicks] = useState(0);
-  const [showGate, setShowGate]       = useState(false);
-  const [password, setPassword]       = useState("");
-  const [shake, setShake]             = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const router   = useRouter();
-
-  function handleHeartClick() {
-    const next = heartClicks + 1;
-    setHeartClicks(next);
-    if (next >= 3) {
-      setShowGate(true);
-      setHeartClicks(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
-  }
-
-  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value;
-    setPassword(val);
-    if (val === "108isGreat") {
-      router.push("/admin");
-    }
-  }
-
-  function handlePasswordKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Escape") {
-      setShowGate(false);
-      setPassword("");
-    } else if (e.key === "Enter" && password !== "108isGreat") {
-      setShake(true);
-      setPassword("");
-      setTimeout(() => setShake(false), 500);
-    }
-  }
-
   const go = useCallback((next: number, duration = FADE_MS) => {
     setFadeMs(duration);
     setVisible(false);
@@ -130,76 +93,13 @@ export default function InvocationCarousel() {
       className="flex flex-col items-center text-center"
       style={{ width: "100%", paddingTop: "clamp(12px, 4vh, 56px)", paddingBottom: "clamp(12px, 4vh, 56px)", gap: 0 }}
     >
-      {/* Heading kept for SEO/structure, visually hidden — also the quiet
-          trigger for the inner door (3 clicks). The wordmark image was removed. */}
+      {/* Heading kept for SEO/structure, visually hidden. */}
       <h1
-        onClick={handleHeartClick}
         className="select-none"
-        style={{ margin: 0, width: 96, height: 14, fontSize: 0, color: "transparent", cursor: "default" }}
+        style={{ margin: 0, width: 96, height: 14, fontSize: 0, color: "transparent" }}
       >
         SamaSangha
       </h1>
-
-      {/* Secret gate */}
-      {showGate && (
-        <div
-          style={{
-            position: "fixed", inset: 0, zIndex: 999,
-            background: "rgba(18,12,4,0.82)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}
-          onClick={(e) => { if (e.target === e.currentTarget) { setShowGate(false); setPassword(""); } }}
-        >
-          <div
-            style={{
-              background: "var(--parch-50)",
-              border: "1px solid var(--surface-border)",
-              borderRadius: 20,
-              padding: "2.5rem 2.5rem 2rem",
-              width: "min(420px, 90vw)",
-              textAlign: "center",
-              boxShadow: "0 24px 64px rgba(0,0,0,0.45)",
-            }}
-          >
-            <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>☽ ✦ ☾</div>
-            <p
-              className="font-serif"
-              style={{ fontSize: "1.25rem", fontWeight: 500, color: "var(--ink-900)", marginBottom: "0.4rem" }}
-            >
-              The inner door
-            </p>
-            <p style={{ fontSize: "0.85rem", color: "var(--fg2)", marginBottom: "1.5rem" }}>
-              Speak the word of passage
-            </p>
-            <input
-              ref={inputRef}
-              type="password"
-              value={password}
-              onChange={handlePasswordChange}
-              onKeyDown={handlePasswordKeyDown}
-              placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;"
-              style={{
-                width: "100%",
-                padding: "0.7rem 1rem",
-                borderRadius: 10,
-                border: `1.5px solid ${shake ? "var(--crimson-700)" : "var(--surface-border)"}`,
-                background: "var(--parch-100)",
-                fontFamily: "var(--font-serif)",
-                fontSize: "1.1rem",
-                textAlign: "center",
-                letterSpacing: "0.2em",
-                color: "var(--ink-900)",
-                outline: "none",
-                transition: "border-color 0.2s, transform 0.1s",
-                transform: shake ? "translateX(6px)" : "none",
-              }}
-            />
-            <p style={{ fontSize: "0.72rem", color: "var(--fg3)", marginTop: "1rem" }}>
-              Press Esc to close
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Carousel row: caret · text · caret */}
       <div className="flex items-center" style={{ width: "100%", gap: 0 }}>
@@ -208,6 +108,7 @@ export default function InvocationCarousel() {
         {/* Fixed-height text area so carets never shift */}
         <div
           style={{
+            position: "relative",
             flex: 1,
             minHeight: "clamp(220px, 42vh, 380px)",
             display: "flex",
@@ -217,10 +118,31 @@ export default function InvocationCarousel() {
             gap: 14,
           }}
         >
+          {/* Gold winged-heart calligraphy, behind the invocation */}
+          <img
+            src="/assets/calligraphyheart.svg"
+            alt=""
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "min(1100px, 130%)",
+              maxWidth: "none",
+              opacity: 0.22,
+              pointerEvents: "none",
+              userSelect: "none",
+              zIndex: 0,
+            }}
+          />
+
           {slide.lang !== "English" && (
             <p
               className="eyebrow"
               style={{
+                position: "relative",
+                zIndex: 1,
                 fontSize: "0.85rem",
                 color: "var(--gold-600)",
                 margin: 0,
@@ -234,6 +156,8 @@ export default function InvocationCarousel() {
 
           <p
             style={{
+              position: "relative",
+              zIndex: 1,
               fontFamily: "var(--font-serif)",
               fontStyle: "italic",
               fontWeight: 400,

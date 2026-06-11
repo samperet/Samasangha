@@ -19,7 +19,8 @@ function hrefFor(category: string, slug: string) {
 async function getItems(): Promise<TeachingItem[]> {
   try {
     const posts = await prisma.post.findMany({
-      where: { published: true },
+      // Original dances live under Music now, not Teachings
+      where: { published: true, category: { not: "ORIGINAL_DANCE" } },
       orderBy: { publishedAt: "desc" },
       select: {
         id: true, title: true, slug: true, excerpt: true,

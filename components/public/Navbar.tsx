@@ -3,8 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 
 const SearchOverlay = dynamic(() => import("./SearchOverlay"), { ssr: false });
@@ -19,97 +18,27 @@ const DISCOVER = {
 
 // "Teachings" is a plain link to the filterable teachings list (no dropdown).
 
-// ── Mobile accordion ───────────────────────────────────────────────────────
-
-function MobileMenu({ onClose }: { onClose: () => void }) {
-  return (
-    <div style={{ background: "#1a1208", borderTop: "1px solid rgba(201,162,44,.14)" }}>
-      {/* Decorative flourish */}
-      <div className="flex justify-center pt-3 pb-1">
-        <Image src="/assets/decorative-line.png" alt="" aria-hidden width={400} height={44} className="h-5 w-auto" />
-      </div>
-      {/* Home */}
-      <div style={{ borderBottom: "1px solid rgba(201,162,44,.08)" }}>
-        <Link
-          href="/"
-          onClick={onClose}
-          className="flex items-center justify-between px-6 py-4"
-        >
-          <span className="font-serif text-base block" style={{ color: "var(--gold-300)", fontWeight: 700 }}>
-            Home
-          </span>
-          <span style={{ color: "var(--gold-600)", fontSize: "0.85rem" }}>→</span>
-        </Link>
-      </div>
-
-      {/* Discover — plain link */}
-      <div style={{ borderBottom: "1px solid rgba(201,162,44,.08)" }}>
-        <Link
-          href="/about/teachers"
-          onClick={onClose}
-          className="flex items-center justify-between px-6 py-4"
-        >
-          <div>
-            <span className="font-serif text-base block" style={{ color: "var(--gold-300)" }}>
-              {DISCOVER.label}
-            </span>
-            <span className="text-xs block mt-0.5" style={{ color: "var(--fg-on-dark)", opacity: 0.35 }}>
-              {DISCOVER.context}
-            </span>
-          </div>
-          <span style={{ color: "var(--gold-600)", fontSize: "0.85rem" }}>→</span>
-        </Link>
-      </div>
-
-      {/* Teachings — plain link */}
-      <div style={{ borderBottom: "1px solid rgba(201,162,44,.08)" }}>
-        <Link
-          href="/teachings"
-          onClick={onClose}
-          className="flex items-center justify-between px-6 py-4"
-        >
-          <div>
-            <span className="font-serif text-base block" style={{ color: "var(--gold-300)" }}>
-              Teachings
-            </span>
-            <span className="text-xs block mt-0.5" style={{ color: "var(--fg-on-dark)", opacity: 0.35 }}>
-              Talks, dharma gems, articles and dances
-            </span>
-          </div>
-          <span style={{ color: "var(--gold-600)", fontSize: "0.85rem" }}>→</span>
-        </Link>
-      </div>
-
-      {/* Music — plain link */}
-      <div style={{ borderBottom: "1px solid rgba(201,162,44,.08)" }}>
-        <Link
-          href="/teachings/music/albums"
-          onClick={onClose}
-          className="flex items-center justify-between px-6 py-4"
-        >
-          <span className="font-serif text-base block" style={{ color: "var(--gold-300)" }}>
-            Music
-          </span>
-          <span style={{ color: "var(--gold-600)", fontSize: "0.85rem" }}>→</span>
-        </Link>
-      </div>
-
-      <div className="px-6 py-4 flex gap-5">
-        <Link href="/events/upcoming" onClick={onClose} className="text-sm" style={{ color: "var(--gold-400)" }}>Events</Link>
-        <Link href="/contact" onClick={onClose} className="text-sm" style={{ color: "var(--fg-on-dark)", opacity: 0.45 }}>Contact</Link>
-      </div>
-    </div>
-  );
-}
+// Mobile menu item — large text + roomy padding so the tap target clears the
+// ~44px accessibility minimum, comfortable for older users.
+const MOBILE_ITEM: React.CSSProperties = {
+  fontSize: "1.3rem",
+  fontWeight: 700,
+  color: "var(--ink-800)",
+  textDecoration: "none",
+  lineHeight: 1.2,
+  padding: "0.6rem 0.75rem",
+  display: "inline-block",
+};
 
 // ── Main Navbar ────────────────────────────────────────────────────────────
 
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const heartRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   // ── Hidden admin entrance: triple-click the heart to reach the login.
   // Single clicks navigate home after a short pause so the clicks can accumulate.
@@ -182,9 +111,10 @@ export default function Navbar() {
             Sama
           </span>
 
-          {/* Heart + halo, kept as a centered unit */}
-          <span className="relative inline-flex items-center justify-center shrink-0">
-            {/* Blue halo with orange dots, behind the heart */}
+          {/* Heart + halo, kept as a centered unit. Lifted above the sticky
+              header (z-50) so the halo's bottom isn't clipped by the menu bar. */}
+          <span className="relative z-[60] inline-flex items-center justify-center shrink-0">
+            {/* Blue halo with orange dots, behind the heart — does NOT scale on hover */}
             <Image
               src="/assets/blue-circle-halo.png"
               alt=""
@@ -194,16 +124,20 @@ export default function Navbar() {
               className="absolute w-auto h-24 sm:h-28 lg:h-36 max-w-none"
               style={{ top: "74%", left: "50%", transform: "translate(-50%, -50%)" }}
             />
-            <Image
-              ref={heartRef}
-              src="/assets/sufi-heart-banner.png"
-              alt="SamaSangha winged heart"
-              width={600}
-              height={272}
-              priority
-              className="relative w-auto h-12 sm:h-20 lg:h-24"
-              style={{ transformOrigin: "center top", willChange: "transform" }}
-            />
+            {/* Only the heart grows on hover — wrapped so the halo stays put.
+                Scroll-scale lives on the inner image, so the two compose. */}
+            <span className="relative inline-flex transition-transform duration-300 ease-out hover:scale-[1.08]">
+              <Image
+                ref={heartRef}
+                src="/assets/sufi-heart-banner.png"
+                alt="SamaSangha winged heart"
+                width={600}
+                height={272}
+                priority
+                className="w-auto h-12 sm:h-20 lg:h-24"
+                style={{ transformOrigin: "center top", willChange: "transform" }}
+              />
+            </span>
           </span>
 
           {/* "Sangha" — right of the heart */}
@@ -243,19 +177,23 @@ export default function Navbar() {
           className="hidden lg:flex items-center justify-center gap-8 px-8"
           style={{ height: 44 }}
         >
-          {/* Home */}
-          <Link
-            href="/"
-            className="font-serif transition-colors duration-200"
-            style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", textDecoration: "none", letterSpacing: "0.01em" }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
-          >
-            Home
-          </Link>
+          {/* Home — hidden on the homepage */}
+          {!isHome && (
+            <>
+              <Link
+                href="/"
+                className="font-serif transition-colors duration-200"
+                style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", textDecoration: "none", letterSpacing: "0.01em" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
+              >
+                Home
+              </Link>
 
-          {/* Gold dot separator */}
-          <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold-400)", opacity: 0.6, flexShrink: 0 }} />
+              {/* Gold dot separator */}
+              <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold-400)", opacity: 0.6, flexShrink: 0 }} />
+            </>
+          )}
 
           {/* Welcome */}
           <Link
@@ -312,15 +250,32 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile */}
-        <div className="lg:hidden flex items-center justify-end px-5" style={{ height: 44 }}>
-          <button onClick={() => setMobileOpen(!mobileOpen)} style={{ color: "var(--ink-700)", opacity: 0.7, background: "none", border: "none" }} aria-label="Menu">
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        {/* Mobile — menu listed inline, no hamburger. Large text and roomy
+            tap targets (≥44px) with generous spacing for easy reading/tapping. */}
+        <nav className="lg:hidden flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-3">
+          {!isHome && (
+            <Link href="/" className="font-serif" style={MOBILE_ITEM}>
+              Home
+            </Link>
+          )}
+          <Link href="/about/teachers" className="font-serif" style={MOBILE_ITEM}>
+            {DISCOVER.label}
+          </Link>
+          <Link href="/teachings" className="font-serif" style={MOBILE_ITEM}>
+            Teachings
+          </Link>
+          <Link href="/teachings/music/albums" className="font-serif" style={MOBILE_ITEM}>
+            Music
+          </Link>
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="font-serif"
+            style={{ ...MOBILE_ITEM, background: "none", border: "none", cursor: "pointer" }}
+            aria-label="Search"
+          >
+            Search
           </button>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileOpen && <MobileMenu onClose={() => setMobileOpen(false)} />}
+        </nav>
       </header>
 
       {/* ── Search overlay (outside header, full-screen) ───────── */}

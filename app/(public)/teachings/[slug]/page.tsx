@@ -24,7 +24,7 @@ export async function generateStaticParams() {
     const posts = await prisma.post.findMany({
       where: {
         published: true,
-        category: { in: ["DHARMA_GEM", "DANCE_INTERVIEW", "ORIGINAL_DANCE"] },
+        category: { in: ["DHARMA_GEM", "DANCE_INTERVIEW"] },
       },
       select: { slug: true },
     });

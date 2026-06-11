@@ -20,7 +20,6 @@ const TYPES: { key: string; label: string; categories: string[] }[] = [
   { key: "dharma-gems",     label: "Dharma gems",     categories: ["DHARMA_GEM"] },
   { key: "articles",        label: "Articles",        categories: ["DANCE_ARTICLE"] },
   { key: "interviews",      label: "Interviews",      categories: ["DANCE_INTERVIEW"] },
-  { key: "original-dances", label: "Original dances", categories: ["ORIGINAL_DANCE"] },
 ];
 
 const CATEGORY_LABEL: Record<string, string> = {

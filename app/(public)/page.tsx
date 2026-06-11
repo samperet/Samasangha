@@ -207,6 +207,13 @@ export default async function HomePage() {
                     height={140}
                     className="rounded-xl"
                   />
+                  <Link
+                    href="/dances"
+                    className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
+                    style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                  >
+                    About the Dances →
+                  </Link>
                 </div>
               </div>
               <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>

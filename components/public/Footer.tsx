@@ -26,12 +26,12 @@ export default function Footer() {
       <div className="flex items-center justify-center py-8 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.14)" }}>
         <div className="flex items-center gap-4">
           <span style={{ width: 72, height: 1, background: "var(--gold-700)", opacity: 0.5, display: "block" }} />
-          <Image
-            src="/assets/heart-wing-calligraphy-gold.png"
+          <img
+            src="/assets/calligraphyheart.svg"
             alt=""
-            width={120}
-            height={36}
+            aria-hidden
             className="opacity-70"
+            style={{ width: 140, height: "auto" }}
           />
           <span style={{ width: 72, height: 1, background: "var(--gold-700)", opacity: 0.5, display: "block" }} />
         </div>
