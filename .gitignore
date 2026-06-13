@@ -53,3 +53,7 @@ next-env.d.ts
 # Dev scratch materials (not part of the site)
 /Inspiration/
 *.zip
+
+# DB migration helper (contains prod credentials — never commit)
+migrate-to-neon.sh
+samasangha.sql
