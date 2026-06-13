@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePlayer, type PlayerTrack } from "./PlayerContext";
 import EqBars from "./EqBars";
 import { formatTime } from "./format";
@@ -15,6 +16,93 @@ function DownloadIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+// Shown when the visitor clicks Download: a gentle dana invitation that offers
+// both the donate link and the actual download link side by side.
+function DownloadModal({
+  downloadHref,
+  isSample,
+  label,
+  onClose,
+}: {
+  downloadHref: string;
+  isSample: boolean;
+  label: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{ background: "rgba(26, 18, 8, 0.55)", backdropFilter: "blur(2px)" }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Download by donation"
+    >
+      <div
+        className="relative w-full max-w-md rounded-2xl p-8 text-center"
+        style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-lg)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute top-3.5 right-4 text-xl leading-none"
+          style={{ color: "var(--fg3)" }}
+        >
+          ×
+        </button>
+
+        <p className="text-3xl mb-3" aria-hidden style={{ color: "var(--gold-500)" }}>♥</p>
+        <h2 className="font-serif mb-3" style={{ fontSize: "1.6rem", fontWeight: 500, color: "var(--ink-900)" }}>
+          Offered by donation
+        </h2>
+        <p className="text-sm leading-relaxed mb-7" style={{ color: "var(--fg2)" }}>
+          This music is shared freely with our community and supported by your generosity.
+          If it moves you, please consider a gift of dana, then download with our blessing.
+        </p>
+
+        <div className="flex flex-col gap-3">
+          <a
+            href={DONATE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-sm shadow-md hover:-translate-y-px active:translate-y-0 transition-all"
+            style={{ background: "var(--crimson-700)", color: "#fff" }}
+          >
+            <span aria-hidden>♡</span>
+            Make a donation
+          </a>
+
+          <a
+            href={downloadHref}
+            {...(isSample ? { download: "" } : {})}
+            onClick={() => setTimeout(onClose, 150)}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border transition-all hover:bg-parch-100"
+            style={{ borderColor: "rgba(42,33,24,0.18)", color: "var(--ink-800)" }}
+          >
+            <DownloadIcon />
+            {label}
+          </a>
+        </div>
+
+        <p className="text-xs mt-5" style={{ color: "var(--fg3)" }}>
+          No gift is required. The download link is right above.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export type AlbumData = {
   slug: string;
   title: string;
@@ -27,6 +115,7 @@ export type AlbumData = {
 
 export default function AlbumPlayer({ album }: { album: AlbumData }) {
   const { current, isPlaying, playQueue, toggle } = usePlayer();
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   const playable: PlayerTrack[] = album.tracks
     .filter((t) => t.audioUrl)
@@ -112,39 +201,28 @@ export default function AlbumPlayer({ album }: { album: AlbumData }) {
               </button>
             )}
 
-            {playable.length > 0 &&
-              (isSample ? (
-                <a
-                  href={playable[0].audioUrl}
-                  download
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-ink-900/15 text-ink-800! font-semibold text-sm hover:border-ink-900/30 hover:bg-parch-100 transition-all"
-                >
-                  <DownloadIcon />
-                  Download sample
-                </a>
-              ) : (
-                <a
-                  href={`/api/music/${album.slug}/download`}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-ink-900/15 text-ink-800! font-semibold text-sm hover:border-ink-900/30 hover:bg-parch-100 transition-all"
-                >
-                  <DownloadIcon />
-                  Download album
-                </a>
-              ))}
-
-            <a
-              href={DONATE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-crimson-700 hover:bg-crimson-900 text-white! font-semibold text-sm shadow-md hover:shadow-lg hover:-translate-y-px active:translate-y-0 transition-all"
-            >
-              <span aria-hidden>♡</span>
-              Donate
-            </a>
+            {playable.length > 0 && (
+              <button
+                onClick={() => setDownloadOpen(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-ink-900/15 text-ink-800! font-semibold text-sm hover:border-ink-900/30 hover:bg-parch-100 transition-all"
+              >
+                <DownloadIcon />
+                {isSample ? "Download sample" : "Download album"}
+              </button>
+            )}
           </div>
 
         </div>
       </div>
+
+      {downloadOpen && playable.length > 0 && (
+        <DownloadModal
+          downloadHref={isSample ? playable[0].audioUrl : `/api/music/${album.slug}/download`}
+          isSample={isSample}
+          label={isSample ? "Download sample" : "Download album"}
+          onClose={() => setDownloadOpen(false)}
+        />
+      )}
 
       {/* Track list */}
       <div className="rounded-2xl border border-surface-border bg-white/70 shadow-sm overflow-hidden">

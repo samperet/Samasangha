@@ -89,7 +89,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
             <blockquote className="mt-5 text-left" style={{ fontSize: "1.1rem", maxWidth: "44ch" }}>
               “{meta.quote.text}”
               <footer className="not-italic text-sm mt-2" style={{ color: "var(--fg3)" }}>
-                — {meta.quote.attribution}
+                {meta.quote.attribution}
               </footer>
             </blockquote>
           )}
@@ -152,7 +152,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
                   Dancing the Heart Awake
                 </h3>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--fg2)" }}>
-                  On the art, craft, and spiritual practice of Dance leading — the essential
+                  On the art, craft, and spiritual practice of Dance leading, the essential
                   ingredients for heart awakening in the Dances of Universal Peace.
                 </p>
               </div>

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { LINEAGE_META } from "@/lib/lineage";
 
-export const metadata: Metadata = { title: "Teachers & Lineage" };
+export const metadata: Metadata = { title: "Welcome" };
 export const revalidate = 300;
 
 async function getTeachers() {
@@ -43,26 +43,61 @@ export default async function TeachersPage() {
 
       {/* ── Page header ──────────────────────────────────────────── */}
       <div className="mb-12 text-center">
-        <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>Discover</p>
         <h1
           className="font-serif"
           style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.1 }}
         >
-          Teachers &amp; Lineage
+          Welcome
         </h1>
-        <div className="flex justify-center my-5" aria-hidden>
+        <div className="flex justify-center mt-5" aria-hidden>
           <img src="/assets/decorative-line.png" alt="" className="h-6 w-auto" />
         </div>
-        <p className="leading-relaxed max-w-xl mx-auto" style={{ color: "var(--fg2)" }}>
-          The stream of transmission that carries our practice — from Hazrat Inayat Khan,
-          who first brought the Sufi Message west, to the teachers who guide SamaSangha today,
-          and the ancestors who blessed this community.
-        </p>
       </div>
+
+      {/* ── About us ─────────────────────────────────────────────── */}
+      <section className="mb-20">
+        <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
+          About us
+        </p>
+
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ border: "1px solid var(--surface-border)" }}
+        >
+          <div
+            className="p-7 space-y-5 leading-relaxed"
+            style={{ background: "#fff", color: "var(--fg2)", fontSize: "1.0625rem" }}
+          >
+            <p>
+              SamaSangha is the community of seekers who have gathered in Massachusetts, and also
+              far and wide, with the guidance of Sufi Murshids Halima and Abraham.
+            </p>
+            <p>
+              In the Sufi Ruhaniat lineage of Pir-o-Murshid Hazrat Inayat Khan and Murshid Samuel
+              Lewis our sangha supports our collective realization that love, harmony, and beauty are
+              the foundation of spiritual life. Tuning to the interconnected nature which unites all
+              of creation, our practice serves the protection of all life on Earth.
+            </p>
+            <p>
+              Since 1972 Halima and Abraham have been leading gatherings of the Dances of Universal
+              Peace in Cambridge Massachusetts, where Murshid Sam first brought the dances in 1969.
+              Sama (which refers to the sacred dance and music) is the name of our center and our
+              sangha includes our many friends who have shared these practices with us. In recent
+              years Halima and Abraham have traveled to Russia, Colombia, Ecuador, Mexico, New
+              Zealand, Australia, Holland, Latvia, and Spain, and the many friends they have made
+              around the world have also become part of SamaSangha.
+            </p>
+            <p>
+              Through regular in person and online teachings and gatherings, this sangha continues
+              to grow.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ── Our Teachers ─────────────────────────────────────────── */}
       {ourTeachers.length > 0 && (
-        <section className="mb-20">
+        <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
             Our teachers
           </p>
@@ -120,11 +155,11 @@ export default async function TeachersPage() {
         </section>
       )}
 
-      {/* ── The Silsila — chain of transmission ──────────────────── */}
+      {/* ── The Silsila, chain of transmission ──────────────────── */}
       {lineage.length > 0 && (
         <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <p className="eyebrow mb-2" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-            The silsila — our lineage
+            The silsila, our lineage
           </p>
           <p className="text-sm mb-10" style={{ color: "var(--fg2)", maxWidth: "52ch" }}>
             In Sufism the silsila is the unbroken chain of heart-to-heart transmission from
@@ -212,47 +247,6 @@ export default async function TeachersPage() {
           </div>
         </section>
       )}
-
-      {/* ── About us ─────────────────────────────────────────────── */}
-      <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
-        <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-          About us
-        </p>
-
-        <div
-          className="rounded-2xl overflow-hidden"
-          style={{ border: "1px solid var(--surface-border)" }}
-        >
-          <div
-            className="p-7 space-y-5 leading-relaxed"
-            style={{ background: "#fff", color: "var(--fg2)", fontSize: "1.0625rem" }}
-          >
-            <p>
-              SamaSangha is the community of seekers who have gathered in Massachusetts, and also
-              far and wide, with the guidance of Sufi Murshids Halima and Abraham.
-            </p>
-            <p>
-              In the Sufi Ruhaniat lineage of Pir-o-Murshid Hazrat Inayat Khan and Murshid Samuel
-              Lewis our sangha supports our collective realization that love, harmony, and beauty are
-              the foundation of spiritual life. Tuning to the interconnected nature which unites all
-              of creation, our practice serves the protection of all life on Earth.
-            </p>
-            <p>
-              Since 1972 Halima and Abraham have been leading gatherings of the Dances of Universal
-              Peace in Cambridge Massachusetts, where Murshid Sam first brought the dances in 1969.
-              Sama (which refers to the sacred dance and music) is the name of our center and our
-              sangha includes our many friends who have shared these practices with us. In recent
-              years Halima and Abraham have traveled to Russia, Colombia, Ecuador, Mexico, New
-              Zealand, Australia, Holland, Latvia, and Spain, and the many friends they have made
-              around the world have also become part of SamaSangha.
-            </p>
-            <p>
-              Through regular in person and online teachings and gatherings, this sangha continues
-              to grow.
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* ── Honored ancestors ────────────────────────────────────── */}
       {ancestors.length > 0 && (

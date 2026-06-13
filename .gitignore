@@ -57,3 +57,4 @@ next-env.d.ts
 # DB migration helper (contains prod credentials — never commit)
 migrate-to-neon.sh
 samasangha.sql
+upload-music.sh

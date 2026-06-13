@@ -16,6 +16,11 @@ const PRACTICE = [
   { dt: "Led by", dd: "SamaSangha with Halima, Abraham & Friends" },
 ];
 
+// Venue map — keyless Google Maps embed + a directions link
+const VENUE = "Friends Meeting House, 5 Longfellow Park, Cambridge, MA 02138";
+const mapEmbedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(VENUE)}&z=15&output=embed`;
+const mapDirectionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(VENUE)}`;
+
 const CALENDAR_EVENT = {
   title: "Dances of Universal Peace",
   location: "Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138",
@@ -149,6 +154,40 @@ export default function DancesPage() {
             ))}
           </div>
         </details>
+      </div>
+
+      {/* ── Venue map ──────────────────────────────────────────── */}
+      <div className="mb-14">
+        <div className="flex items-baseline justify-between gap-3 mb-3">
+          <p className="eyebrow" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>
+            Where we gather
+          </p>
+          <a
+            href={mapDirectionsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-medium underline underline-offset-4"
+            style={{ color: "var(--crimson-700)" }}
+          >
+            Get directions →
+          </a>
+        </div>
+        <div
+          className="overflow-hidden rounded-2xl"
+          style={{ border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-sm)" }}
+        >
+          <iframe
+            title="Map to Friends Meeting House, Cambridge"
+            src={mapEmbedSrc}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full block"
+            style={{ height: 220, border: 0 }}
+          />
+        </div>
+        <p className="mt-2 text-sm" style={{ color: "var(--fg2)" }}>
+          Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138
+        </p>
       </div>
 
       {/* ── About the practice ─────────────────────────────────── */}

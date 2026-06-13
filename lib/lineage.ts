@@ -1,12 +1,12 @@
 // Presentation metadata for the Teachers & Lineage section, keyed by Teacher.slug.
-// Biographies live in the database (Teacher.bio); everything decorative —
-// dates, role lines, pull-quotes, portraits, galleries — is versioned here.
+// Biographies live in the database (Teacher.bio); everything decorative
+// (dates, role lines, pull-quotes, portraits, galleries) is versioned here.
 // Photos are self-hosted under /public/assets/lineage/.
 
 export type LineagePhoto = { src: string; alt: string; caption?: string };
 
 export type LineageMeta = {
-  dates?: string;        // "1882–1927" — omitted for living teachers
+  dates?: string;        // "1882–1927", omitted for living teachers
   role: string;          // small-caps role line under the name
   quote?: { text: string; attribution: string };
   portrait: string;      // self-hosted portrait
@@ -23,7 +23,7 @@ export const LINEAGE_META: Record<string, LineageMeta> = {
     },
     portrait: "/assets/lineage/hazrat-inayat-khan.png",
     gallery: [
-      { src: "/assets/lineage/hazrat-inayat-khan-vina.jpeg", alt: "Hazrat Inayat Khan playing the saraswati vina", caption: "With the saraswati vina — he came West first as a musician." },
+      { src: "/assets/lineage/hazrat-inayat-khan-vina.jpeg", alt: "Hazrat Inayat Khan playing the saraswati vina", caption: "With the saraswati vina; he came West first as a musician." },
       { src: "/assets/lineage/hazrat-inayat-khan-portrait.jpg", alt: "Portrait of Hazrat Inayat Khan", caption: "Pir-o-Murshid Hazrat Inayat Khan." },
     ],
   },
