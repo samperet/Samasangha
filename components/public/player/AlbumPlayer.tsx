@@ -216,7 +216,7 @@ export default function AlbumPlayer({ album }: { album: AlbumData }) {
 
       {isSample && (
         <p className="text-sm text-ink-600 mt-5 italic">
-          Only a sample of this album is available to stream — the full recording is offered through
+          Only a sample of this album is available to stream, the full recording is offered through
           the community by donation{album.buyUrl ? "" : "."}
           {album.buyUrl && (
             <>

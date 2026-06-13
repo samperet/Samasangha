@@ -7,9 +7,10 @@ const DONATE_BASE = "https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2
 interface Props {
   priceMin: number; // cents
   priceMax: number; // cents
+  note?: string; // e.g. "Early-bird pricing until July 1, 2026"
 }
 
-export default function RetreatPriceSlider({ priceMin, priceMax }: Props) {
+export default function RetreatPriceSlider({ priceMin, priceMax, note }: Props) {
   const min  = Math.round(priceMin / 100);
   const max  = Math.round(priceMax / 100);
   const mid  = Math.round((min + max) / 2);
@@ -27,9 +28,18 @@ export default function RetreatPriceSlider({ priceMin, priceMax }: Props) {
       <h2 className="font-serif mb-1" style={{ fontSize: "1.4rem", fontWeight: 500, color: "var(--ink-900)" }}>
         Register for this retreat
       </h2>
-      <p className="text-sm mb-6" style={{ color: "var(--fg2)" }}>
+      <p className="text-sm mb-2" style={{ color: "var(--fg2)" }}>
         This retreat operates on a sliding scale. Choose the amount that feels right for you.
       </p>
+      {note && (
+        <p
+          className="text-xs font-semibold mb-4 inline-block px-2.5 py-1 rounded-full"
+          style={{ background: "var(--gold-100)", color: "var(--gold-700)" }}
+        >
+          {note}
+        </p>
+      )}
+      <div className="mb-4" />
 
       {/* Amount display */}
       <div className="text-center mb-5">
@@ -40,7 +50,7 @@ export default function RetreatPriceSlider({ priceMin, priceMax }: Props) {
           ${amount}
         </span>
         <p className="text-xs mt-1" style={{ color: "var(--fg3)" }}>
-          ${min} — ${max} sliding scale
+          ${min}, ${max} sliding scale
         </p>
       </div>
 

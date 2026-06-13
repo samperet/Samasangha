@@ -5,19 +5,13 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, Calendar, FileText, Music,
-  Users, Mail, ImageIcon, LogOut, BookOpen, Home,
+  Calendar, FileText, Music, LogOut, Home,
 } from "lucide-react";
 
 const links = [
-  { href: "/admin",             label: "Dashboard",         icon: LayoutDashboard, exact: true },
   { href: "/admin/events",      label: "Events",             icon: Calendar },
   { href: "/admin/posts",       label: "Posts & teachings",  icon: FileText },
   { href: "/admin/albums",      label: "Albums & music",     icon: Music },
-  { href: "/admin/teachers",    label: "Teachers",           icon: BookOpen },
-  { href: "/admin/media",       label: "Media library",      icon: ImageIcon },
-  { href: "/admin/contacts",    label: "Contact inbox",      icon: Mail },
-  { href: "/admin/subscribers", label: "Subscribers",        icon: Users },
 ];
 
 export default function AdminSidebar() {
@@ -40,7 +34,7 @@ export default function AdminSidebar() {
     >
       {/* Logo */}
       <div className="px-5 py-5" style={{ borderBottom: "1px solid var(--surface-border)" }}>
-        <Link href="/admin" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <Image src="/assets/sufi-heart-banner.png" alt="" width={600} height={272} className="w-auto h-8" />
           <div>
             <span className="font-serif text-base block" style={{ color: "var(--ink-900)", lineHeight: 1.1 }}>

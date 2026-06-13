@@ -37,7 +37,7 @@ Contact
 
 ## Page Inventory & Status
 
-### ✅ RICH CONTENT — Ready to import
+### ✅ RICH CONTENT, Ready to import
 
 | Old URL | Title | Content | New Route |
 |---|---|---|---|
@@ -85,7 +85,7 @@ Contact
 
 ---
 
-### ⚠️ THIN / STUB PAGES — Mostly visual/embed, need media to be useful
+### ⚠️ THIN / STUB PAGES, Mostly visual/embed, need media to be useful
 
 | Old URL | Issue | Action |
 |---|---|---|
@@ -103,13 +103,13 @@ Contact
 | /regional/ | Empty | Remove or consolidate |
 | /sama/ | Empty (events page) | Consolidate into /events |
 | /eat-dance-and-pray/ | Empty | Add EDP content from /past-events-2 |
-| /resources/ | Shows "Past Events" (mis-titled) | Fix — use as resources hub |
+| /resources/ | Shows "Past Events" (mis-titled) | Fix, use as resources hub |
 | /community/ | WordPress forum plugin [wpforo] | Replace with Photos + Resources |
 | /events/ | Shows "Community Photos" (mis-routed!) | Fix routing |
 
 ---
 
-### 🔒 PASSWORD-PROTECTED — Private content
+### 🔒 PASSWORD-PROTECTED, Private content
 
 | Old URL | Title | Notes |
 |---|---|---|
@@ -126,13 +126,13 @@ Contact
 
 | Old URL | Status |
 |---|---|
-| /eat-dance-pray-united-in-the-heart-retreat-7-31-8-2-2020/ | 404 — content salvaged from /past-events-2/ |
+| /eat-dance-pray-united-in-the-heart-retreat-7-31-8-2-2020/ | 404, content salvaged from /past-events-2/ |
 
 ---
 
 ## Content Consolidation Map
 
-The current site has **significant URL fragmentation** — many duplicate/orphaned pages for the same content. Here's the clean mapping:
+The current site has **significant URL fragmentation**, many duplicate/orphaned pages for the same content. Here's the clean mapping:
 
 ### About Section
 ```
@@ -189,7 +189,7 @@ NEW: /teachings/deepening  [password-protected]
   ← /god-is-breath-2/gib-blog/
 
 NEW: /teachings/dances
-  ← /dances-of-universal-peace/ (PRIMARY — rich content)
+  ← /dances-of-universal-peace/ (PRIMARY, rich content)
   ← /sama/ (empty)
 
 NEW: /teachings/dances/cambridge
@@ -210,7 +210,7 @@ NEW: /teachings/music  (hub)
   ← /music-2/ (was just "Music Videos")
 
 NEW: /teachings/music/albums
-  ← /albums-2/ (hub — was just "click images")
+  ← /albums-2/ (hub, was just "click images")
   ← /in-peace-a-call-to-unity/
   ← /voice-of-the-heart-remembering/ (Beginnings/Oratorio)
   ← /voice-of-the-heart-remembering-2/ (Voice of Heart)
@@ -231,7 +231,7 @@ NEW: /teachings/music/videos
 ### Events Section
 ```
 NEW: /events/upcoming
-  ← /sama/ (empty — was events page)
+  ← /sama/ (empty, was events page)
   ← Calendar plugin data
 
 NEW: /events/retreats
@@ -240,7 +240,7 @@ NEW: /events/retreats
   ← /eat-dance-and-pray/ (EDP annual retreat)
 
 NEW: /events/past
-  ← /past-events-2/ (PRIMARY — India, EDP 2023/2024, Rumi Nights)
+  ← /past-events-2/ (PRIMARY, India, EDP 2023/2024, Rumi Nights)
   ← /turkiyeretreat/ (2024 Türkiye retreat)
   ← /shabda-kahn-retreat/ (2014 retreat)
   ← /ruminight/ (2017 Rumi Night)
@@ -253,7 +253,7 @@ NEW: /events/past
 ### Community / Sangha Section
 ```
 NEW: /community/photos
-  ← /events/ (was mis-mapped to Community Photos — has photo section names:
+  ← /events/ (was mis-mapped to Community Photos, has photo section names:
     Chile retreat, DUP Cambridge, Retreat Royalston, Sufi Sesshin 2021, EDP 2023)
 
 NEW: /community/resources
@@ -262,7 +262,7 @@ NEW: /community/resources
 
 ---
 
-## Albums — Complete Database
+## Albums, Complete Database
 
 | Album | Artist/Context | Tracks | MP3 Sample URL | Notes |
 |---|---|---|---|---|
@@ -274,12 +274,12 @@ NEW: /community/resources
 | **Almighty Peace** | Maitreya Jon Stevens | Not listed | /wp-content/uploads/2022/09/Almighty-Peace.mp3 | Rights held by Maitreya Jon Stevens |
 | **Waters of Life** | (not specified) | Not listed | /wp-content/uploads/2022/12/Waters-of-Life-sample.mp3 | |
 | **Healing Love** | (not specified) | 13 tracks | None listed | Track listing complete |
-| **Sacred Nature** | (not specified) | Unknown | None | Empty page — needs research |
+| **Sacred Nature** | (not specified) | Unknown | None | Empty page, needs research |
 | **Saladin: An Epic Poem** | Murshid Samuel Lewis (read by Wali Ali) | 4 CDs | None | Prophetic poetry, Crusades theme |
 
 ---
 
-## Original Dances — Complete List (with MP3 URLs)
+## Original Dances, Complete List (with MP3 URLs)
 
 All composed by Halima and Abraham.
 
@@ -297,7 +297,7 @@ All composed by Halima and Abraham.
 
 ---
 
-## Dharma Gems — Complete List
+## Dharma Gems, Complete List
 
 | Title | Date | Author |
 |---|---|---|
@@ -313,7 +313,7 @@ All composed by Halima and Abraham.
 
 ---
 
-## Teachers / People — Full Bios Available
+## Teachers / People, Full Bios Available
 
 | Person | Role | Bio Status | New Route |
 |---|---|---|---|
@@ -325,8 +325,8 @@ All composed by Halima and Abraham.
 | **Pir Shabda Kahn** | Current Pir of Ruhaniat (2001–) | Long personal/musical bio | /about/lineage |
 | **Frida Waterhouse** | Ancestor/elder, amanuensis | Autobiography excerpt | /about/lineage |
 | **Karmu** | Ancestor/healer, "Black Christ" | Short bio about herbal medicine | /about/lineage |
-| **Malika Salazar** | Colombia, retreat co-teacher | Mentioned, no dedicated page | — |
-| **Nur Jahan** | Chile, retreat co-teacher | Mentioned, no dedicated page | — |
+| **Malika Salazar** | Colombia, retreat co-teacher | Mentioned, no dedicated page |, |
+| **Nur Jahan** | Chile, retreat co-teacher | Mentioned, no dedicated page |, |
 
 ---
 
@@ -345,14 +345,14 @@ All composed by Halima and Abraham.
 
 ## Structural Problems on Current Site
 
-1. **Broken URL routing** — `/events/` shows "Community Photos"; `/about/` shows the blog
-2. **Duplicate content** — `/abraham-halima-sussman/` and `/abraham-halima-2/` are the same bio
-3. **Empty pages** — `/sama/`, `/eat-dance-and-pray/`, `/regional/`, `/recordings-2/`, `/videos/`, `/videos-2/`, `/sacred-nature/`
-4. **Misnamed pages** — `/resources/` is titled "Sangha"; `/events/` is titled "Community Photos"
-5. **WordPress plugin artifacts** — `[wpforo]` on community page, contact form shortcodes
-6. **URL slugs are confusing** — `/albums-2/`, `/music-2/`, `/recordings-2/`, `/videos-2/` (duplicates with `-2` suffix)
-7. **No clear information architecture** — Lineage, Ancestors, Sufi Lineage are 3 separate pages that should be one
-8. **Password-protected Deepening content** — needs separate auth strategy in new site
+1. **Broken URL routing**, `/events/` shows "Community Photos"; `/about/` shows the blog
+2. **Duplicate content**, `/abraham-halima-sussman/` and `/abraham-halima-2/` are the same bio
+3. **Empty pages**, `/sama/`, `/eat-dance-and-pray/`, `/regional/`, `/recordings-2/`, `/videos/`, `/videos-2/`, `/sacred-nature/`
+4. **Misnamed pages**, `/resources/` is titled "Sangha"; `/events/` is titled "Community Photos"
+5. **WordPress plugin artifacts**, `[wpforo]` on community page, contact form shortcodes
+6. **URL slugs are confusing**, `/albums-2/`, `/music-2/`, `/recordings-2/`, `/videos-2/` (duplicates with `-2` suffix)
+7. **No clear information architecture**, Lineage, Ancestors, Sufi Lineage are 3 separate pages that should be one
+8. **Password-protected Deepening content**, needs separate auth strategy in new site
 
 ---
 
@@ -371,27 +371,27 @@ All composed by Halima and Abraham.
 ### Posts (via Prisma `Post` model)
 
 **Category: DHARMA_GEM**
-- 'God is Breath' Reflection — Dahlia Sura (Feb 2023)
-- 'Toward the One, United With All' — Shakti (Feb 2023)
-- A Divine Inner Flash — Tarana Wesley (Apr 2023)
-- Dharma Gem: River of Guidance 2026 — Abraham & Halima
+- 'God is Breath' Reflection, Dahlia Sura (Feb 2023)
+- 'Toward the One, United With All', Shakti (Feb 2023)
+- A Divine Inner Flash, Tarana Wesley (Apr 2023)
+- Dharma Gem: River of Guidance 2026, Abraham & Halima
 
 **Category: TALK**
-- 2024 European Ruhaniat Jamiat Ahm — Abraham & Halima
-- 2023 European Ruhaniat Jamiat Ahm — Abraham & Halima
-- 2018 Jamiat Khas — Abraham
-- 2012 "A Hidden Treasure" (3 parts) — Abraham & Halima
-- Nuru Zaleme (Allah Huma Salle) — audio teaching
+- 2024 European Ruhaniat Jamiat Ahm, Abraham & Halima
+- 2023 European Ruhaniat Jamiat Ahm, Abraham & Halima
+- 2018 Jamiat Khas, Abraham
+- 2012 "A Hidden Treasure" (3 parts), Abraham & Halima
+- Nuru Zaleme (Allah Huma Salle), audio teaching
 
 **Category: DANCE_ARTICLE**
-- Dancing the Heart Awake — Abraham (full text available)
-- Be Ye Songs of Glory — Halima (full text available)
+- Dancing the Heart Awake, Abraham (full text available)
+- Be Ye Songs of Glory, Halima (full text available)
 
 **Category: DANCE_INTERVIEW**
 - Interview with Halima and Noor with Arjun (DUP leadership training series)
 
 **Category: ORIGINAL_DANCE**
-- 9 dances (Almighty Peace, Andalusian Zikr, Ani Mahamin, Fatima's Gift, Healing Love, Lokah Samastah, Ruach, Shakti Ye, Zimbabwe Zikr) — all with MP3 URLs
+- 9 dances (Almighty Peace, Andalusian Zikr, Ani Mahamin, Fatima's Gift, Healing Love, Lokah Samastah, Ruach, Shakti Ye, Zimbabwe Zikr), all with MP3 URLs
 
 ### Teachers (via Prisma `Teacher` model)
 
@@ -408,9 +408,9 @@ All composed by Halima and Abraham.
 
 ### Albums (via Prisma `Album` model)
 
-9 albums total — all have sample MP3 URLs and descriptions above.
+9 albums total, all have sample MP3 URLs and descriptions above.
 
-### Events (import from calendar — live data)
+### Events (import from calendar, live data)
 
 Current 2026 events:
 - Dance Deepening & Leaders Support 2026: May 29–31, Rural N. Central MA
@@ -439,7 +439,7 @@ All hosted at `https://northeastsufis.org/wp-content/uploads/`
 - /2022/09/Zikr-of-the-Heart-1.mp3
 - /2022/10/Nuru-Zaleme.mp3
 - /2022/12/Waters-of-Life-sample.mp3
-- http://northeastsufishop.wordpress.com/files/2009/10/sama3.mp3 (Voice of Heart — external)
+- http://northeastsufishop.wordpress.com/files/2009/10/sama3.mp3 (Voice of Heart, external)
 
 ### Images to download
 - Banner image: Amina_SAM_640x300.jpeg (already in /Inspiration)
@@ -449,15 +449,15 @@ All hosted at `https://northeastsufis.org/wp-content/uploads/`
 
 ## Recommended Import Order
 
-1. **Teachers** — import 8 teachers first (no dependencies)
-2. **Pages** — 5 core pages (our-story, lineage, tuesday-practice, dances, dances-cambridge)
-3. **Posts: DANCE_ARTICLE** — 2 articles (full text ready)
-4. **Posts: DHARMA_GEM** — 3 blog posts + 4 video gems
-5. **Posts: ORIGINAL_DANCE** — 9 dances with MP3s
-6. **Posts: TALK** — talks/Jamiat pages
-7. **Posts: DANCE_INTERVIEW** — 1 interview
-8. **Albums** — 9 albums with track data
-9. **Events** — 2026 upcoming events + recurring events
+1. **Teachers**, import 8 teachers first (no dependencies)
+2. **Pages**, 5 core pages (our-story, lineage, tuesday-practice, dances, dances-cambridge)
+3. **Posts: DANCE_ARTICLE**, 2 articles (full text ready)
+4. **Posts: DHARMA_GEM**, 3 blog posts + 4 video gems
+5. **Posts: ORIGINAL_DANCE**, 9 dances with MP3s
+6. **Posts: TALK**, talks/Jamiat pages
+7. **Posts: DANCE_INTERVIEW**, 1 interview
+8. **Albums**, 9 albums with track data
+9. **Events**, 2026 upcoming events + recurring events
 
 ---
 

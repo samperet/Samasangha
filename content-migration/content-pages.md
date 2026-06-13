@@ -1,4 +1,4 @@
-# Page Content — Ready to Import
+# Page Content, Ready to Import
 # Use these in the admin under /admin/posts or directly via seed script
 
 ---
@@ -38,12 +38,12 @@ Our community is rooted in the Universal Sufi heart stream of Pir-O-Murshid Hazr
 ## title: Pir-O-Murshid Hazrat Inayat Khan (1882–1927)
 
 *"Open our hearts, that we may hear thy voice, which constantly comes from within. Disclose to us Thy Divine Light, which is hidden in our souls, that we may know and understand life better."*
-— From the prayer 'Khatum'
+, From the prayer 'Khatum'
 
 Hazrat Inayat Khan was asked by his spiritual teacher to unite the East and West through his music and to bring the ideals of spiritual and religious unity to the western world. His teachings and message continue to be cultivated today through several Sufi branches, one of which is the Sufi Ruhaniat International.
 
 *"Sufism is the religion of the heart. The religion in which the most important thing is to seek God in the heart of mankind."*
-— Hazrat Inayat Khan, Gathekas
+, Hazrat Inayat Khan, Gathekas
 
 ---
 
@@ -64,7 +64,7 @@ Murshid Sam was succeeded by Hazrat Moinneddin Jablonski, who served as Pir (Spi
 
 *Sufism used to mean 'Divine Wisdom' and so far as Sam is concerned it still does. It means that the Divine Voice constantly comes from within. It still means 'speaking the word that is put into thy mouth.' It still means growth in the states and stages of consciousness into ever-growing Divine Awareness; and it still means one single Family in the Parenthood of God."*
 
-— Murshid Samuel Lewis (Sufi Ahmed Murad Chisti), Diary, December 1, 1967
+, Murshid Samuel Lewis (Sufi Ahmed Murad Chisti), Diary, December 1, 1967
 
 ---
 
@@ -97,7 +97,7 @@ On February 27, 2001, Shabda Kahn was appointed Pir (lineage holder) of the Sufi
 
 Shabda was born in New York City, the second child of German Jewish immigrants who fled just before the holocaust. While living in the Bay Area, he became a musical instruments maker under the business name Sound Instruments, receiving guidance from Hamza El Din and Pandit Pran Nath in making frame drums, dumbeck drums, tambouras and ektars.
 
-While still in New York, Shabda heard "Baba" Ram Dass give a talk on the radio and was moved to become a seeker. He heard Pir Vilayat Inayat Khan speak in New York and set out to attend the June 1969 Sufi Camp in Colorado. There he met several of Murshid Sam Lewis's students. He was initiated by Murshid Samuel Lewis on February 16, 1970. In the Fall of 1970, Shabda traveled with Murshid for five weeks as his personal assistant on the East Coast. Murshid Sam died several weeks after falling down the stairs in December 1970 — a morning Shabda was present for.
+While still in New York, Shabda heard "Baba" Ram Dass give a talk on the radio and was moved to become a seeker. He heard Pir Vilayat Inayat Khan speak in New York and set out to attend the June 1969 Sufi Camp in Colorado. There he met several of Murshid Sam Lewis's students. He was initiated by Murshid Samuel Lewis on February 16, 1970. In the Fall of 1970, Shabda traveled with Murshid for five weeks as his personal assistant on the East Coast. Murshid Sam died several weeks after falling down the stairs in December 1970, a morning Shabda was present for.
 
 Shabda met his second great teacher, Pandit Pran Nath, in 1972, and began the daily practice of North Indian Classical vocal music in the Kirana style, following in the footsteps of Hazrat Inayat Khan. Pran Nath planted an 800-year-old oral tradition of Chisti Sufi Vocal Music in the Western World and requested that Shabda carry on the lineage teaching under the name of the Chisti Sabri School of Music.
 
@@ -144,16 +144,16 @@ The Dances of Universal Peace are held in trust by the Sufi Ruhaniat Internation
 *One Heart, One People, One Unity*
 *May All Beings Be Happy & Free*
 
-Spiritual practice brings us face to face with Life and Truth, prior to the concepts and beliefs of the person, opening to our true nature — authentic, unguarded, beyond form and imbued with the spaciousness and love that connects all.
+Spiritual practice brings us face to face with Life and Truth, prior to the concepts and beliefs of the person, opening to our true nature, authentic, unguarded, beyond form and imbued with the spaciousness and love that connects all.
 
-The Dances of Universal Peace and Walking Concentrations are spiritual practice in motion. Drawing on the sacred phrases, scripture, and poetry of the many spiritual traditions of the earth, the Dances blend chant, live music and evocative movement into a living experience of unity, peace and integration. This taste of our true nature — as Universal Peace — opens to the possibility of a deep spiritual revolution within the person.
+The Dances of Universal Peace and Walking Concentrations are spiritual practice in motion. Drawing on the sacred phrases, scripture, and poetry of the many spiritual traditions of the earth, the Dances blend chant, live music and evocative movement into a living experience of unity, peace and integration. This taste of our true nature, as Universal Peace, opens to the possibility of a deep spiritual revolution within the person.
 
 ---
 
 ## slug: frida-waterhouse
-## title: Frida Waterhouse — A Brief Autobiography
+## title: Frida Waterhouse, A Brief Autobiography
 
-The amanuensis, Frida Waterhouse, was born of Jewish parents on October 12, 1907, at Gloversville, New York. [Full autobiography text available from scrape — see /frieda-waterhouse/ section in northeastsufis_scrape.txt]
+The amanuensis, Frida Waterhouse, was born of Jewish parents on October 12, 1907, at Gloversville, New York. [Full autobiography text available from scrape, see /frieda-waterhouse/ section in northeastsufis_scrape.txt]
 
 Her work is primarily to provide a practical springboard that others can use to help them work through compulsive, reactive emotional patterns that can lead to mastery over themselves. She is a channel that invokes spiritual force fields in order to confirm data already received by others.
 
@@ -164,6 +164,6 @@ Her work is primarily to provide a practical springboard that others can use to 
 
 Karmu gave herbal medicines to everyone who came to see him. He would give people either "red" medicine in a drink which was herbal "black" medicine disguised in a sangria-like fruit punch, or he would hand them capsules of "black" medicine or give them a straight shot of his decoction of black medicine.
 
-In 1968, there were not health food stores in every major city. It wasn't commonplace. If there was a store, it had bins of raw herbs, not prepackaged jars lining the shelves. Karmu's most used herbs were aloes, goldenseal, valerian, snakesroot, Life everlasting — these were the backbone of "black" medicine.
+In 1968, there were not health food stores in every major city. It wasn't commonplace. If there was a store, it had bins of raw herbs, not prepackaged jars lining the shelves. Karmu's most used herbs were aloes, goldenseal, valerian, snakesroot, Life everlasting, these were the backbone of "black" medicine.
 
 *(A documentary trailer exists: "Karmu: A Place in the Sun")*

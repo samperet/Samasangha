@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { formatDateRange } from "@/lib/utils";
+import { formatDate, formatDateRange } from "@/lib/utils";
+import { eventPricing } from "@/lib/pricing";
 import type { Metadata } from "next";
 import RetreatPriceSlider from "./RetreatPriceSlider";
 import EatDancePrayLayout from "./EatDancePrayLayout";
@@ -34,17 +35,22 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     (event.registrationDeadline ? new Date() > event.registrationDeadline : false);
   const full = spotsLeft !== null && spotsLeft <= 0;
 
-  const priceStr = (() => {
-    if (!event.priceMin && !event.priceMax) return "Free";
-    if (event.priceMin && event.priceMax) {
-      return `$${event.priceMin / 100}–$${event.priceMax / 100} sliding scale`;
-    }
-    if (event.priceMin) return `From $${event.priceMin / 100}`;
-    return "";
-  })();
+  const pricing = eventPricing(event);
 
   if (slug === "eat-dance-pray-2026") {
-    return <EatDancePrayLayout event={event} slug={slug} />;
+    return (
+      <EatDancePrayLayout
+        event={event}
+        pricing={{
+          min: pricing.min,
+          max: pricing.max,
+          note:
+            pricing.earlyBirdActive && pricing.earlyBirdDeadline
+              ? `Early-bird pricing until ${formatDate(pricing.earlyBirdDeadline)}`
+              : undefined,
+        }}
+      />
+    );
   }
 
   return (
@@ -101,14 +107,21 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           {event.registrationEnabled && (
             <div>
               <dt className="eyebrow" style={{ fontSize: "0.7rem" }}>Cost</dt>
-              <dd className="mt-1" style={{ color: "var(--fg1)" }}>{priceStr}</dd>
+              <dd className="mt-1" style={{ color: "var(--fg1)" }}>
+                {pricing.label}
+                {pricing.earlyBirdActive && pricing.earlyBirdDeadline && (
+                  <span className="block text-xs mt-0.5" style={{ color: "var(--gold-700)" }}>
+                    Early bird until {formatDate(pricing.earlyBirdDeadline)}
+                  </span>
+                )}
+              </dd>
             </div>
           )}
           {spotsLeft !== null && (
             <div>
               <dt className="eyebrow" style={{ fontSize: "0.7rem" }}>Availability</dt>
               <dd className="mt-1" style={{ color: full ? "var(--crimson-700)" : "var(--fg1)" }}>
-                {full ? "Full — waitlist available" : `${spotsLeft} spot${spotsLeft !== 1 ? "s" : ""} remaining`}
+                {full ? "Full, waitlist available" : `${spotsLeft} spot${spotsLeft !== 1 ? "s" : ""} remaining`}
               </dd>
             </div>
           )}
@@ -135,8 +148,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         className="rounded-2xl p-7"
         style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
       >
-        {event.isRetreat && event.priceMin != null && event.priceMax != null ? (
-          <RetreatPriceSlider priceMin={event.priceMin} priceMax={event.priceMax} />
+        {event.isRetreat && pricing.type === "SLIDING" && pricing.min != null && pricing.max != null ? (
+          <RetreatPriceSlider
+            priceMin={pricing.min}
+            priceMax={pricing.max}
+            note={
+              pricing.earlyBirdActive && pricing.earlyBirdDeadline
+                ? `Early-bird pricing until ${formatDate(pricing.earlyBirdDeadline)}`
+                : undefined
+            }
+          />
         ) : event.registrationEnabled && !registrationClosed ? (
           <>
             <h2 className="font-serif mb-2" style={{ fontSize: "1.4rem", fontWeight: 500, color: "var(--ink-900)" }}>

@@ -82,7 +82,7 @@ prisma/
 ## Deployment (Vercel)
 1. Push to GitHub
 2. Connect repo to Vercel
-3. Add environment variables (DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, etc.)
+3. Add environment variables (DATABASE_URL, ADMIN_SESSION_SECRET, ADMIN_PASSWORD, DEEPENING_PASSWORD, SMTP_*, etc. — see DEPLOYMENT.md §3 for the full set)
 4. For R2 storage: set STORAGE_PROVIDER=r2 and R2_* vars
 
 ## Prisma v7 Notes

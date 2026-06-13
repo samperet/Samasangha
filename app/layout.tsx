@@ -3,7 +3,7 @@ import { Cormorant_Garamond, Mulish } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
-// Brand wordmark font — used for the "Sama" / "Sangha" logo lockup
+// Brand wordmark font, used for the "Sama" / "Sangha" logo lockup
 const samaFont = localFont({
   src: "./fonts/SamaFont.ttf",
   variable: "--font-sama",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s | SamaSangha",
   },
   description:
-    "Sama Sangha — a Sufi spiritual community in Massachusetts dedicated to the path of love, harmony, and beauty.",
+    "Sama Sangha, a Sufi spiritual community in Massachusetts dedicated to the path of love, harmony, and beauty.",
   openGraph: {
     siteName: "SamaSangha",
     locale: "en_US",

@@ -37,83 +37,55 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-5 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-        {/* Brand */}
-        <div>
-          <div className="flex items-center gap-2.5 mb-3">
-            <Image src="/assets/sufi-heart-banner.png" alt="" width={600} height={272} className="w-auto h-6 opacity-90" />
-            <span className="font-serif text-lg" style={{ color: "var(--gold-400)" }}>SamaSangha</span>
-          </div>
-          <p className="text-sm leading-relaxed footer-muted">
-            Sama Sangha — a community on the path of love, harmony, and beauty.
-            Gathering in Cambridge, Massachusetts since 1972.
-          </p>
+      <div className="max-w-5xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
+        {/* Inspiration */}
+        <div className="flex justify-center">
+          <Image
+            src="/assets/golden-footprints.png"
+            alt="Golden footprints inscribed with sacred symbols"
+            width={1108}
+            height={1172}
+            className="h-auto w-full max-w-[170px] sm:max-w-[210px] opacity-70"
+          />
         </div>
 
-        {/* Links */}
-        <div>
-          <p className="eyebrow mb-4" style={{ color: "var(--gold-600)" }}>Explore</p>
-          <ul className="space-y-2 text-sm">
-            {[
-              ["Our story", "/about/our-story"],
-              ["Tuesday practice", "/teachings/tuesday-practice"],
-              ["Upcoming events", "/events/upcoming"],
-              ["Music & recordings", "/teachings/music/albums"],
-              ["Contact", "/contact"],
-            ].map(([label, href]) => (
-              <li key={href}>
-                <Link href={href} className="footer-link">{label}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Connect */}
-        <div>
-          <p className="eyebrow mb-4" style={{ color: "var(--gold-600)" }}>Stay connected</p>
-          <p className="text-sm leading-relaxed mb-5 footer-muted">
-            Receive word of gatherings, retreats, and teachings — a few times a season.
-          </p>
+        <div className="flex flex-col items-center md:items-start gap-4">
           <Link
-            href="/contact"
-            className="footer-cta inline-block text-sm font-semibold px-5 py-2.5 rounded-lg"
+            href="/mureeds-corner"
+            className="inline-flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg px-5 text-sm font-semibold"
+            style={{
+              background: "var(--parch-50)",
+              color: "var(--ink-900)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+              border: "1px solid var(--gold-400)",
+            }}
+          >
+            <Image
+              src="/assets/sufi-heart-banner.png"
+              alt=""
+              aria-hidden
+              width={600}
+              height={272}
+              className="w-auto h-8"
+            />
+            Mureeds&rsquo; Corner
+          </Link>
+          <a
+            href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-cta inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg px-5 text-sm font-semibold"
           >
             Join the mailing list
-          </Link>
-
-          <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(201,162,44,.12)" }}>
-            <p className="text-xs mb-3 footer-muted">Follow along</p>
-            <div className="flex items-center gap-5">
-              <a
-                href="https://www.facebook.com/groups/148665083286"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-link inline-flex items-center gap-2 text-sm"
-              >
-                <FacebookIcon /> Facebook
-              </a>
-              <a
-                href="https://www.instagram.com/dup.cambridge.ma/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-link inline-flex items-center gap-2 text-sm"
-              >
-                <InstagramIcon /> Instagram
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(201,162,44,.12)" }}>
-            <p className="text-xs mb-3 footer-muted">Support the community</p>
-            <a
-              href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-donate inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-lg"
-            >
-              ♡ Donate
-            </a>
-          </div>
+          </a>
+          <a
+            href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-donate inline-flex h-12 w-full max-w-xs items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold"
+          >
+            ♡ Donate
+          </a>
         </div>
       </div>
 
@@ -122,20 +94,30 @@ export default function Footer() {
         className="text-center py-6 px-4"
         style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}
       >
+        <div className="mb-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <a
+            href="https://www.facebook.com/groups/148665083286"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-link inline-flex items-center gap-2 text-sm"
+          >
+            <FacebookIcon /> Facebook
+          </a>
+          <a
+            href="https://www.instagram.com/dup.cambridge.ma/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-link inline-flex items-center gap-2 text-sm"
+          >
+            <InstagramIcon /> Instagram
+          </a>
+        </div>
         <p
           className="font-serif italic"
           style={{ color: "var(--gold-400)", opacity: 0.75, fontSize: "0.95rem", lineHeight: 1.8 }}
         >
           May all Beings be Well! · May all Beings be Happy! Peace! Peace! Peace!
         </p>
-      </div>
-
-      {/* Bottom bar */}
-      <div
-        className="text-center text-xs py-5 px-4"
-        style={{ borderTop: "1px solid rgba(201,162,44,.10)", color: "var(--fg-on-dark)", opacity: 0.35 }}
-      >
-        © {new Date().getFullYear()} SamaSangha
       </div>
     </footer>
   );

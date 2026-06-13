@@ -37,7 +37,7 @@ export async function DELETE(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  // Registrations keep existing — roomId is set to null via onDelete: SetNull
+  // Registrations keep existing, roomId is set to null via onDelete: SetNull
   await prisma.room.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

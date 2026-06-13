@@ -14,7 +14,9 @@ export default function EventForm({ event }: { event?: Event }) {
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState<Tab>("details");
   const [flyerUploading, setFlyerUploading] = useState(false);
+  const [featuredUploading, setFeaturedUploading] = useState(false);
   const flyerInputRef = useRef<HTMLInputElement>(null);
+  const featuredInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     title: event?.title ?? "",
     description: event?.description ?? "",
@@ -25,12 +27,19 @@ export default function EventForm({ event }: { event?: Event }) {
     isRetreat: event?.isRetreat ?? false,
     registerUrl: event?.registerUrl ?? "",
     flyerUrl: event?.flyerUrl ?? "",
+    featuredImageUrl: event?.featuredImageUrl ?? "",
     featured: event?.featured ?? false,
     published: event?.published ?? false,
     registrationEnabled: event?.registrationEnabled ?? false,
     capacity: event?.capacity?.toString() ?? "",
+    pricingType: event?.pricingType ?? "FREE",
     priceMin: event?.priceMin ? (event.priceMin / 100).toString() : "",
     priceMax: event?.priceMax ? (event.priceMax / 100).toString() : "",
+    earlyBirdPriceMin: event?.earlyBirdPriceMin ? (event.earlyBirdPriceMin / 100).toString() : "",
+    earlyBirdPriceMax: event?.earlyBirdPriceMax ? (event.earlyBirdPriceMax / 100).toString() : "",
+    earlyBirdDeadline: event?.earlyBirdDeadline
+      ? new Date(event.earlyBirdDeadline).toISOString().slice(0, 16)
+      : "",
     registrationDeadline: event?.registrationDeadline
       ? new Date(event.registrationDeadline).toISOString().slice(0, 16)
       : "",
@@ -40,19 +49,27 @@ export default function EventForm({ event }: { event?: Event }) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  async function handleFlyerUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function uploadImage(
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "flyerUrl" | "featuredImageUrl",
+    setUploading: (v: boolean) => void
+  ) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setFlyerUploading(true);
+    setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
     const res = await fetch("/api/upload", { method: "POST", body: fd });
     if (res.ok) {
       const data = await res.json();
-      set("flyerUrl", data.url);
+      set(field, data.url);
     }
-    setFlyerUploading(false);
+    setUploading(false);
   }
+  const handleFlyerUpload = (e: React.ChangeEvent<HTMLInputElement>) =>
+    uploadImage(e, "flyerUrl", setFlyerUploading);
+  const handleFeaturedUpload = (e: React.ChangeEvent<HTMLInputElement>) =>
+    uploadImage(e, "featuredImageUrl", setFeaturedUploading);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +84,9 @@ export default function EventForm({ event }: { event?: Event }) {
         capacity: form.capacity ? parseInt(form.capacity) : null,
         priceMin: form.priceMin ? Math.round(parseFloat(form.priceMin) * 100) : null,
         priceMax: form.priceMax ? Math.round(parseFloat(form.priceMax) * 100) : null,
+        earlyBirdPriceMin: form.earlyBirdPriceMin ? Math.round(parseFloat(form.earlyBirdPriceMin) * 100) : null,
+        earlyBirdPriceMax: form.earlyBirdPriceMax ? Math.round(parseFloat(form.earlyBirdPriceMax) * 100) : null,
+        earlyBirdDeadline: form.earlyBirdDeadline || null,
         registrationDeadline: form.registrationDeadline || null,
       }),
     });
@@ -126,7 +146,57 @@ export default function EventForm({ event }: { event?: Event }) {
             <Input type="url" value={form.registerUrl} onChange={(e) => set("registerUrl", e.target.value)} />
           </div>
           <div>
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Featured image</label>
+            <p className="text-xs text-gray-400 mb-1.5">Shown on the homepage and event listings. A wide landscape image works best.</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  ref={featuredInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFeaturedUpload}
+                />
+                <button
+                  type="button"
+                  onClick={() => featuredInputRef.current?.click()}
+                  disabled={featuredUploading}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 border disabled:opacity-50"
+                  style={{ background: "var(--parch-100)", color: "var(--ink-700)", borderColor: "var(--surface-border)" }}
+                >
+                  {featuredUploading ? "Uploading…" : "Upload image"}
+                </button>
+                <span className="text-xs" style={{ color: "var(--fg3)" }}>or paste a URL below</span>
+              </div>
+              <Input
+                type="text"
+                value={form.featuredImageUrl}
+                onChange={(e) => set("featuredImageUrl", e.target.value)}
+                placeholder="/uploads/… or https://…"
+              />
+              {form.featuredImageUrl && (
+                <div className="relative w-56">
+                  <img
+                    src={form.featuredImageUrl}
+                    alt="Featured preview"
+                    className="w-56 rounded-lg object-cover"
+                    style={{ border: "1px solid var(--surface-border)", maxHeight: 120 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => set("featuredImageUrl", "")}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-xs flex items-center justify-center"
+                    style={{ background: "var(--crimson-700)", color: "#fff" }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Flyer image</label>
+            <p className="text-xs text-gray-400 mb-1.5">The printable flyer, linked from the event page, not shown inline.</p>
             <div className="space-y-2">
               {/* Upload button */}
               <div className="flex items-center gap-2">
@@ -148,12 +218,13 @@ export default function EventForm({ event }: { event?: Event }) {
                 </button>
                 <span className="text-xs" style={{ color: "var(--fg3)" }}>or paste a URL below</span>
               </div>
-              {/* URL input */}
+              {/* Accepts an uploaded path (/uploads/…) or a full URL, so this is
+                  type=text, type=url would reject relative upload paths. */}
               <Input
-                type="url"
+                type="text"
                 value={form.flyerUrl}
                 onChange={(e) => set("flyerUrl", e.target.value)}
-                placeholder="https://…"
+                placeholder="/uploads/… or https://…"
               />
               {/* Preview */}
               {form.flyerUrl && (
@@ -226,19 +297,76 @@ export default function EventForm({ event }: { event?: Event }) {
                 <Input type="number" min="1" value={form.capacity} onChange={(e) => set("capacity", e.target.value)} placeholder="e.g. 30" className="max-w-xs" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Sliding-scale price</label>
-                <p className="text-xs text-gray-400 mb-1.5">Set min and/or max. Leave both blank for free. Shown on the registration page.</p>
-                <div className="grid grid-cols-2 gap-3 max-w-xs">
-                  <div>
-                    <label className="text-xs text-gray-500 mb-1 block">Min ($)</label>
-                    <Input type="number" min="0" step="0.01" value={form.priceMin} onChange={(e) => set("priceMin", e.target.value)} placeholder="0" />
+                <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Pricing</label>
+                <div className="flex gap-2 mb-3">
+                  {([
+                    ["FREE", "Free"],
+                    ["FIXED", "Fixed price"],
+                    ["SLIDING", "Sliding scale"],
+                  ] as [string, string][]).map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => set("pricingType", value)}
+                      className="px-3.5 py-1.5 text-sm rounded-full border transition-colors"
+                      style={
+                        form.pricingType === value
+                          ? { background: "var(--gold-100)", borderColor: "var(--gold-500)", color: "var(--gold-700)", fontWeight: 600 }
+                          : { background: "#fff", borderColor: "var(--surface-border)", color: "var(--fg2)" }
+                      }
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
+                {form.pricingType === "FIXED" && (
+                  <div className="max-w-xs">
+                    <label className="text-xs text-gray-500 mb-1 block">Price ($)</label>
+                    <Input type="number" min="0" step="0.01" value={form.priceMin} onChange={(e) => set("priceMin", e.target.value)} placeholder="120" />
                   </div>
-                  <div>
-                    <label className="text-xs text-gray-500 mb-1 block">Max ($)</label>
-                    <Input type="number" min="0" step="0.01" value={form.priceMax} onChange={(e) => set("priceMax", e.target.value)} placeholder="350" />
+                )}
+
+                {form.pricingType === "SLIDING" && (
+                  <div className="grid grid-cols-2 gap-3 max-w-xs">
+                    <div>
+                      <label className="text-xs text-gray-500 mb-1 block">Min ($)</label>
+                      <Input type="number" min="0" step="0.01" value={form.priceMin} onChange={(e) => set("priceMin", e.target.value)} placeholder="250" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-500 mb-1 block">Max ($)</label>
+                      <Input type="number" min="0" step="0.01" value={form.priceMax} onChange={(e) => set("priceMax", e.target.value)} placeholder="450" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {form.pricingType !== "FREE" && (
+                <div className="rounded-lg p-4" style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}>
+                  <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Early bird (optional)</label>
+                  <p className="text-xs text-gray-400 mb-3">
+                    Discounted {form.pricingType === "SLIDING" ? "range" : "price"} shown until the early-bird deadline, then the regular price applies.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 max-w-md">
+                    <div>
+                      <label className="text-xs text-gray-500 mb-1 block">
+                        {form.pricingType === "SLIDING" ? "Early bird min ($)" : "Early bird price ($)"}
+                      </label>
+                      <Input type="number" min="0" step="0.01" value={form.earlyBirdPriceMin} onChange={(e) => set("earlyBirdPriceMin", e.target.value)} placeholder="," />
+                    </div>
+                    {form.pricingType === "SLIDING" && (
+                      <div>
+                        <label className="text-xs text-gray-500 mb-1 block">Early bird max ($)</label>
+                        <Input type="number" min="0" step="0.01" value={form.earlyBirdPriceMax} onChange={(e) => set("earlyBirdPriceMax", e.target.value)} placeholder="," />
+                      </div>
+                    )}
+                    <div className={form.pricingType === "SLIDING" ? "col-span-2" : ""}>
+                      <label className="text-xs text-gray-500 mb-1 block">Early bird ends</label>
+                      <Input type="datetime-local" value={form.earlyBirdDeadline} onChange={(e) => set("earlyBirdDeadline", e.target.value)} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               <div>
                 <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Registration deadline</label>
                 <p className="text-xs text-gray-400 mb-1.5">Registration closes automatically at this time. Leave blank to keep open.</p>

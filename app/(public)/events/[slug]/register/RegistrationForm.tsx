@@ -79,7 +79,7 @@ export default function RegistrationForm({ slug, isFull }: { slug: string; isFul
         <Input type="email" {...register("email")} placeholder="you@example.com" autoComplete="email" />
       </Field>
 
-      <Field label="Phone number" hint="Optional — helpful for retreat logistics">
+      <Field label="Phone number" hint="Optional, helpful for retreat logistics">
         <Input type="tel" {...register("phone")} placeholder="+1 (617) 555-0100" autoComplete="tel" />
       </Field>
 
@@ -87,7 +87,7 @@ export default function RegistrationForm({ slug, isFull }: { slug: string; isFul
         <Input {...register("dietary")} placeholder="e.g. vegetarian, no nuts" />
       </Field>
 
-      <Field label="Notes or questions" hint="Anything else we should know — accessibility, childcare, scholarship inquiry, etc.">
+      <Field label="Notes or questions" hint="Anything else we should know, accessibility, childcare, scholarship inquiry, etc.">
         <Textarea {...register("notes")} rows={4} placeholder="Share anything that would help us welcome you well." />
       </Field>
 

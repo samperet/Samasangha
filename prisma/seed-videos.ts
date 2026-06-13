@@ -34,21 +34,21 @@ async function main() {
     },
     {
       slug: "united-in-the-heart-2021",
-      title: "United in the Heart — Sacred Retreat Video",
+      title: "United in the Heart, Sacred Retreat Video",
       description: "July 30–31, 2021. A retreat video woven through the eyes of the beloved.",
       youtubeUrl: ytUrl("gSoWjIl__9Q"),
       thumbnailUrl: thumb("gSoWjIl__9Q"),
     },
     {
       slug: "anna-samia-mountain-mist",
-      title: "Горный туман (Mountain Mist) — Anna Samia Shatkovskaja",
+      title: "Горный туман (Mountain Mist), Anna Samia Shatkovskaja",
       description: "Shared by Anna Samia Shatkovskaja for Abraham's birthday, September 30, 2023. Composer and pianist.",
       youtubeUrl: ytUrl("2AiMyj22gBU"),
       thumbnailUrl: thumb("2AiMyj22gBU"),
     },
     {
       slug: "rumi-night-2015-butter-zikr",
-      title: "Rumi Night 2015 — Butter Zikr",
+      title: "Rumi Night 2015, Butter Zikr",
       description: "A recording from a Rumi Night gathering: Dances of Universal Peace.",
       youtubeUrl: ytUrl("PNdaVwJxYt8"),
       thumbnailUrl: thumb("PNdaVwJxYt8"),
@@ -75,14 +75,14 @@ async function main() {
 
   const dharmaGems = [
     {
-      slug: "dharma-gem-kornfield-2022",          // existing stub — update content
+      slug: "dharma-gem-kornfield-2022",          // existing stub, update content
       title: "Dharma Gem: Halima reads from Jack Kornfield",
       videoId: "8S8NN8PtGHQ",
       date: new Date("2022-08-05"),
     },
     {
       slug: "dharma-gem-solstice-breathing-2021",
-      title: "Dharma Gem — Solstice Breathing Practice",
+      title: "Dharma Gem, Solstice Breathing Practice",
       videoId: "WT3U_XaTdMI",
       date: new Date("2021-12-21"),
     },
@@ -94,7 +94,7 @@ async function main() {
     },
     {
       slug: "dharma-gem-divine-light-2021",
-      title: "Dharma Gem — Divine Light",
+      title: "Dharma Gem, Divine Light",
       videoId: "hTjGhhNEaWk",
       date: new Date("2021-12-01"),
     },
@@ -128,44 +128,44 @@ async function main() {
   const talks = [
     {
       slug: "talk-2018-jamiat-khas-abraham",
-      title: "2018 Jamiat Khas — Murshid Abraham",
+      title: "2018 Jamiat Khas, Murshid Abraham",
       videoId: "7swiwPMs01w",
       excerpt: "A talk by Murshid Abraham at the 2018 Jamiat Khas gathering.",
       date: new Date("2018-01-01"),
     },
     {
       slug: "talk-hidden-treasure-part-1",
-      title: "A Hidden Treasure Yearning to Be Known — Part 1",
+      title: "A Hidden Treasure Yearning to Be Known, Part 1",
       videoId: "CiGBRm8hxNA",
-      excerpt: "Abraham and Halima — a 2012 teaching from the Jamiat gathering.",
+      excerpt: "Abraham and Halima, a 2012 teaching from the Jamiat gathering.",
       date: new Date("2012-01-01"),
     },
     {
       slug: "talk-hidden-treasure-part-2",
-      title: "A Hidden Treasure Yearning to Be Known — Part 2",
+      title: "A Hidden Treasure Yearning to Be Known, Part 2",
       videoId: "QfhsQdi4Cf0",
-      excerpt: "Abraham and Halima — Part 2.",
+      excerpt: "Abraham and Halima, Part 2.",
       date: new Date("2012-01-02"),
     },
     {
       slug: "talk-hidden-treasure-part-3",
-      title: "A Hidden Treasure Yearning to Be Known — Part 3",
+      title: "A Hidden Treasure Yearning to Be Known, Part 3",
       videoId: "wfRWL7JjzJw",
-      excerpt: "Abraham and Halima — Part 3.",
+      excerpt: "Abraham and Halima, Part 3.",
       date: new Date("2012-01-03"),
     },
     {
       slug: "talk-eat-dance-pray-2024",
-      title: "Eat, Dance & Pray 2024 — Sama Sangha",
+      title: "Eat, Dance & Pray 2024, Sama Sangha",
       videoId: "qESSXWOxcrM",
-      excerpt: "A glimpse into the Eat, Dance & Pray gathering with Abraham & Halima, Nur Jahan, and Malika — July 2024.",
+      excerpt: "A glimpse into the Eat, Dance & Pray gathering with Abraham & Halima, Nur Jahan, and Malika, July 2024.",
       date: new Date("2024-07-01"),
     },
     {
       slug: "talk-eat-dance-pray-2023",
-      title: "Eat, Dance & Pray 2023 — SamaSangha",
+      title: "Eat, Dance & Pray 2023, SamaSangha",
       videoId: "oK5W22szz74",
-      excerpt: "A glimpse into the Eat, Dance & Pray gathering with Abraham & Halima, Nur Jahan (Chile), Malika (Colombia), & SamaSangha — July 2023.",
+      excerpt: "A glimpse into the Eat, Dance & Pray gathering with Abraham & Halima, Nur Jahan (Chile), Malika (Colombia), & SamaSangha, July 2023.",
       date: new Date("2023-07-01"),
     },
     {
@@ -208,11 +208,11 @@ async function main() {
     where: { slug: "interview-halima-noor-arjun" },
     update: {
       content: embedHtml("cTYmqJknozA"),
-      title: "Interview with Halima and Noor with Arjun — Training of DUP Leaders",
+      title: "Interview with Halima and Noor with Arjun, Training of DUP Leaders",
     },
     create: {
       slug: "interview-halima-noor-arjun",
-      title: "Interview with Halima and Noor with Arjun — Training of DUP Leaders",
+      title: "Interview with Halima and Noor with Arjun, Training of DUP Leaders",
       content: embedHtml("cTYmqJknozA"),
       excerpt: "The first interview of a series presenting senior mentors of the Dances of Universal Peace International Network, exploring the training of dance leaders.",
       category: "DANCE_INTERVIEW",

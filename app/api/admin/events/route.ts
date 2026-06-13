@@ -2,29 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
-
-function parseEventData(data: Record<string, unknown>) {
-  return {
-    title: data.title as string,
-    description: data.description as string,
-    location: (data.location as string) || null,
-    isOnline: Boolean(data.isOnline),
-    isRetreat: Boolean(data.isRetreat),
-    registerUrl: (data.registerUrl as string) || null,
-    flyerUrl: (data.flyerUrl as string) || null,
-    featured: Boolean(data.featured),
-    published: Boolean(data.published),
-    registrationEnabled: Boolean(data.registrationEnabled),
-    capacity: data.capacity ? Number(data.capacity) : null,
-    priceMin: data.priceMin ? Number(data.priceMin) : null,
-    priceMax: data.priceMax ? Number(data.priceMax) : null,
-    startDate: new Date(data.startDate as string),
-    endDate: data.endDate ? new Date(data.endDate as string) : null,
-    registrationDeadline: data.registrationDeadline
-      ? new Date(data.registrationDeadline as string)
-      : null,
-  };
-}
+import { parseEventData } from "@/lib/parse-event";
 
 export async function GET() {
   const events = await prisma.event.findMany({

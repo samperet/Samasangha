@@ -18,16 +18,22 @@ interface EventData {
   flyerUrl: string | null;
 }
 
-const PRACTICES = [
-  { icon: "🌿", label: "Walks of Universal Peace" },
-  { icon: "💃", label: "Dances of Universal Peace" },
-  { icon: "☽", label: "Zikr & Meditation" },
-  { icon: "🤲", label: "Silence & Deep Listening" },
-  { icon: "✨", label: "Kirtan" },
-  { icon: "🧘", label: "Yoga" },
-];
+// Early-bird-aware prices computed by the server page (lib/pricing)
+interface PricingProps {
+  min: number | null;
+  max: number | null;
+  note?: string;
+}
 
-export default function EatDancePrayLayout({ event, slug }: { event: EventData; slug: string }) {
+export default function EatDancePrayLayout({
+  event,
+  pricing,
+}: {
+  event: EventData;
+  pricing?: PricingProps;
+}) {
+  const priceMin = pricing?.min ?? event.priceMin;
+  const priceMax = pricing?.max ?? event.priceMax;
   return (
     <div style={{ background: "var(--bg)" }}>
 
@@ -35,7 +41,7 @@ export default function EatDancePrayLayout({ event, slug }: { event: EventData; 
       <div className="relative overflow-hidden" style={{ height: "min(75vh, 640px)" }}>
         <Image
           src="/assets/EDPYurt.jpg"
-          alt="Eat, Dance and Pray — gathering in the yurt"
+          alt="Eat, Dance and Pray, gathering in the yurt"
           fill
           priority
           className="object-cover object-center"
@@ -94,7 +100,7 @@ export default function EatDancePrayLayout({ event, slug }: { event: EventData; 
             padding: "0 1rem",
           }}
         >
-          "Eat, Dance, and Pray together is the actualized vision Sufi Murshid Samuel Lewis held for world peace."
+          &quot;Eat, Dance, and Pray together is the actualized vision Sufi Murshid Samuel Lewis held for world peace.&quot;
         </blockquote>
 
         {/* Description */}
@@ -103,7 +109,7 @@ export default function EatDancePrayLayout({ event, slug }: { event: EventData; 
           style={{ color: "var(--fg1)" }}
         >
           <p className="mb-4">
-            With <strong>Abraham &amp; Halima</strong>, Malika (Colombia) &amp; Friends — this year's retreat invites us to tune into our natural rhythms and demonstrate Peace and Harmony.
+            With <strong>Abraham &amp; Halima</strong>, Malika (Colombia) &amp; Friends, this year&apos;s retreat invites us to tune into our natural rhythms and demonstrate Peace and Harmony.
           </p>
           <p className="mb-4">
             We gather to BE present together: to practice simple presence with the Walks and Dances of Universal Peace, Zikr, Meditation, Silence, Listening, Kirtan, and Yoga.
@@ -113,29 +119,11 @@ export default function EatDancePrayLayout({ event, slug }: { event: EventData; 
           </p>
         </div>
 
-        {/* Practices grid */}
-        <div className="mb-14">
-          <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-700)" }}>What we practice together</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {PRACTICES.map(({ icon, label }) => (
-              <div
-                key={label}
-                className="flex items-center gap-3 rounded-xl px-4 py-3"
-                style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
-              >
-                <span style={{ fontSize: "1.3rem" }}>{icon}</span>
-                <span className="text-sm font-medium" style={{ color: "var(--ink-800)" }}>{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Details band */}
         <div
-          className="rounded-2xl overflow-hidden mb-10"
-          style={{ border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-sm)" }}
+          className="gold-shadow rounded-2xl overflow-hidden mb-10"
+          style={{ border: "1px solid var(--surface-border)" }}
         >
-          <div className="h-1" style={{ background: "linear-gradient(90deg, var(--gold-500), var(--gold-300))" }} />
           <dl className="grid grid-cols-2 sm:grid-cols-3 gap-px" style={{ background: "var(--surface-border)" }}>
             {[
               { label: "Dates",    value: formatDateRange(event.startDate, event.endDate) },
@@ -150,13 +138,31 @@ export default function EatDancePrayLayout({ event, slug }: { event: EventData; 
           </dl>
         </div>
 
+        {event.flyerUrl && (
+          <div className="mb-10">
+            <a
+              href={event.flyerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block font-semibold px-6 py-3 rounded-lg text-sm"
+              style={{
+                background: "var(--lapis-700)",
+                color: "var(--fg-on-dark)",
+                boxShadow: "var(--shadow-sm)",
+              }}
+            >
+              View flyer
+            </a>
+          </div>
+        )}
+
         {/* Registration / pricing */}
         <div
           className="rounded-2xl p-8"
           style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
         >
-          {event.priceMin != null && event.priceMax != null ? (
-            <RetreatPriceSlider priceMin={event.priceMin} priceMax={event.priceMax} />
+          {priceMin != null && priceMax != null ? (
+            <RetreatPriceSlider priceMin={priceMin} priceMax={priceMax} note={pricing?.note} />
           ) : event.registerUrl ? (
             <>
               <h2 className="font-serif mb-2" style={{ fontSize: "1.4rem", fontWeight: 500, color: "var(--ink-900)" }}>

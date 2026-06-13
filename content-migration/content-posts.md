@@ -1,4 +1,4 @@
-# Posts Content — Ready to Import
+# Posts Content, Ready to Import
 # Format: Title | Category | Author | Date | Full Text
 
 ---
@@ -33,15 +33,15 @@ How about you? Why are you here? What do you hope/intend to strengthen or let go
 **Author:** Shakti
 **Date:** February 25, 2023
 
-Waking up, making coffee, and heading to my altar, I feel overwhelming gratitude for the blessings of these practices. It's a gift to be on this journey — on my own, with my partner who sometimes can connect to practice with me, with this group of spiritual seekers. It is a blessing to have living/loving teachers who stand as guides in support of our awakening.
+Waking up, making coffee, and heading to my altar, I feel overwhelming gratitude for the blessings of these practices. It's a gift to be on this journey, on my own, with my partner who sometimes can connect to practice with me, with this group of spiritual seekers. It is a blessing to have living/loving teachers who stand as guides in support of our awakening.
 
-As I light this candle, I feel my bones and sense your commitment to lighting your candle; I think about seekers all around the world and through all time — an embodied sense of interconnectedness as I ignite this flame and speak the invocation. We're following in the footsteps of our lineage caravan.
+As I light this candle, I feel my bones and sense your commitment to lighting your candle; I think about seekers all around the world and through all time, an embodied sense of interconnectedness as I ignite this flame and speak the invocation. We're following in the footsteps of our lineage caravan.
 
-During my meditation today, I focused on the phrase 'Toward the One – United with All' and switched my usual breath pattern. Instead of inhaling pointing out — Toward the One, I breathe inward — Toward the One, and invisible hands embrace my heart — front and back pressing inward, inviting me to integrate more fully into myself. A glowing thread of awareness points me to the phrase, 'The Embodiment of the Master.' the call to move toward mastery… a long way to go, but that's the invitation.
+During my meditation today, I focused on the phrase 'Toward the One – United with All' and switched my usual breath pattern. Instead of inhaling pointing out, Toward the One, I breathe inward, Toward the One, and invisible hands embrace my heart, front and back pressing inward, inviting me to integrate more fully into myself. A glowing thread of awareness points me to the phrase, 'The Embodiment of the Master.' the call to move toward mastery… a long way to go, but that's the invitation.
 
 For my exhale, I reach outward 'United with All,' and an echo comes resonating back to me, the phrase, 'United with All the Illuminated Souls.'
 
-Gifted a sense of protection, I extend and reach beyond my home, city, and planet… beyond, beyond the beyond — to the all-pervading life in space. And remember, I am a speck of life in a gigantic universe, embodying this heart, mind, and soul.
+Gifted a sense of protection, I extend and reach beyond my home, city, and planet… beyond, beyond the beyond, to the all-pervading life in space. And remember, I am a speck of life in a gigantic universe, embodying this heart, mind, and soul.
 
 As I finish meditation and enter the busy day, I try to hold on in remembrance of these momentary awarenesses.
 
@@ -66,18 +66,18 @@ As I was doing walking practice with Toward the One on the breath in the delicio
 
 ---
 
-### Title: 2024 European Ruhaniat Jamiat Ahm — Lauterbach, Germany
+### Title: 2024 European Ruhaniat Jamiat Ahm, Lauterbach, Germany
 **Category:** TALK
 **Author:** Abraham & Halima
 **Date:** 2024
 
 Guest teachers this year, Halima and Abraham, teach and inspire people worldwide. They and other Ruhaniat teachers offered various sessions with Dance, Music, Meditation, Peacework, Soulwork, Healing Prayer and Ziraat. There was also space for personal exchange, questions and answers.
 
-*(Audio gems from their talks at Jamiat Ahm 2024 are available — embed from existing site)*
+*(Audio gems from their talks at Jamiat Ahm 2024 are available, embed from existing site)*
 
 ---
 
-### Title: 2023 European Ruhaniat Jamiat Ahm — Lauterbach, Germany
+### Title: 2023 European Ruhaniat Jamiat Ahm, Lauterbach, Germany
 **Category:** TALK
 **Author:** Abraham & Halima
 **Date:** 2023
@@ -125,10 +125,10 @@ From this perspective, what makes the Dances of Universal Peace sacred dance and
 
 With this view of the Dances and Walks as spiritual practice, I look for certain qualities in masterful leadership of the Dances. These include:
 
-1. **Solar Radiance** — being positive in one's offering, confident in one's direct link to one's teachers and lineage teachings.
-2. **Embodiment** — giving one's embodied focus to the practice. "Left foot, right foot" — the Dances call us from distractions of mindmesh into the vibrancy of embodied presence.
+1. **Solar Radiance**, being positive in one's offering, confident in one's direct link to one's teachers and lineage teachings.
+2. **Embodiment**, giving one's embodied focus to the practice. "Left foot, right foot", the Dances call us from distractions of mindmesh into the vibrancy of embodied presence.
 3. **Relax into calm abiding**, which naturally encourages everyone in the circle to be relaxed and engaged.
-4. **Fana** — being effaced of one's own personality, devoting oneself to the practice, and tuning to the needs of the group. As leaders, we ought not take ourselves too seriously. Love inspires us all to open; the narcissism of self-importance closes us down.
+4. **Fana**, being effaced of one's own personality, devoting oneself to the practice, and tuning to the needs of the group. As leaders, we ought not take ourselves too seriously. Love inspires us all to open; the narcissism of self-importance closes us down.
 
 These are group practices and while the leader needs to inspire the group, s/he also needs to trust that the practice will naturally do the work of opening the group. Optimally, a leader both inspires a group, and liberates the group to awaken fully to the practice.
 
@@ -144,17 +144,17 @@ The training of Dance Leaders mostly involves our own training in spiritual prac
 The Walks and Dances of Universal Peace are an exquisite vehicle for the transformative spiritual awakening to our true nature. In the Dances we overcome isolation and the illusion of our separate individual states, and join together in the experience of our shared humanity. All people have words and expressions for love, compassion, peace, and joy. The Walks and Dances offer us a medium to experience and open to these kind of qualities that are, in reality, always present. We tune ourselves through rhythm, breath, heart awakening, and embodiment to the reality of Love, Harmony, and Beauty.
 
 *"The dance is the way of Life; the dance is the sway of Life. What Life gives may be expressed with body, heart, and soul to the glory of God and the elevation of humankind, leading therein to ecstasy and self realization. Verily, this is the sacred dance."*
-— Murshid SAM, Intro to Spiritual Dancing
+, Murshid SAM, Intro to Spiritual Dancing
 
 A quick look at the world news reveals a major gap between the values of love and happiness that we all want in our lives, and our actual collective human condition.
 
-*"When mankind, terrorized by conflict and faced with the ruin of civilization, when the power of wealth has dominated justice and the concept of fiction-money leading to utter destruction: when the Holy Spirit, driven ever further away on its path of ascension has again reached zenith, to the undoing of so much near and dear to us — let us, in spite of what occurs before our eyes invoke that same Divine Spirit through love and beauty, that we may restore order and balance to humanity."*
-— Murshid SAM, Intro to Spiritual Dancing
+*"When mankind, terrorized by conflict and faced with the ruin of civilization, when the power of wealth has dominated justice and the concept of fiction-money leading to utter destruction: when the Holy Spirit, driven ever further away on its path of ascension has again reached zenith, to the undoing of so much near and dear to us, let us, in spite of what occurs before our eyes invoke that same Divine Spirit through love and beauty, that we may restore order and balance to humanity."*
+, Murshid SAM, Intro to Spiritual Dancing
 
 In this light, The Walks and Dances of Universal Peace are an active, positive, and powerful agent of change and transformation. As dance leaders, we cultivate and develop the capacity to become conduits for such transformative experience.
 
 *"The willingness and ability to attune and surrender to the blessing transmitted through the Dances is the single most important aspect of dance leading. Ultimately, most mentors regard this as the ability to efface one's ego-personality in order to let grace flow through. It cannot be over emphasized that when working with the Dances 'externally' they will have 'internal' effects."*
-— Elements of Mastery: Attunement – Tassawuri, Fana, Effacement
+, Elements of Mastery: Attunement – Tassawuri, Fana, Effacement
 
 In this way, the Dances, and leading the Dances are a spiritual practice. We quicken to the God-given and God-sent qualities that are manifest in all life, including our own human nature. In leading a dance circle, it serves the group if we are able to let the energy flow through freely. When we activate our breath and hearts, when we open to compassion, mercy and love, strength, courage, joy, and peace, these energies move through us and can open in us.
 
@@ -175,7 +175,7 @@ We could also call this process the cultivation of effacement, the capacity to s
 
 The first interview of a series presenting senior mentors of the Dances of Universal Peace International Network, exploring the subject of the training of dance leaders.
 
-*(Video embed — source on current site)*
+*(Video embed, source on current site)*
 
 ---
 

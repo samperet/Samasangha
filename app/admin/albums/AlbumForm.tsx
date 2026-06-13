@@ -85,7 +85,8 @@ export default function AlbumForm({ album }: { album?: AlbumWithTracks }) {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Cover Image URL</label>
-            <Input type="url" value={form.coverUrl} onChange={(e) => setField("coverUrl", e.target.value)} />
+            {/* type=text: covers are often relative paths (/assets/…, /music/covers/…) */}
+            <Input type="text" value={form.coverUrl} onChange={(e) => setField("coverUrl", e.target.value)} />
           </div>
         </div>
         <div>

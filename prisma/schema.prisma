@@ -51,6 +51,7 @@ model Event {
   isRetreat            Boolean             @default(false)
   registerUrl          String?
   flyerUrl             String?
+  featuredImageUrl     String?
   featured             Boolean             @default(false)
   published            Boolean             @default(false)
   createdAt            DateTime            @default(now())
@@ -58,10 +59,22 @@ model Event {
   // Built-in registration
   registrationEnabled  Boolean             @default(false)
   capacity             Int?
+  // Pricing (all amounts in cents). FIXED uses priceMin as the price;
+  // SLIDING uses priceMin–priceMax. Early bird applies until its deadline.
+  pricingType          PricingType         @default(FREE)
   priceMin             Int?
   priceMax             Int?
+  earlyBirdPriceMin    Int?
+  earlyBirdPriceMax    Int?
+  earlyBirdDeadline    DateTime?
   registrationDeadline DateTime?
   registrations        EventRegistration[]
+}
+
+enum PricingType {
+  FREE
+  FIXED
+  SLIDING
 }
 
 model EventRegistration {
@@ -154,6 +167,17 @@ model Subscriber {
   email     String   @unique
   createdAt DateTime @default(now())
   active    Boolean  @default(true)
+}
+
+// Mureed Directory, self-submitted listings behind the Mureeds' Corner gate
+model MureedProfile {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  email     String
+  phone     String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
 }
 
 model Media {

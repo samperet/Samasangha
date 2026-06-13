@@ -50,6 +50,7 @@
   --link-hover: var(--crimson-900);
   --accent:        var(--gold-600);
   --accent-strong: var(--gold-700);
+  --deco-line:     rgba(156, 116, 33, 0.42);   /* soft gold for art-deco corners */
 
   --shadow-sm: 0 1px 2px rgba(58,42,8,.06), 0 1px 3px rgba(58,42,8,.08);
   --shadow-md: 0 4px 14px rgba(58,42,8,.10), 0 2px 6px rgba(58,42,8,.06);
@@ -138,6 +139,103 @@ blockquote {
   color: var(--gold-700);
 }
 
+/* No-op: gold accent border removed. Class retained so existing markup
+   keeps working without edits. */
+.gold-shadow {
+  box-shadow: none;
+}
+
+/* ── Parchment texture ───────────────────────────────────────────────
+   Aged-paper effect built from layered CSS only (no image request):
+   1. fractal-noise SVG (data URI) for the paper grain
+   2. large soft radial gradients for uneven mottling/staining
+   3. base parchment tint
+   The noise layer is intentionally faint, grain, not dirt. */
+.parchment {
+  background-color: var(--parch-100);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.015' numOctaves='4' seed='7'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.45 0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E"),
+    radial-gradient(115% 90% at 12% 0%,   rgba(221, 202, 166, 0.34) 0%, rgba(221, 202, 166, 0) 55%),
+    radial-gradient(120% 100% at 88% 12%, rgba(214, 189, 140, 0.28) 0%, rgba(214, 189, 140, 0) 50%),
+    radial-gradient(140% 120% at 50% 115%, rgba(196, 146, 43, 0.10) 0%, rgba(196, 146, 43, 0) 45%),
+    radial-gradient(100% 100% at 50% 45%, rgba(255, 252, 242, 0.65) 0%, rgba(255, 252, 242, 0) 70%),
+    linear-gradient(var(--parch-100), var(--parch-100));
+}
+
+.header-paper {
+  isolation: isolate;
+  background-color: #f7eedb;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55 0.72' numOctaves='2' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.42 0 0 0 0 0.34 0 0 0 0 0.21 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23paper)'/%3E%3C/svg%3E"),
+    linear-gradient(#f7eedb, #f7eedb);
+  background-blend-mode: multiply, normal;
+}
+
+div.header-paper {
+  position: relative;
+}
+
+header.header-paper {
+  position: sticky;
+}
+
+.header-paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(96deg, rgba(90, 79, 63, 0.026) 0 1px, transparent 1px 7px);
+  opacity: 0.55;
+}
+
+/* ── Art-deco corner frame, subtle thin border with elongated double-line
+   corner brackets (adapted from the "Art Deco Card" pattern). The four
+   .deco-corner spans sit just outside each corner; --deco-line cascades so
+   hovering the frame brightens the whole bracket set in one move. */
+.deco-frame {
+  position: relative;
+  border: 1px solid var(--deco-line);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.deco-frame:hover {
+  --deco-line: var(--gold-600);
+}
+.deco-corner {
+  --c: 0.34rem;                 /* corner-square size; arms scale off this */
+  position: absolute;
+  width: var(--c);
+  height: var(--c);
+  border: 1px solid var(--deco-line);
+  pointer-events: none;
+}
+.deco-corner::before,
+.deco-corner::after {
+  content: "";
+  position: absolute;
+}
+.deco-corner::after {           /* arm running along the horizontal edge */
+  width: calc(var(--c) * 4);
+  height: calc(var(--c) * 2 - 1px);
+}
+.deco-corner::before {          /* arm running along the vertical edge */
+  width: calc(var(--c) * 2 - 1px);
+  height: calc(var(--c) * 4);
+}
+.deco-corner.left  { left: calc(var(--c) * -1); }
+.deco-corner.left::after  { left: calc(var(--c) * 2 - 2px); border-left: 1px solid var(--deco-line); }
+.deco-corner.left::before { left: -1px; border-left: 1px solid var(--deco-line); }
+.deco-corner.right { right: calc(var(--c) * -1); }
+.deco-corner.right::after  { right: calc(var(--c) * 2 - 2px); border-right: 1px solid var(--deco-line); }
+.deco-corner.right::before { right: -1px; border-right: 1px solid var(--deco-line); }
+.deco-corner.top   { top: calc(var(--c) * -1); }
+.deco-corner.top::after  { top: -1px; border-top: 1px solid var(--deco-line); }
+.deco-corner.top::before { top: calc(var(--c) * 2 - 2px); border-top: 1px solid var(--deco-line); }
+.deco-corner.bottom { bottom: calc(var(--c) * -1); }
+.deco-corner.bottom::after  { bottom: -1px; border-bottom: 1px solid var(--deco-line); }
+.deco-corner.bottom::before { bottom: calc(var(--c) * 2 - 2px); border-bottom: 1px solid var(--deco-line); }
+
 /* Card with a thin gradient gold top-rule */
 .brand-card {
   background: #fff;
@@ -188,6 +286,14 @@ blockquote {
   opacity: 0.65;
   transition: color 0.2s ease, opacity 0.2s ease;
 }
+
+details > .calendar-options {
+  display: none !important;
+}
+
+details[open] > .calendar-options {
+  display: flex !important;
+}
 .footer-link:hover {
   color: var(--gold-300) !important;
   opacity: 1;
@@ -219,11 +325,11 @@ blockquote {
 .teacher-card {
   background: #fff;
   border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 6px -6px 0 0 var(--gold-400);
   transition: box-shadow 0.2s ease;
 }
 .teacher-card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: 8px -8px 0 0 var(--gold-400);
 }
 
 @keyframes heartFadeIn {

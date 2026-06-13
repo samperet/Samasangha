@@ -32,7 +32,7 @@ const teachers = [
       p(
         "Murshida Halima is a senior mentor teacher in the Sufi Ruhaniat and Dances of Universal Peace lineages, an inspired musician, and an experienced guide in the path of the awakening heart.",
         "Halima seeded her love of the Sufi path in Murshid Sam's Marin Dance Meeting. She shares joy and clarity arising from her own practice and taps a depth that arises from a lifetime of integrating spiritual practice, psychological exploration, and a love of the natural world.",
-        "Together with Abraham, Halima has traveled to Russia, Colombia, Ecuador, Mexico, New Zealand, Australia, Holland, Latvia, and Spain — bringing the Dances of Universal Peace and Sufi teachings to communities worldwide."
+        "Together with Abraham, Halima has traveled to Russia, Colombia, Ecuador, Mexico, New Zealand, Australia, Holland, Latvia, and Spain, bringing the Dances of Universal Peace and Sufi teachings to communities worldwide."
       ),
   },
   {
@@ -43,7 +43,7 @@ const teachers = [
     bio:
       p(
         "Murshid Abraham is an original mureed of Murshid Samuel Lewis. He is a senior mentor teacher in the Sufi Ruhaniat and Dances of Universal Peace lineages, an inspired musician, and an experienced guide in the path of the awakening heart.",
-        "As a young wanderer in 1969, Abraham first met his spiritual teacher, Sufi Murshid Samuel Lewis, dancing in Precita Park in San Francisco. He has been leading gatherings of the Dances of Universal Peace in Cambridge, Massachusetts since 1972 — where Murshid Sam first brought the dances in 1969.",
+        "As a young wanderer in 1969, Abraham first met his spiritual teacher, Sufi Murshid Samuel Lewis, dancing in Precita Park in San Francisco. He has been leading gatherings of the Dances of Universal Peace in Cambridge, Massachusetts since 1972, where Murshid Sam first brought the dances in 1969.",
         "Abraham travels and teaches internationally, returning home to Massachusetts, local family, and sangha."
       ),
   },
@@ -61,7 +61,7 @@ const teachers = [
         "Hazrat Inayat Khan was asked by his spiritual teacher to unite the East and West through his music and to bring the ideals of spiritual and religious unity to the western world. His teachings and message continue to be cultivated today through several Sufi branches, one of which is the Sufi Ruhaniat International."
       ) +
       blockquote(
-        "Sufism is the religion of the heart. The religion in which the most important thing is to seek God in the heart of mankind. — Hazrat Inayat Khan, Gathekas"
+        "Sufism is the religion of the heart. The religion in which the most important thing is to seek God in the heart of mankind., Hazrat Inayat Khan, Gathekas"
       ),
   },
   {
@@ -80,7 +80,7 @@ const teachers = [
         "Murshid Sam was succeeded by Pir Moineddin Jablonski, who served as spiritual director of the Sufi Ruhaniat International from 1971 through 2000."
       ) +
       blockquote(
-        "The Sufi not only prays to God, the Sufi represents God. By this I mean that one not only asks for Love and Wisdom and Joy and Peace, one does everything possible to awaken Love and Light and Wisdom and Joy and Peace in others. — Murshid Samuel Lewis, Diary, December 1, 1967"
+        "The Sufi not only prays to God, the Sufi represents God. By this I mean that one not only asks for Love and Wisdom and Joy and Peace, one does everything possible to awaken Love and Light and Wisdom and Joy and Peace in others., Murshid Samuel Lewis, Diary, December 1, 1967"
       ),
   },
   {
@@ -112,7 +112,7 @@ const teachers = [
     bio:
       p(
         "On February 27, 2001, Shabda Kahn was appointed Pir (lineage holder) of the Sufi Ruhaniat International in the stream of the great mystic Hazrat Inayat Khan, his disciple Murshid Samuel Lewis, and his successor Pir Moineddin Jablonski.",
-        "Shabda was initiated by Murshid Samuel Lewis on February 16, 1970. In the Fall of 1970, Shabda traveled with Murshid for five weeks as his personal assistant on the East Coast. A month later, Murshid Sam fell and died several weeks after — a morning Shabda was present for.",
+        "Shabda was initiated by Murshid Samuel Lewis on February 16, 1970. In the Fall of 1970, Shabda traveled with Murshid for five weeks as his personal assistant on the East Coast. A month later, Murshid Sam fell and died several weeks after, a morning Shabda was present for.",
         "Shabda met his second great teacher, Pandit Pran Nath, in 1972, and began the daily practice of North Indian Classical vocal music in the Kirana style, following in the footsteps of Hazrat Inayat Khan. Pran Nath planted an 800-year-old oral tradition of Chisti Sufi Vocal Music in the Western World and requested that Shabda carry on the lineage teaching under the name of the Chisti Sabri School of Music.",
         "Pir Shabda travels worldwide, teaching and bringing the message of spiritual unity through the expression of Love, Harmony and Beauty."
       ),
@@ -126,7 +126,7 @@ const teachers = [
       h2("A Brief Autobiography") +
       p(
         "The amanuensis, Frida Waterhouse, was born of Jewish parents on October 12, 1907, at Gloversville, New York.",
-        "She moved from Los Angeles to San Francisco under spiritual guidance in July 1963. A part of her genetic inheritance developed into cataracts in both eyes. Eventually she became blind to all but light and darkness because she would not submit to surgery for a period of about four and one-half years — requested by the Divine Ones in order that she might develop more inner sensitivities. Once she became an instrument with the skills required for her special work, her eyes developed acute glaucoma and surgery became imperative. Her sight was successfully restored.",
+        "She moved from Los Angeles to San Francisco under spiritual guidance in July 1963. A part of her genetic inheritance developed into cataracts in both eyes. Eventually she became blind to all but light and darkness because she would not submit to surgery for a period of about four and one-half years, requested by the Divine Ones in order that she might develop more inner sensitivities. Once she became an instrument with the skills required for her special work, her eyes developed acute glaucoma and surgery became imperative. Her sight was successfully restored.",
         "Her work is primarily to provide a practical springboard that others can use to help them work through compulsive, reactive emotional patterns that can lead to mastery over themselves. She is a channel that invokes spiritual force fields in order to confirm data already received by others."
       ),
   },
@@ -137,8 +137,8 @@ const teachers = [
     published: true,
     bio:
       p(
-        "Karmu gave herbal medicines to everyone who came to see him. In 1968, there were not health food stores in every major city — Karmu's practice was extraordinary for its time. His most used herbs were aloes, goldenseal, valerian, snakesroot, Life Everlasting — these were the backbone of his \"black\" medicine.",
-        "Abraham remembers Karmu as Murshid Sam's \"Black Christ\" — a healer who turned no one away. The song \"Healer Man (Karmu)\" on the album Voice of the Heart: Remembering was written in 1981 in his memory.",
+        "Karmu gave herbal medicines to everyone who came to see him. In 1968, there were not health food stores in every major city, Karmu's practice was extraordinary for its time. His most used herbs were aloes, goldenseal, valerian, snakesroot, Life Everlasting, these were the backbone of his \"black\" medicine.",
+        "Abraham remembers Karmu as Murshid Sam's \"Black Christ\", a healer who turned no one away. The song \"Healer Man (Karmu)\" on the album Voice of the Heart: Remembering was written in 1981 in his memory.",
         "A documentary, Karmu: A Place in the Sun, tells his story."
       ),
   },
@@ -154,7 +154,7 @@ const pages = [
       p(
         "SamaSangha is the community of seekers who have gathered in Massachusetts, and also far and wide, with the guidance of Sufi Murshids Halima and Abraham.",
         "In the Sufi Ruhaniat lineage of Pir-o-Murshid Hazrat Inayat Khan and Murshid Samuel Lewis our sangha supports our collective realization that love, harmony, and beauty are the foundation of spiritual life. Tuning to the interconnected nature which unites all of creation, our practice serves the protection of all life on Earth.",
-        "Since 1972 Halima and Abraham have been leading gatherings of the Dances of Universal Peace in Cambridge Massachusetts, where Murshid Sam first brought the dances in 1969. Sama — which refers to the sacred dance and music — is the name of our center and our sangha includes our many friends who have shared these practices with us.",
+        "Since 1972 Halima and Abraham have been leading gatherings of the Dances of Universal Peace in Cambridge Massachusetts, where Murshid Sam first brought the dances in 1969. Sama, which refers to the sacred dance and music, is the name of our center and our sangha includes our many friends who have shared these practices with us.",
         "In recent years Halima and Abraham have traveled to Russia, Colombia, Ecuador, Mexico, New Zealand, Australia, Holland, Latvia, and Spain, and the many friends they have made around the world have also become part of SamaSangha.",
         "Through regular in-person and online teachings and gatherings, this sangha continues to grow."
       ),
@@ -203,13 +203,13 @@ const pages = [
         "7:15pm doors open · 7:30–9:45pm practice<br>Friends Meeting House (in the Friends Room)<br>5 Longfellow Park, Cambridge, MA 02138<br>Suggested contribution: $10–15"
       ) +
       p(
-        "Led by SamaSangha with Halima, Abraham & Friends. All are welcome — no experience required.",
+        "Led by SamaSangha with Halima, Abraham & Friends. All are welcome, no experience required.",
         "To be added to the mailing list for announcements, please contact us or sign up below."
       ),
   },
   {
     slug: "deepening",
-    title: "Deepening — Mureeds' Class",
+    title: "Deepening, Mureeds' Class",
     content:
       p(
         "The Deepening program is an ongoing study and practice for initiated mureeds (students) of the Sufi Ruhaniat International.",
@@ -235,7 +235,7 @@ const posts = [
     title: "Dharma Gem: Halima reads from Jack Kornfield",
     slug: "dharma-gem-kornfield-2022",
     category: "DHARMA_GEM" as const,
-    excerpt: "Halima reads from a Jack Kornfield poem — August 5, 2022.",
+    excerpt: "Halima reads from a Jack Kornfield poem, August 5, 2022.",
     content: p("Halima reads from Jack Kornfield poem. August 5, 2022."),
     published: true,
     publishedAt: new Date("2022-08-05"),
@@ -244,7 +244,7 @@ const posts = [
     title: "'God is Breath' Reflection",
     slug: "god-is-breath-reflection",
     category: "DHARMA_GEM" as const,
-    excerpt: "What draws me to participate in 'God is Breath' at this time — and what I hope to gain from these practices.",
+    excerpt: "What draws me to participate in 'God is Breath' at this time, and what I hope to gain from these practices.",
     content:
       p(
         "We thought it would be nice to create a place for our prayer circle to share contemplations, experiences, questions, etc. as we go through 'God is Breath' together. If you feel inspired to share a writing, poetry, or artwork send it to Shakti and she'll add it to this page. And please feel free to comment."
@@ -259,7 +259,7 @@ const posts = [
         "My grandchildren were with me for an overnight on Saturday and they slept upstairs, in their own bed, for the first time. As I lay in my bed waiting for the next time that Leif, my 3½ year-old grandson, would awaken to call for me, I felt and sang the wazifa, Ya Raqib. It was such a beautiful, living experience of the watchful, loving awareness that we are practicing together.",
         "How about you? Why are you here? What do you hope/intend to strengthen or let go of? Let's evoke our intentions."
       ) +
-      p("<em>— Dahlia Sura, February 2023</em>"),
+      p("<em>, Dahlia Sura, February 2023</em>"),
     published: true,
     publishedAt: new Date("2023-02-01"),
   },
@@ -270,15 +270,15 @@ const posts = [
     excerpt: "Waking up, making coffee, and heading to my altar, I feel overwhelming gratitude for the blessings of these practices.",
     content:
       p(
-        "Waking up, making coffee, and heading to my altar, I feel overwhelming gratitude for the blessings of these practices. It's a gift to be on this journey — on my own, with my partner who sometimes can connect to practice with me, with this group of spiritual seekers. It is a blessing to have living/loving teachers who stand as guides in support of our awakening.",
-        "As I light this candle, I feel my bones and sense your commitment to lighting your candle; I think about seekers all around the world and through all time — an embodied sense of interconnectedness as I ignite this flame and speak the invocation. We're following in the footsteps of our lineage caravan.",
-        "During my meditation today, I focused on the phrase 'Toward the One – United with All' and switched my usual breath pattern. Instead of inhaling pointing out — Toward the One, I breathe inward — Toward the One, and invisible hands embrace my heart — front and back pressing inward, inviting me to integrate more fully into myself. A glowing thread of awareness points me to the phrase, 'The Embodiment of the Master.' The call to move toward mastery… a long way to go, but that's the invitation.",
+        "Waking up, making coffee, and heading to my altar, I feel overwhelming gratitude for the blessings of these practices. It's a gift to be on this journey, on my own, with my partner who sometimes can connect to practice with me, with this group of spiritual seekers. It is a blessing to have living/loving teachers who stand as guides in support of our awakening.",
+        "As I light this candle, I feel my bones and sense your commitment to lighting your candle; I think about seekers all around the world and through all time, an embodied sense of interconnectedness as I ignite this flame and speak the invocation. We're following in the footsteps of our lineage caravan.",
+        "During my meditation today, I focused on the phrase 'Toward the One – United with All' and switched my usual breath pattern. Instead of inhaling pointing out, Toward the One, I breathe inward, Toward the One, and invisible hands embrace my heart, front and back pressing inward, inviting me to integrate more fully into myself. A glowing thread of awareness points me to the phrase, 'The Embodiment of the Master.' The call to move toward mastery… a long way to go, but that's the invitation.",
         "For my exhale, I reach outward 'United with All,' and an echo comes resonating back to me, the phrase, 'United with All the Illuminated Souls.'",
-        "Gifted a sense of protection, I extend and reach beyond my home, city, and planet… beyond, beyond the beyond — to the all-pervading life in space. And remember, I am a speck of life in a gigantic universe, embodying this heart, mind, and soul.",
+        "Gifted a sense of protection, I extend and reach beyond my home, city, and planet… beyond, beyond the beyond, to the all-pervading life in space. And remember, I am a speck of life in a gigantic universe, embodying this heart, mind, and soul.",
         "As I finish meditation and enter the busy day, I try to hold on in remembrance of these momentary awarenesses.",
         "Good thing it's a year-long training +++"
       ) +
-      p("<em>— Shakti, February 2023</em>"),
+      p("<em>, Shakti, February 2023</em>"),
     published: true,
     publishedAt: new Date("2023-02-25"),
   },
@@ -286,21 +286,21 @@ const posts = [
     title: "A Divine Inner Flash",
     slug: "a-divine-inner-flash",
     category: "DHARMA_GEM" as const,
-    excerpt: "A Divine Inner Flash — a lifetime in the unfurling.",
+    excerpt: "A Divine Inner Flash, a lifetime in the unfurling.",
     content:
       p(
         "<em>A Divine Inner Flash (a lifetime in the unfurling).</em>",
         "It's more of an unfurling than an unfolding, the Soul. I picture a chameleon's tail spiraling at will…",
         "As I was doing walking practice with Toward the One on the breath in the delicious cold spring air moving in and out like the sweetest nectar I had the epiphany of my lifelong ability to spiral inward into a depth unimaginable to the rational self. I realized in that moment there was NoThing stopping my soul from spiraling outward in that moment of Being in the One. In that very revelation a fully emerged Tiger Swallowtail brushed by me in the sunshine!"
       ) +
-      p("<em>— Tarana Wesley, April 2023</em>"),
+      p("<em>, Tarana Wesley, April 2023</em>"),
     published: true,
     publishedAt: new Date("2023-04-11"),
   },
 
   // ── TALKS ──
   {
-    title: "2024 European Ruhaniat Jamiat Ahm — Lauterbach, Germany",
+    title: "2024 European Ruhaniat Jamiat Ahm, Lauterbach, Germany",
     slug: "jamiat-ahm-2024",
     category: "TALK" as const,
     excerpt: "Gems from Abraham and Halima's talks at the international gathering of the Ruhaniat Family in Germany.",
@@ -313,7 +313,7 @@ const posts = [
     publishedAt: new Date("2024-10-01"),
   },
   {
-    title: "2023 European Ruhaniat Jamiat Ahm — Lauterbach, Germany",
+    title: "2023 European Ruhaniat Jamiat Ahm, Lauterbach, Germany",
     slug: "jamiat-ahm-2023",
     category: "TALK" as const,
     excerpt: "Abraham and Halima as guest teachers at the 2023 gathering, with focus on astrological walks of Murshid Samuel Lewis.",
@@ -362,15 +362,15 @@ const posts = [
       ) +
       h2("Elements of Mastery in Dance Leadership") +
       ul(
-        "<strong>Solar Radiance</strong> — being positive in one's offering, confident in one's direct link to one's teachers and lineage teachings.",
-        "<strong>Embodiment</strong> — giving one's embodied focus to the practice. \"Left foot, right foot\" — the Dances call us from distractions of mind-mesh into the vibrancy of embodied presence.",
-        "<strong>Calm abiding</strong> — relaxing into the practice, which naturally encourages everyone in the circle to be relaxed and engaged.",
-        "<strong>Fana</strong> — being effaced of one's own personality, devoting oneself to the practice, and tuning to the needs of the group."
+        "<strong>Solar Radiance</strong>, being positive in one's offering, confident in one's direct link to one's teachers and lineage teachings.",
+        "<strong>Embodiment</strong>, giving one's embodied focus to the practice. \"Left foot, right foot\", the Dances call us from distractions of mind-mesh into the vibrancy of embodied presence.",
+        "<strong>Calm abiding</strong>, relaxing into the practice, which naturally encourages everyone in the circle to be relaxed and engaged.",
+        "<strong>Fana</strong>, being effaced of one's own personality, devoting oneself to the practice, and tuning to the needs of the group."
       ) +
       p(
         "The training of Dance Leaders mostly involves our own training in spiritual practice. The elements of mastery described above are not learned from a book. They involve our own experience, as Dance Leaders, of the awakening, from within, of our own hearts. As Rumi says: \"Close the language door. Open the love window.\""
       ) +
-      p("<em>— Murshid Abraham</em>"),
+      p("<em>, Murshid Abraham</em>"),
     published: true,
     publishedAt: new Date("2025-03-25"),
   },
@@ -384,17 +384,17 @@ const posts = [
         "The Walks and Dances of Universal Peace are an exquisite vehicle for the transformative spiritual awakening to our true nature. In the Dances we overcome isolation and the illusion of our separate individual states, and join together in the experience of our shared humanity. All people have words and expressions for love, compassion, peace, and joy. The Walks and Dances offer us a medium to experience and open to these kind of qualities that are, in reality, always present."
       ) +
       blockquote(
-        "The dance is the way of Life; the dance is the sway of Life. What Life gives may be expressed with body, heart, and soul to the glory of God and the elevation of humankind, leading therein to ecstasy and self realization. Verily, this is the sacred dance. — Murshid SAM, Intro to Spiritual Dancing"
+        "The dance is the way of Life; the dance is the sway of Life. What Life gives may be expressed with body, heart, and soul to the glory of God and the elevation of humankind, leading therein to ecstasy and self realization. Verily, this is the sacred dance., Murshid SAM, Intro to Spiritual Dancing"
       ) +
       blockquote(
-        "When mankind, terrorized by conflict and faced with the ruin of civilization, when the power of wealth has dominated justice… let us, in spite of what occurs before our eyes invoke that same Divine Spirit through love and beauty, that we may restore order and balance to humanity. — Murshid SAM"
+        "When mankind, terrorized by conflict and faced with the ruin of civilization, when the power of wealth has dominated justice… let us, in spite of what occurs before our eyes invoke that same Divine Spirit through love and beauty, that we may restore order and balance to humanity., Murshid SAM"
       ) +
       p(
         "In this light, The Walks and Dances of Universal Peace are an active, positive, and powerful agent of change and transformation. As dance leaders, we cultivate and develop the capacity to become conduits for such transformative experience.",
         "In this way, the Dances, and leading the Dances are a spiritual practice. When we activate our breath and hearts, when we open to compassion, mercy and love, strength, courage, joy, and peace, these energies move through us and can open in us.",
-        "We could also call this process the cultivation of effacement — the capacity to surrender our own ego, and our own sense of self-importance. Sufis call this act of surrender \"fana\", which is a similar state to what Buddhists call \"cultivating emptiness.\" In this state of fana, a dance leader becomes a vessel, receptive to the ever-present flow of blessing."
+        "We could also call this process the cultivation of effacement, the capacity to surrender our own ego, and our own sense of self-importance. Sufis call this act of surrender \"fana\", which is a similar state to what Buddhists call \"cultivating emptiness.\" In this state of fana, a dance leader becomes a vessel, receptive to the ever-present flow of blessing."
       ) +
-      p("<em>— Murshida Halima</em>"),
+      p("<em>, Murshida Halima</em>"),
     published: true,
     publishedAt: new Date("2025-03-25"),
   },

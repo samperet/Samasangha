@@ -1,4 +1,4 @@
-// Single-password admin auth — pure token helpers, no Next.js imports,
+// Single-password admin auth, pure token helpers, no Next.js imports,
 // so this module is safe in both proxy (edge) and route handlers.
 // The session cookie holds an HMAC derived from ADMIN_PASSWORD + secret,
 // so changing either invalidates all sessions.
@@ -7,11 +7,9 @@ export const ADMIN_COOKIE = "admin_session";
 export const DEEPENING_COOKIE = "deepening_session";
 
 function getSecret() {
-  return (
-    process.env.ADMIN_SESSION_SECRET ??
-    process.env.NEXTAUTH_SECRET ??
-    "samasangha-dev-secret"
-  );
+  // No hardcoded fallback: the signing secret must come from the environment
+  // (ADMIN_SESSION_SECRET preferred; NEXTAUTH_SECRET kept as a legacy alias).
+  return process.env.ADMIN_SESSION_SECRET ?? process.env.NEXTAUTH_SECRET ?? "";
 }
 
 export function getAdminPassword() {
@@ -19,7 +17,8 @@ export function getAdminPassword() {
 }
 
 export function getDeepeningPassword() {
-  return process.env.DEEPENING_PASSWORD ?? "AHHA";
+  // No hardcoded fallback: the gate stays locked until DEEPENING_PASSWORD is set.
+  return process.env.DEEPENING_PASSWORD ?? "";
 }
 
 async function hmacToken(message: string): Promise<string> {

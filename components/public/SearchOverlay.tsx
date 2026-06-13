@@ -57,7 +57,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    /* Backdrop — warm translucent parchment fog */
+    /* Backdrop, warm translucent parchment fog */
     <div
       className="fixed inset-0 z-[200] flex flex-col items-center pt-[15vh] px-4"
       style={{ background: "rgba(251,247,236,.82)", backdropFilter: "blur(8px)" }}

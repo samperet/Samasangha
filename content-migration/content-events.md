@@ -1,4 +1,4 @@
-# Events Content — Ready to Import
+# Events Content, Ready to Import
 
 ---
 
@@ -11,7 +11,7 @@
 **Recurring:** 3rd Saturday of every month
 **Start time:** 7:30 PM
 **Location:** Friends Meeting House (in the Friends Room), 5 Longfellow Park, Cambridge, MA 02138
-**Description:** Live Dances of Universal Peace with SamaSangha — Halima, Abraham & Friends. Doors open at 7:15 PM. The event begins promptly at 7:30 PM. Please arrive a few minutes early to allow for a smooth start. A contribution of $10–15 is kindly requested.
+**Description:** Live Dances of Universal Peace with SamaSangha, Halima, Abraham & Friends. Doors open at 7:15 PM. The event begins promptly at 7:30 PM. Please arrive a few minutes early to allow for a smooth start. A contribution of $10–15 is kindly requested.
 
 Dances of Universal Peace are part of the timeless tradition of body prayer and sacred dance. Singing and moving together, we embrace the Unity at the heart of all paths to the Source.
 **isOnline:** false
@@ -66,7 +66,7 @@ This year's retreat allows us to tune into our natural rhythms and demonstrate P
 **Location:** Rural North Central MA (Dance yurt, 2 farmhouses, cabins, lake and waterfall)
 **Description:** Memorial Day Weekend. With Murshids Halima & Abraham and Friends.
 
-The Walks and Dances of Universal Peace offer personal and planetary transformation opportunities. 'Although we seem to be in a world of song and dance, we are most concerned with Peace on Earth' — Murshid Samuel Lewis.
+The Walks and Dances of Universal Peace offer personal and planetary transformation opportunities. 'Although we seem to be in a world of song and dance, we are most concerned with Peace on Earth', Murshid Samuel Lewis.
 
 Cost: $350 after May 1. Partial work exchanges available. Indoor rooms additional $60–100 sliding scale. The retreat begins with lunch on Saturday and closes Monday after lunch.
 **isRetreat:** true
@@ -74,7 +74,7 @@ Cost: $350 after May 1. Partial work exchanges available. Indoor rooms additiona
 
 ---
 
-### Event: Sufi Retreat Türkiye — Path of the Awakened Heart
+### Event: Sufi Retreat Türkiye, Path of the Awakened Heart
 **Slug:** turkiye-retreat-2024
 **Start:** April 11, 2024
 **End:** April 14, 2024
@@ -89,7 +89,7 @@ For the past 50 years, they have shared these Dances worldwide. And also guide S
 
 ---
 
-### Event: Jamiat Ahm 2024 — Germany
+### Event: Jamiat Ahm 2024, Germany
 **Slug:** jamiat-ahm-2024
 **Start:** 2024 (exact date not listed)
 **Location:** Lauterbach, Germany
@@ -99,7 +99,7 @@ For the past 50 years, they have shared these Dances worldwide. And also guide S
 
 ---
 
-### Event: Jamiat Ahm 2023 — Germany
+### Event: Jamiat Ahm 2023, Germany
 **Slug:** jamiat-ahm-2023
 **Start:** 2023 (exact date not listed)
 **Location:** Lauterbach, Germany
@@ -109,15 +109,15 @@ For the past 50 years, they have shared these Dances worldwide. And also guide S
 
 ---
 
-### Event: Journey to India — Retreat & Dalai Lama Meeting
+### Event: Journey to India, Retreat & Dalai Lama Meeting
 **Slug:** india-retreat-past
 **Start:** 2023 (approx)
 **Location:** Bir & Dharamsala, India
 **Description:** An Extraordinary Journey to India. A highlight was a deeply moving, brief meeting with His Holiness the Dalai Lama outside his home in Dharamsala. His steady, loving presence was a powerful experience and felt full of blessing.
 
-The Bir Retreat included guiding a profound seven-day retreat held at a Retreat Center in Bir, near Dharamsala — a beautiful, joyful gathering of 85 retreatants from 14 countries, including many from Russia, Türkiye, France, Kazakhstan, Vietnam, and India.
+The Bir Retreat included guiding a profound seven-day retreat held at a Retreat Center in Bir, near Dharamsala, a beautiful, joyful gathering of 85 retreatants from 14 countries, including many from Russia, Türkiye, France, Kazakhstan, Vietnam, and India.
 
-A Visit to Tai Situ Rinpoche's Monastery was also included — the incredible monastery of Tai Situ Rinpoche, Pir Shabda's Tibetan teacher, a vibrant center of learning for 500 monks.
+A Visit to Tai Situ Rinpoche's Monastery was also included, the incredible monastery of Tai Situ Rinpoche, Pir Shabda's Tibetan teacher, a vibrant center of learning for 500 monks.
 **isRetreat:** true
 **Published:** true
 
@@ -166,14 +166,14 @@ Rumi Night is offered by SAMA, a branch of the Sufi Ruhaniat International, in c
 
 Doors open at 7:00 PM. Begin at 7:30. Requested contribution $15–$20 at the door.
 
-*"Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it."* — Rumi
+*"Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it."*, Rumi
 
 Over 800 years ago, Mevlana Jelaluddin Rumi taught that all religions and faiths are essentially One and that all life, all existence, and all creation are deeply united through Love.
 **Published:** true
 
 ---
 
-### Event: Opening to the Inner Life — Pir Shabda Kahn Retreat
+### Event: Opening to the Inner Life, Pir Shabda Kahn Retreat
 **Slug:** pir-shabda-retreat-2014
 **Start:** March 20, 2014
 **End:** March 22, 2014
@@ -190,7 +190,7 @@ Cost: $200 if paid by February 22, 2014. $250 after. Some home stays available w
 
 ---
 
-### Event: A Day of Sufi Sesshin — Renew and Retreat
+### Event: A Day of Sufi Sesshin, Renew and Retreat
 **Slug:** sufi-sesshin-2015
 **Start:** Saturday, March 7 (year approximate)
 **End:** (same day, 9AM–5PM)

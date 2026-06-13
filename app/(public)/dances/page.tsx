@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Dances of Universal Peace",
   description:
-    "Live Dances of Universal Peace in Cambridge — sacred circle dances of chant, live music, and movement, on the third Saturday of each month with SamaSangha.",
+    "Live Dances of Universal Peace in Cambridge, sacred circle dances of chant, live music, and movement, on the third Saturday of each month with SamaSangha.",
 };
 
 const PRACTICE = [
@@ -14,6 +14,57 @@ const PRACTICE = [
   { dt: "Where", dd: "Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138" },
   { dt: "Contribution", dd: "$10–15 kindly requested" },
   { dt: "Led by", dd: "SamaSangha with Halima, Abraham & Friends" },
+];
+
+const CALENDAR_EVENT = {
+  title: "Dances of Universal Peace",
+  location: "Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138",
+  details:
+    "Monthly Dances of Universal Peace with SamaSangha. Doors open at 7:15 PM. Dances begin at 7:30 PM.",
+  startLocal: "20260620T193000",
+  endLocal: "20260620T214500",
+  startUtc: "20260620T233000Z",
+  endUtc: "20260621T014500Z",
+  recurrence: "RRULE:FREQ=MONTHLY;BYDAY=3SA",
+};
+
+const icsHref = `data:text/calendar;charset=utf-8,${encodeURIComponent(
+  [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//SamaSangha//Dances of Universal Peace//EN",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    "UID:dances-of-universal-peace@samasangha.org",
+    `DTSTART;TZID=America/New_York:${CALENDAR_EVENT.startLocal}`,
+    `DTEND;TZID=America/New_York:${CALENDAR_EVENT.endLocal}`,
+    CALENDAR_EVENT.recurrence,
+    `SUMMARY:${CALENDAR_EVENT.title}`,
+    `LOCATION:${CALENDAR_EVENT.location}`,
+    `DESCRIPTION:${CALENDAR_EVENT.details}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n")
+)}`;
+
+const calendarLinks = [
+  {
+    label: "Apple / Outlook / ICS",
+    href: icsHref,
+    download: "samasangha-dances.ics",
+  },
+  {
+    label: "Google",
+    href: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(CALENDAR_EVENT.title)}&dates=${CALENDAR_EVENT.startUtc}/${CALENDAR_EVENT.endUtc}&details=${encodeURIComponent(CALENDAR_EVENT.details)}&location=${encodeURIComponent(CALENDAR_EVENT.location)}&recur=${encodeURIComponent(CALENDAR_EVENT.recurrence)}`,
+  },
+  {
+    label: "Outlook.com",
+    href: `https://outlook.live.com/calendar/0/action/compose?path=/calendar/action/compose&rru=addevent&subject=${encodeURIComponent(CALENDAR_EVENT.title)}&startdt=2026-06-20T19:30:00&enddt=2026-06-20T21:45:00&body=${encodeURIComponent(`${CALENDAR_EVENT.details} Recurs on the third Saturday of each month.`)}&location=${encodeURIComponent(CALENDAR_EVENT.location)}`,
+  },
+  {
+    label: "Yahoo",
+    href: `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(CALENDAR_EVENT.title)}&st=${CALENDAR_EVENT.startUtc}&dur=0215&desc=${encodeURIComponent(`${CALENDAR_EVENT.details} Recurs on the third Saturday of each month.`)}&in_loc=${encodeURIComponent(CALENDAR_EVENT.location)}`,
+  },
 ];
 
 export default function DancesPage() {
@@ -36,29 +87,25 @@ export default function DancesPage() {
         Dances of Universal Peace
       </h1>
       <p className="text-lg leading-relaxed mb-10" style={{ color: "var(--fg2)" }}>
-        Live Dances of Universal Peace in Cambridge — singing and moving together,
+        Live Dances of Universal Peace in Cambridge, singing and moving together,
         we embrace the Unity at the heart of all paths to the Source.
       </p>
 
       {/* ── Hero image ─────────────────────────────────────────── */}
-      <div className="rounded-2xl overflow-hidden mb-12" style={{ boxShadow: "var(--shadow-md)" }}>
-        <Image
-          src="/assets/DancesMandala.png"
-          alt="Dances of Universal Peace mandala"
-          width={1280}
-          height={560}
-          className="w-full object-cover"
-          style={{ maxHeight: 420, objectPosition: "center" }}
-          priority
-        />
-      </div>
+      <Image
+        src="/assets/UDPcircle.png"
+        alt="Dances of Universal Peace circle"
+        width={1254}
+        height={1254}
+        className="mx-auto mb-12 h-auto w-full max-w-40 sm:max-w-48"
+        priority
+      />
 
       {/* ── Practice details card ──────────────────────────────── */}
       <div
-        className="rounded-2xl overflow-hidden mb-14"
-        style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-sm)" }}
+        className="gold-shadow rounded-2xl overflow-hidden mb-14"
+        style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)" }}
       >
-        <div className="h-1" style={{ background: "linear-gradient(90deg, var(--gold-500), var(--gold-300))" }} />
         <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-5 p-7">
           {PRACTICE.map((row) => (
             <div key={row.dt}>
@@ -73,8 +120,35 @@ export default function DancesPage() {
         </dl>
         <p className="px-7 pb-6 text-sm" style={{ color: "var(--fg2)" }}>
           Please arrive a few minutes early to allow for a smooth start. No experience
-          required — only your presence.
+          required, only your presence.
         </p>
+        <details className="px-7 pb-7">
+          <summary
+            className="inline-flex cursor-pointer list-none items-center rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors"
+            style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+          >
+            Add to calendar
+          </summary>
+          <div className="calendar-options mt-3 flex flex-wrap gap-2">
+            {calendarLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                download={link.download}
+                target={link.download ? undefined : "_blank"}
+                rel={link.download ? undefined : "noopener noreferrer"}
+                className="inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+                style={{
+                  border: "1px solid var(--surface-border)",
+                  color: "var(--ink-800)",
+                  background: "#fff",
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </details>
       </div>
 
       {/* ── About the practice ─────────────────────────────────── */}
@@ -88,7 +162,7 @@ export default function DancesPage() {
         </p>
         <p>
           Spiritual practice brings us face to face with Life and Truth, prior to the
-          concepts and beliefs of the person, opening to our true nature — authentic,
+          concepts and beliefs of the person, opening to our true nature, authentic,
           unguarded, beyond form, and imbued with the spaciousness and love that
           connects all. This taste of our true nature, as Universal Peace, opens to the
           possibility of a deep spiritual revolution within the person.
@@ -107,14 +181,14 @@ export default function DancesPage() {
       {/* ── Footer links ───────────────────────────────────────── */}
       <div className="mt-12 flex flex-wrap gap-3">
         <Link
-          href="/teachings/music/albums/original-dances"
+          href="/deepen/music/albums/original-dances"
           className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
           style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
         >
           Listen to the dances →
         </Link>
         <Link
-          href="/teachings?type=articles"
+          href="/deepen?type=articles"
           className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
           style={{ border: "1px solid var(--surface-border)", color: "var(--ink-800)" }}
         >

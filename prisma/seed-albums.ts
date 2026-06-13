@@ -72,20 +72,20 @@ const albums: SeedAlbum[] = [
     year: 2022,
     buyUrl: "https://northeastsufis.org/waters-of-life/",
     tracks: [
-      { title: "KC Bismillah — Halima Sussman", file: "01-kc-bismillah-halima-sussman-fattah-kriner-dance.m4a", duration: 174 },
-      { title: "My Lord Is a Rock — Allaudin Ottinger", file: "02-my-lord-is-a-rock-allaudin-ottinger-zubeida-mitten-lewis.m4a", duration: 312 },
-      { title: "Alastu — Halima", file: "03-alastu-halima-saadi-neil-douglas-klotz.m4a", duration: 170 },
-      { title: "Shakti Ye — Abraham Sussman", file: "04-shakti-ye-abraham-sussman-halima-abraham.m4a", duration: 325 },
-      { title: "Vilka Yaku — Arjun", file: "05-vilka-yaku-arjun-arjun-jorge-calero.m4a", duration: 380 },
-      { title: "Ani Mahamin — Abraham", file: "06-ani-mahamin-abraham-halima-abraham.m4a", duration: 246 },
-      { title: "Om Tare — Malika Elena Salazar", file: "07-om-tare-malika-elena-salazar-radha-cludia-cuman.m4a", duration: 99 },
-      { title: "Returning — Halima", file: "08-returning-halima-halima.m4a", duration: 183 },
-      { title: "Ixchel in the Rain — Malika", file: "09-ixchel-in-the-rain-malika-ayesha-lauenborg.m4a", duration: 207 },
-      { title: "Armaiti Anahita — Khadija Goforth", file: "10-armaiti-anahita-khadija-goforth-khabir-kitz.m4a", duration: 192 },
-      { title: "Butter Zikr — Maitreya", file: "11-butter-zikr-maitreya-maitreya-jon-stevens.m4a", duration: 255 },
-      { title: "Steady On — Maitreya", file: "12-steady-on-maitreya-maitreya.m4a", duration: 146 },
-      { title: "Allah Zikr / Subhan Allah — Halima", file: "13-allah-zikr-halima-halima-subhan-allah-halima-leilah-be.m4a", duration: 484 },
-      { title: "Fill Your Cup — Allaudin", file: "14-fill-you-cup-allaudin-allaudin.m4a", duration: 450 },
+      { title: "KC Bismillah, Halima Sussman", file: "01-kc-bismillah-halima-sussman-fattah-kriner-dance.m4a", duration: 174 },
+      { title: "My Lord Is a Rock, Allaudin Ottinger", file: "02-my-lord-is-a-rock-allaudin-ottinger-zubeida-mitten-lewis.m4a", duration: 312 },
+      { title: "Alastu, Halima", file: "03-alastu-halima-saadi-neil-douglas-klotz.m4a", duration: 170 },
+      { title: "Shakti Ye, Abraham Sussman", file: "04-shakti-ye-abraham-sussman-halima-abraham.m4a", duration: 325 },
+      { title: "Vilka Yaku, Arjun", file: "05-vilka-yaku-arjun-arjun-jorge-calero.m4a", duration: 380 },
+      { title: "Ani Mahamin, Abraham", file: "06-ani-mahamin-abraham-halima-abraham.m4a", duration: 246 },
+      { title: "Om Tare, Malika Elena Salazar", file: "07-om-tare-malika-elena-salazar-radha-cludia-cuman.m4a", duration: 99 },
+      { title: "Returning, Halima", file: "08-returning-halima-halima.m4a", duration: 183 },
+      { title: "Ixchel in the Rain, Malika", file: "09-ixchel-in-the-rain-malika-ayesha-lauenborg.m4a", duration: 207 },
+      { title: "Armaiti Anahita, Khadija Goforth", file: "10-armaiti-anahita-khadija-goforth-khabir-kitz.m4a", duration: 192 },
+      { title: "Butter Zikr, Maitreya", file: "11-butter-zikr-maitreya-maitreya-jon-stevens.m4a", duration: 255 },
+      { title: "Steady On, Maitreya", file: "12-steady-on-maitreya-maitreya.m4a", duration: 146 },
+      { title: "Allah Zikr / Subhan Allah, Halima", file: "13-allah-zikr-halima-halima-subhan-allah-halima-leilah-be.m4a", duration: 484 },
+      { title: "Fill Your Cup, Allaudin", file: "14-fill-you-cup-allaudin-allaudin.m4a", duration: 450 },
     ],
   },
   {
@@ -111,7 +111,7 @@ const albums: SeedAlbum[] = [
     slug: "healing-love",
     title: "Healing Love",
     description:
-      "Chants and songs of healing offered by the SamaSangha community — invoking compassion across traditions, from Kwan Zeon Bosal and Green Tara to Darood and the Medicine Buddha.",
+      "Chants and songs of healing offered by the SamaSangha community, invoking compassion across traditions, from Kwan Zeon Bosal and Green Tara to Darood and the Medicine Buddha.",
     cover: "/music/covers/healing-love.png",
     year: 2025,
     buyUrl: "https://northeastsufis.org/healing-love/",
@@ -135,7 +135,7 @@ const albums: SeedAlbum[] = [
     slug: "zikr-of-the-heart",
     title: "Zikr of the Heart",
     description:
-      "With Pir Shabda Kahn & Friends. Recorded live in Boston, April 2002 — a joyous collection of devotional chant and zikrs recorded during a SAMA retreat, with over 70 live voices and hearts joining in. Full album available by donation.",
+      "With Pir Shabda Kahn & Friends. Recorded live in Boston, April 2002, a joyous collection of devotional chant and zikrs recorded during a SAMA retreat, with over 70 live voices and hearts joining in. Full album available by donation.",
     cover: "/music/covers/zikr-of-the-heart.jpeg",
     year: 2002,
     buyUrl: "https://northeastsufis.org/zikr-of-the-heart/",
@@ -145,7 +145,7 @@ const albums: SeedAlbum[] = [
     slug: "the-bridge",
     title: "The Bridge",
     description:
-      "The Way of the Spiritual Traveller — a musical journey from the mystical traditions of the Middle East. A collaboration of Neil Douglas-Klotz, Abraham Sussman and friends, following the modern pilgrim's progress through the peaks and valleys of the spiritual path.",
+      "The Way of the Spiritual Traveller, a musical journey from the mystical traditions of the Middle East. A collaboration of Neil Douglas-Klotz, Abraham Sussman and friends, following the modern pilgrim's progress through the peaks and valleys of the spiritual path.",
     cover: "/music/covers/the-bridge.webp",
     buyUrl: "https://northeastsufis.org/albums/",
     tracks: [
@@ -166,7 +166,7 @@ const albums: SeedAlbum[] = [
     slug: "beginnings",
     title: "Beginnings",
     description:
-      "A Modern Oratorio inspired by the shared creation stories of the Middle East. A musical collaboration of Saadi Neil Douglas-Klotz, Abraham Sussman & friends — a meditation on Creation drawn from the Hebrew and Christian Bibles and the Quran, including the melodies of Saadi's Genesis Meditations cycle.",
+      "A Modern Oratorio inspired by the shared creation stories of the Middle East. A musical collaboration of Saadi Neil Douglas-Klotz, Abraham Sussman & friends, a meditation on Creation drawn from the Hebrew and Christian Bibles and the Quran, including the melodies of Saadi's Genesis Meditations cycle.",
     cover: "/music/covers/beginnings.webp",
     buyUrl: "https://northeastsufis.org/voice-of-the-heart-remembering/",
     tracks: [
@@ -191,7 +191,7 @@ const albums: SeedAlbum[] = [
 async function main() {
   // Remove the old tracklist-only placeholder (superseded by the "beginnings" sample album)
   await prisma.album.deleteMany({ where: { slug: "beginnings-a-modern-oratorio" } });
-  // Saladin is a spoken-word 4-CD set with no streamable audio — keep it unpublished
+  // Saladin is a spoken-word 4-CD set with no streamable audio, keep it unpublished
   await prisma.album.updateMany({
     where: { slug: "saladin-epic-poem" },
     data: { published: false },

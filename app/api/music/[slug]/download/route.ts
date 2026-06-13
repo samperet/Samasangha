@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 // Streams a ZIP of an album's audio files. Files are stored (not re-compressed)
-// since m4a/mp3 are already compressed — keeps it fast and low-CPU.
+// since m4a/mp3 are already compressed, keeps it fast and low-CPU.
 //
 // Note: archiver v8 is ESM-only and exposes archive classes (ZipArchive, …)
 // rather than the v7 default factory function.

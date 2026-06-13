@@ -98,7 +98,7 @@ function EventTable({
                     <span className="text-gray-400">registrations</span>
                   </Link>
                 ) : (
-                  <span className="text-xs text-gray-400">—</span>
+                  <span className="text-xs text-gray-400">,</span>
                 )}
               </td>
               <td className="px-4 py-3">

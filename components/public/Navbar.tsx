@@ -18,7 +18,41 @@ const DISCOVER = {
 
 // "Teachings" is a plain link to the filterable teachings list (no dropdown).
 
-// Mobile menu item — large text + roomy padding so the tap target clears the
+// Tiny gold heart separator, SVG so we can control the roundness fully
+function NavHeart() {
+  return (
+    <svg aria-hidden width="10" height="10" viewBox="0 0 20 18" fill="var(--gold-500)" style={{ opacity: 0.75, flexShrink: 0 }}>
+      <path d="M10 17 C10 17 1 11 1 5.5 A4.5 4.5 0 0 1 10 3.8 A4.5 4.5 0 0 1 19 5.5 C19 11 10 17 10 17Z" />
+    </svg>
+  );
+}
+
+// ── Art-deco corner brackets, four thin double-line accents that frame a
+// menu item. Purely decorative; styled by the .deco-* classes in globals.css.
+function DecoCorners() {
+  return (
+    <>
+      <span aria-hidden className="deco-corner top left" />
+      <span aria-hidden className="deco-corner top right" />
+      <span aria-hidden className="deco-corner bottom left" />
+      <span aria-hidden className="deco-corner bottom right" />
+    </>
+  );
+}
+
+// Desktop menu item, serif text framed by art-deco corners. Padding gives the
+// frame room around the label; lineHeight 1 keeps the box compact in the 44px bar.
+const DESKTOP_ITEM: React.CSSProperties = {
+  fontSize: "1.45rem",
+  fontWeight: 700,
+  color: "var(--ink-800)",
+  textDecoration: "none",
+  letterSpacing: "0.01em",
+  lineHeight: 1,
+  padding: "0.2rem 1.05rem",
+};
+
+// Mobile menu item, large text + roomy padding so the tap target clears the
 // ~44px accessibility minimum, comfortable for older users.
 const MOBILE_ITEM: React.CSSProperties = {
   fontSize: "1.3rem",
@@ -52,14 +86,14 @@ export default function Navbar() {
       heartClickTimer.current = setTimeout(() => {
         const clicks = heartClicks.current;
         heartClicks.current = 0;
-        router.push(clicks >= 3 ? "/admin" : "/");
+        router.push(clicks >= 3 ? "/admin/events" : "/");
       }, 350);
     },
     [router]
   );
 
   // ── Heart gently shrinks as the page scrolls down (imperative, no re-render)
-  // Only the heart scales — the blue halo behind it stays put.
+  // Only the heart scales, the blue halo behind it stays put.
   useEffect(() => {
     let raf = 0;
     const update = () => {
@@ -90,18 +124,15 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ── Winged heart banner — scrolls away with the page ───────── */}
-      <div
-        className="flex justify-center pt-6 pb-3 px-5"
-        style={{ background: "var(--parch-50)" }}
-      >
+      {/* ── Winged heart banner, scrolls away with the page ───────── */}
+      <div className="parchment header-paper z-[60] flex justify-center pt-6 pb-3 px-5">
         <Link
           href="/"
           aria-label="SamaSangha home"
           className="relative inline-flex items-center justify-center gap-2 sm:gap-4 lg:gap-5"
           onClick={onHeartClick}
         >
-          {/* "Sama" — left of the heart. The left padding equals the width
+          {/* "Sama", left of the heart. The left padding equals the width
               difference vs. "Sangha" (in em, so it scales with the font), which
               balances the two sides and centers the heart on the page. */}
           <span
@@ -113,20 +144,20 @@ export default function Navbar() {
 
           {/* Heart + halo, kept as a centered unit. Lifted above the sticky
               header (z-50) so the halo's bottom isn't clipped by the menu bar. */}
-          <span className="relative z-[60] inline-flex items-center justify-center shrink-0">
-            {/* Blue halo with orange dots, behind the heart — does NOT scale on hover */}
+          <span className="relative z-[70] inline-flex items-center justify-center shrink-0">
+            {/* Blue halo with orange dots, behind the heart, does NOT scale on hover */}
             <Image
               src="/assets/blue-circle-halo.png"
               alt=""
               aria-hidden
               width={1254}
               height={1254}
-              className="absolute w-auto h-24 sm:h-28 lg:h-36 max-w-none"
+              className="absolute z-[70] w-auto h-24 sm:h-28 lg:h-36 max-w-none"
               style={{ top: "74%", left: "50%", transform: "translate(-50%, -50%)" }}
             />
-            {/* Only the heart grows on hover — wrapped so the halo stays put.
+            {/* Only the heart grows on hover, wrapped so the halo stays put.
                 Scroll-scale lives on the inner image, so the two compose. */}
-            <span className="relative inline-flex transition-transform duration-300 ease-out hover:scale-[1.08]">
+            <span className="relative z-[80] inline-flex transition-transform duration-300 ease-out hover:scale-[1.08]">
               <Image
                 ref={heartRef}
                 src="/assets/sufi-heart-banner.png"
@@ -140,7 +171,7 @@ export default function Navbar() {
             </span>
           </span>
 
-          {/* "Sangha" — right of the heart */}
+          {/* "Sangha", right of the heart */}
           <span
             className="leading-none select-none text-2xl sm:text-4xl lg:text-6xl"
             style={{ fontFamily: "var(--font-sama)", color: "#2c4264" }}
@@ -150,10 +181,10 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* ── Decorative flourish (flipped) — on top of the menu, not sticky ── */}
+      {/* ── Decorative flourish (flipped), on top of the menu, not sticky ── */}
       <div
-        className="hidden lg:flex justify-center px-5"
-        style={{ background: "var(--parch-50)", paddingTop: 18, paddingBottom: 6 }}
+        className="parchment header-paper hidden lg:flex justify-center px-5"
+        style={{ paddingTop: 18, paddingBottom: 6 }}
       >
         <Image
           src="/assets/decorative-line.png"
@@ -166,32 +197,29 @@ export default function Navbar() {
         />
       </div>
 
-      {/* ── Nav bar — sticky, elegant text ─────────────────────────── */}
+      {/* ── Nav bar, sticky, elegant text ─────────────────────────── */}
       <header
         ref={headerRef}
-        className="sticky top-0 z-50"
-        style={{ background: "var(--parch-50)", borderBottom: "1px solid var(--surface-border)" }}
+        className="parchment header-paper sticky top-0 z-50"
       >
         {/* Desktop */}
         <div
-          className="hidden lg:flex items-center justify-center gap-8 px-8"
+          className="hidden lg:flex items-center justify-center gap-4 px-8"
           style={{ height: 44 }}
         >
-          {/* Home — hidden on the homepage */}
+          {/* Home, hidden on the homepage */}
           {!isHome && (
             <>
               <Link
                 href="/"
                 className="font-serif transition-colors duration-200"
-                style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", textDecoration: "none", letterSpacing: "0.01em" }}
+                style={{ ...DESKTOP_ITEM }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
               >
                 Home
               </Link>
-
-              {/* Gold dot separator */}
-              <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold-400)", opacity: 0.6, flexShrink: 0 }} />
+              <NavHeart />
             </>
           )}
 
@@ -199,82 +227,54 @@ export default function Navbar() {
           <Link
             href="/about/teachers"
             className="font-serif transition-colors duration-200"
-            style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", textDecoration: "none", letterSpacing: "0.01em" }}
+            style={{ ...DESKTOP_ITEM }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
           >
             {DISCOVER.label}
           </Link>
 
-          {/* Gold dot separator */}
-          <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold-400)", opacity: 0.6, flexShrink: 0 }} />
+          <NavHeart />
 
           {/* Teachings */}
           <Link
-            href="/teachings"
+            href="/deepen"
             className="font-serif transition-colors duration-200"
-            style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", textDecoration: "none", letterSpacing: "0.01em" }}
+            style={{ ...DESKTOP_ITEM }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
           >
-            Teachings
+            Deepen
           </Link>
 
-          {/* Gold dot separator */}
-          <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold-400)", opacity: 0.6, flexShrink: 0 }} />
+          <NavHeart />
 
           {/* Music */}
           <Link
-            href="/teachings/music/albums"
+            href="/deepen/music/albums"
             className="font-serif transition-colors duration-200"
-            style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", textDecoration: "none", letterSpacing: "0.01em" }}
+            style={{ ...DESKTOP_ITEM }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
           >
             Music
           </Link>
-
-          {/* Gold dot separator */}
-          <span aria-hidden style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold-400)", opacity: 0.6, flexShrink: 0 }} />
-
-          {/* Search — same style as the other menu items */}
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="font-serif transition-colors duration-200"
-            style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--ink-800)", background: "none", border: "none", outline: "none", cursor: "default", letterSpacing: "0.01em", padding: 0 }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
-            aria-label="Search ⌘K"
-          >
-            Search
-          </button>
         </div>
 
-        {/* Mobile — menu listed inline, no hamburger. Large text and roomy
+        {/* Mobile, menu listed inline, no hamburger. Large text and roomy
             tap targets (≥44px) with generous spacing for easy reading/tapping. */}
-        <nav className="lg:hidden flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-3">
+        <nav className="lg:hidden flex flex-wrap items-center justify-center gap-x-1 gap-y-1 px-4 py-3">
           {!isHome && (
-            <Link href="/" className="font-serif" style={MOBILE_ITEM}>
-              Home
-            </Link>
+            <>
+              <Link href="/" className="font-serif" style={MOBILE_ITEM}>Home</Link>
+              <NavHeart />
+            </>
           )}
-          <Link href="/about/teachers" className="font-serif" style={MOBILE_ITEM}>
-            {DISCOVER.label}
-          </Link>
-          <Link href="/teachings" className="font-serif" style={MOBILE_ITEM}>
-            Teachings
-          </Link>
-          <Link href="/teachings/music/albums" className="font-serif" style={MOBILE_ITEM}>
-            Music
-          </Link>
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="font-serif"
-            style={{ ...MOBILE_ITEM, background: "none", border: "none", cursor: "pointer" }}
-            aria-label="Search"
-          >
-            Search
-          </button>
+          <Link href="/about/teachers" className="font-serif" style={MOBILE_ITEM}>{DISCOVER.label}</Link>
+          <NavHeart />
+          <Link href="/deepen" className="font-serif" style={MOBILE_ITEM}>Deepen</Link>
+          <NavHeart />
+          <Link href="/deepen/music/albums" className="font-serif" style={MOBILE_ITEM}>Music</Link>
         </nav>
       </header>
 

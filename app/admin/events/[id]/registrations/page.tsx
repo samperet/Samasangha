@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import RegistrationActions from "./RegistrationActions";
 import { CheckInBox, RoomSelect, RoomsManager } from "./RoomingControls";
+import AddRegistrant from "./AddRegistrant";
 
 async function getData(id: string) {
   const [event, rooms] = await Promise.all([
@@ -40,7 +41,7 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
     checkedIn: active.filter((r) => r.checkedIn).length,
   };
 
-  // Rooming overview — who sleeps where (cancelled registrations excluded)
+  // Rooming overview, who sleeps where (cancelled registrations excluded)
   const showRooming = event.isRetreat || rooms.length > 0;
   const roomsWithOccupants = rooms.map((room) => ({
     ...room,
@@ -74,6 +75,11 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
             View public page ↗
           </Link>
         </div>
+      </div>
+
+      {/* Manually add a registrant (walk-ins, phone/email signups) */}
+      <div className="mb-6">
+        <AddRegistrant eventId={id} />
       </div>
 
       {/* Stats */}
@@ -133,7 +139,7 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
                         <p className={`text-xs ${over ? "text-red-600 font-semibold" : "text-gray-400"}`}>
                           {room.occupantNames.length}
                           {room.capacity ? ` / ${room.capacity}` : ""}
-                          {over && " — over capacity"}
+                          {over && ", over capacity"}
                         </p>
                       </div>
                       {room.occupantNames.length === 0 ? (
@@ -221,7 +227,7 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
                   </td>
                   <td className="px-4 py-3 text-gray-500 hidden lg:table-cell max-w-xs">
                     <span className="line-clamp-1 block">
-                      {[reg.dietary, reg.notes].filter(Boolean).join(" · ") || "—"}
+                      {[reg.dietary, reg.notes].filter(Boolean).join(" · ") || ","}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">{formatDate(reg.createdAt)}</td>
@@ -233,7 +239,7 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
                   {showRooming && (
                     <td className="px-4 py-3">
                       {reg.status === "CANCELLED" ? (
-                        <span className="text-xs text-gray-300">—</span>
+                        <span className="text-xs text-gray-300">,</span>
                       ) : (
                         <RoomSelect registrationId={reg.id} roomId={reg.roomId} rooms={rooms} />
                       )}
@@ -241,7 +247,7 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
                   )}
                   <td className="px-4 py-3">
                     {reg.status === "CANCELLED" ? (
-                      <span className="text-xs text-gray-300">—</span>
+                      <span className="text-xs text-gray-300">,</span>
                     ) : (
                       <CheckInBox registrationId={reg.id} checkedIn={reg.checkedIn} />
                     )}

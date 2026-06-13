@@ -1,6 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
+import { RegistrationStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
+// Manually add a registrant from the admin (walk-ins, phone/email signups)
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const body = await req.json();
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const email = typeof body.email === "string" ? body.email.trim() : "";
+  if (!name || !email) {
+    return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
+  }
+
+  const event = await prisma.event.findUnique({ where: { id } });
+  if (!event) return NextResponse.json({ error: "Event not found" }, { status: 404 });
+
+  const status = Object.values(RegistrationStatus).includes(body.status)
+    ? (body.status as RegistrationStatus)
+    : "CONFIRMED";
+
+  const reg = await prisma.eventRegistration.create({
+    data: {
+      eventId: id,
+      name,
+      email,
+      phone: (body.phone as string)?.trim() || null,
+      dietary: (body.dietary as string)?.trim() || null,
+      notes: (body.notes as string)?.trim() || null,
+      status,
+    },
+  });
+  return NextResponse.json(reg, { status: 201 });
+}
 
 export async function GET(
   req: NextRequest,

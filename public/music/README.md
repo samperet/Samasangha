@@ -1,12 +1,12 @@
 # Music files
 
-Audio tracks (~614 MB) are **not committed to git** — only the `covers/` images are.
+Audio tracks (~614 MB) are **not committed to git**, only the `covers/` images are.
 The database records (albums + tracks) are created by `npx tsx prisma/seed-albums.ts`,
 which expects the audio files to exist here under `/public/music/<album-slug>/`.
 
 ## Sources (northeastsufis.org)
 
-Full albums (Dropbox shared folders — append `&dl=1` to download as zip):
+Full albums (Dropbox shared folders, append `&dl=1` to download as zip):
 
 | Album | Folder |
 |---|---|
@@ -16,7 +16,7 @@ Full albums (Dropbox shared folders — append `&dl=1` to download as zip):
 | Almighty Peace | https://www.dropbox.com/scl/fo/xo2nif2085vdihmkjsirj/h?rlkey=2xvrijo959c4111joxuoim80y |
 | Healing Love | https://www.dropbox.com/scl/fo/m751ra4ls5vdhvpxun837/AONl8BTMr4xkhcwGNAhydwc?rlkey=6c75df52kk56bs2srm3zcuxxk |
 
-Full albums (YouTube playlists — fetched with yt-dlp, a couple of private videos
+Full albums (YouTube playlists, fetched with yt-dlp, a couple of private videos
 are unavailable so track numbers are resequenced):
 
 | Album | Playlist | Tracks |
@@ -31,7 +31,7 @@ yt-dlp -x --audio-format m4a --audio-quality 0 --ignore-errors \
 
 Sample-only albums (single MP3 from the site):
 
-- Zikr of the Heart — https://northeastsufis.org/wp-content/uploads/2022/09/Zikr-of-the-Heart-1.mp3
+- Zikr of the Heart, https://northeastsufis.org/wp-content/uploads/2022/09/Zikr-of-the-Heart-1.mp3
 
 File naming convention: `NN-kebab-case-title.<ext>` matching the `audioUrl` values
 in `prisma/seed-albums.ts` (that file is the source of truth).

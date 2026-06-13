@@ -20,7 +20,7 @@ export default function ContactPage() {
         <div>
           <h2 className="text-xl font-bold text-[#1a2744] mb-4">Join Our Mailing List</h2>
           <p className="text-gray-600 text-sm mb-4">
-            Receive updates on events, teachings, and community news — a few times per month at most.
+            Receive updates on events, teachings, and community news, a few times per month at most.
           </p>
           <SubscribeForm />
         </div>

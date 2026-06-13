@@ -9,14 +9,14 @@ import {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Mureed-only PDFs — unlocked by the deepening password (or an admin session).
+  // Mureed-only PDFs, unlocked by the deepening password (or an admin session).
   // Unauthenticated requests land on the gate page instead of the file.
   if (pathname.startsWith("/assets/deepening/")) {
     const ok =
       (await verifyDeepeningToken(request.cookies.get(DEEPENING_COOKIE)?.value)) ||
       (await verifySessionToken(request.cookies.get(ADMIN_COOKIE)?.value));
     if (!ok) {
-      return NextResponse.redirect(new URL("/teachings/deepening", request.url));
+      return NextResponse.redirect(new URL("/deepen/deepening", request.url));
     }
     return NextResponse.next();
   }

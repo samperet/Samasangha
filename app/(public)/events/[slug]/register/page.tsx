@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { formatDateRange } from "@/lib/utils";
+import { formatDate, formatDateRange } from "@/lib/utils";
+import { eventPricing } from "@/lib/pricing";
 import type { Metadata } from "next";
 import RegistrationForm from "./RegistrationForm";
 
@@ -11,7 +12,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const event = await prisma.event.findUnique({ where: { slug } }).catch(() => null);
-  return { title: `Register — ${event?.title ?? "Event"}` };
+  return { title: `Register, ${event?.title ?? "Event"}` };
 }
 
 export default async function RegisterPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -31,12 +32,8 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
   const spotsLeft = event.capacity ? event.capacity - event._count.registrations : null;
   const full = spotsLeft !== null && spotsLeft <= 0;
 
-  const priceStr = (() => {
-    if (!event.priceMin && !event.priceMax) return null;
-    if (event.priceMin && event.priceMax) return `$${event.priceMin / 100}–$${event.priceMax / 100} sliding scale`;
-    if (event.priceMin) return `From $${event.priceMin / 100}`;
-    return null;
-  })();
+  const pricing = eventPricing(event);
+  const priceStr = pricing.type === "FREE" ? null : pricing.label;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
@@ -55,7 +52,12 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
           )}
         </p>
         {priceStr && (
-          <p className="text-sm mt-1" style={{ color: "var(--gold-700)" }}>{priceStr}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--gold-700)" }}>
+            {priceStr}
+            {pricing.earlyBirdActive && pricing.earlyBirdDeadline && (
+              <span> · until {formatDate(pricing.earlyBirdDeadline)}</span>
+            )}
+          </p>
         )}
         {full && (
           <p

@@ -167,7 +167,7 @@ export default function PlayerProvider({ children }: { children: React.ReactNode
     };
   }, [queue, loadAndPlay]);
 
-  // Media Session API — lock screen / hardware key controls
+  // Media Session API, lock screen / hardware key controls
   useEffect(() => {
     if (!("mediaSession" in navigator) || !current) return;
     navigator.mediaSession.metadata = new MediaMetadata({

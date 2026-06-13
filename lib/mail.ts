@@ -19,7 +19,7 @@ export async function sendContactEmail(data: {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: process.env.EMAIL_TO,
-    subject: `[SamaSangha Contact] ${data.subject ?? "New message"} — ${data.name}`,
+    subject: `[SamaSangha Contact] ${data.subject ?? "New message"}, ${data.name}`,
     text: `From: ${data.name} <${data.email}>\n\n${data.message}`,
     html: `<p><strong>From:</strong> ${data.name} &lt;${data.email}&gt;</p><p>${data.message.replace(/\n/g, "<br/>")}</p>`,
   });
@@ -39,8 +39,8 @@ export async function sendRegistrationEmails({
   waitlisted: boolean;
 }) {
   const subject = waitlisted
-    ? `You're on the waitlist — ${event.title}`
-    : `Registration received — ${event.title}`;
+    ? `You're on the waitlist, ${event.title}`
+    : `Registration received, ${event.title}`;
 
   const dateStr = `${formatDate(event.startDate)}${event.endDate ? ` – ${formatDate(event.endDate)}` : ""}`;
   const locationStr = event.isOnline ? "Online" : (event.location ?? "");
@@ -94,7 +94,7 @@ export async function sendRegistrationEmails({
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: process.env.EMAIL_TO,
-    subject: `[SamaSangha] New ${waitlisted ? "waitlist " : ""}registration — ${event.title} — ${registration.name}`,
+    subject: `[SamaSangha] New ${waitlisted ? "waitlist " : ""}registration, ${event.title}, ${registration.name}`,
     html: adminHtml,
   });
 }

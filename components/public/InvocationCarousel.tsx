@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 
-// Single-string text so CSS handles wrapping naturally — no artificial line breaks
+// Single-string text so CSS handles wrapping naturally, no artificial line breaks
 const SLIDES = [
   {
     lang: "English",
