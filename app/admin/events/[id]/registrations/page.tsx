@@ -196,7 +196,8 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
         </div>
       ) : (
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[720px]">
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-4 py-3 text-left font-medium text-gray-500">Name</th>
@@ -259,6 +260,7 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </>
