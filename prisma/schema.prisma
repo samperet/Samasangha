@@ -180,6 +180,25 @@ model MureedProfile {
   createdAt DateTime @default(now())
 }
 
+// Dismissible pop-up announcements shown on specific public pages within a
+// scheduled time window.
+model Notification {
+  id         String           @id @default(cuid())
+  message    String
+  page       NotificationPage
+  startTime  DateTime?
+  finishTime DateTime?
+  enabled    Boolean          @default(true)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+enum NotificationPage {
+  HOMEPAGE
+  TUESDAY
+  DANCES
+}
+
 model Media {
   id        String   @id @default(cuid())
   filename  String

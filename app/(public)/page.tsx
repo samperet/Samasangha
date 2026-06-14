@@ -1,4 +1,5 @@
 import Link from "next/link";
+import NotificationPopup from "@/components/public/NotificationPopup";
 import InvocationCarousel from "@/components/public/InvocationCarousel";
 import CommunityCollage from "@/components/public/CommunityCollage";
 import Image from "next/image";
@@ -33,6 +34,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <NotificationPopup page="HOMEPAGE" />
       {/* ── 100vh masthead, homepage only ────────────────────────── */}
       <div
         className="relative flex items-center justify-center overflow-hidden px-5"

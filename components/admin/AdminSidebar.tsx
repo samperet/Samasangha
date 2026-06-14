@@ -6,15 +6,16 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  Calendar, FileText, Music, LogOut, Home, Menu, X, type LucideIcon,
+  Calendar, FileText, Music, Bell, LogOut, Home, Menu, X, type LucideIcon,
 } from "lucide-react";
 
 type NavLink = { href: string; label: string; icon: LucideIcon; exact?: boolean };
 
 const links: NavLink[] = [
-  { href: "/admin/events",      label: "Events",             icon: Calendar },
-  { href: "/admin/posts",       label: "Posts & teachings",  icon: FileText },
-  { href: "/admin/albums",      label: "Albums & music",     icon: Music },
+  { href: "/admin/events",        label: "Events",             icon: Calendar },
+  { href: "/admin/posts",         label: "Posts & teachings",  icon: FileText },
+  { href: "/admin/albums",        label: "Albums & music",     icon: Music },
+  { href: "/admin/notifications", label: "Notifications",      icon: Bell },
 ];
 
 export default function AdminSidebar() {
