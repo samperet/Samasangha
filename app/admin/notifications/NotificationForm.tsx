@@ -49,7 +49,7 @@ export default function NotificationForm({ notification }: { notification?: Noti
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Something went wrong.");
+      setError([data.error, data.detail].filter(Boolean).join(" — ") || "Something went wrong.");
       setSaving(false);
       return;
     }

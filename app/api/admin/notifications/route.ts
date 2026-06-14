@@ -41,7 +41,10 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("Failed to create notification:", e);
     return NextResponse.json(
-      { error: "Could not save notification. Has the database schema been updated (npm run db:push)?" },
+      {
+        error: "Could not save notification. Has the database schema been updated (npm run db:push)?",
+        detail: e instanceof Error ? e.message : String(e),
+      },
       { status: 500 },
     );
   }
