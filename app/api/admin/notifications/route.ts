@@ -27,14 +27,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid page" }, { status: 400 });
   }
 
-  const notification = await prisma.notification.create({
-    data: {
-      message: data.message.trim(),
-      page: data.page,
-      startTime: data.startTime ? new Date(data.startTime) : null,
-      finishTime: data.finishTime ? new Date(data.finishTime) : null,
-      enabled: data.enabled ?? true,
-    },
-  });
-  return NextResponse.json(notification, { status: 201 });
+  try {
+    const notification = await prisma.notification.create({
+      data: {
+        message: data.message.trim(),
+        page: data.page,
+        startTime: data.startTime ? new Date(data.startTime) : null,
+        finishTime: data.finishTime ? new Date(data.finishTime) : null,
+        enabled: data.enabled ?? true,
+      },
+    });
+    return NextResponse.json(notification, { status: 201 });
+  } catch (e) {
+    console.error("Failed to create notification:", e);
+    return NextResponse.json(
+      { error: "Could not save notification. Has the database schema been updated (npm run db:push)?" },
+      { status: 500 },
+    );
+  }
 }
