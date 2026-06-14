@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import NotificationPopup from "@/components/public/NotificationPopup";
 
 export const metadata: Metadata = { title: "Tuesday Practice" };
 export const revalidate = 300;
@@ -13,6 +14,7 @@ export default async function TuesdayPracticePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
+      <NotificationPopup page="TUESDAY" />
       <h1 className="text-4xl font-bold text-stone-800 mb-10">Tuesday Practice</h1>
       {content ? (
         <div
