@@ -115,7 +115,7 @@ export type AlbumData = {
 
 export default function AlbumPlayer({ album }: { album: AlbumData }) {
   const { current, isPlaying, playQueue, toggle } = usePlayer();
-  const [downloadOpen, setDownloadOpen] = useState(false);
+  const [download, setDownload] = useState<{ href: string; isSample: boolean; label: string } | null>(null);
 
   const playable: PlayerTrack[] = album.tracks
     .filter((t) => t.audioUrl)
@@ -203,7 +203,13 @@ export default function AlbumPlayer({ album }: { album: AlbumData }) {
 
             {playable.length > 0 && (
               <button
-                onClick={() => setDownloadOpen(true)}
+                onClick={() =>
+                  setDownload({
+                    href: isSample ? playable[0].audioUrl : `/api/music/${album.slug}/download`,
+                    isSample,
+                    label: isSample ? "Download sample" : "Download album",
+                  })
+                }
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-ink-900/15 text-ink-800! font-semibold text-sm hover:border-ink-900/30 hover:bg-parch-100 transition-all"
               >
                 <DownloadIcon />
@@ -215,12 +221,12 @@ export default function AlbumPlayer({ album }: { album: AlbumData }) {
         </div>
       </div>
 
-      {downloadOpen && playable.length > 0 && (
+      {download && (
         <DownloadModal
-          downloadHref={isSample ? playable[0].audioUrl : `/api/music/${album.slug}/download`}
-          isSample={isSample}
-          label={isSample ? "Download sample" : "Download album"}
-          onClose={() => setDownloadOpen(false)}
+          downloadHref={download.href}
+          isSample={download.isSample}
+          label={download.label}
+          onClose={() => setDownload(null)}
         />
       )}
 
@@ -276,15 +282,20 @@ export default function AlbumPlayer({ album }: { album: AlbumData }) {
                   </span>
                 )}
                 {canPlay && (
-                  <a
-                    href={track.audioUrl!}
-                    download
+                  <button
+                    onClick={() =>
+                      setDownload({
+                        href: `/api/music/track/${track.id}/download`,
+                        isSample: false,
+                        label: "Download song",
+                      })
+                    }
                     aria-label={`Download ${track.title}`}
                     title="Download track"
                     className="shrink-0 p-2 rounded-md text-ink-600/45! hover:text-gold-700! hover:bg-gold-100 opacity-0 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 transition-all"
                   >
                     <DownloadIcon className="w-[18px] h-[18px]" />
-                  </a>
+                  </button>
                 )}
               </li>
             );
