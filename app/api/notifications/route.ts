@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { NotificationPage } from "@prisma/client";
 
-const VALID_PAGES: NotificationPage[] = ["HOMEPAGE", "TUESDAY", "DANCES"];
+const VALID_PAGES: NotificationPage[] = ["HOMEPAGE", "TUESDAY", "DANCES", "MUREEDS"];
 
 // Public endpoint: returns the active notifications for a given page, i.e. those
 // that are enabled and currently within their (optional) start/finish window.

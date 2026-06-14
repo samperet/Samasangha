@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import NotificationPopup from "@/components/public/NotificationPopup";
 
 export const metadata: Metadata = {
   title: "Dances of Universal Peace",
@@ -76,7 +75,6 @@ const calendarLinks = [
 export default function DancesPage() {
   return (
     <div className="max-w-4xl mx-auto px-5 py-16">
-      <NotificationPopup page="DANCES" />
       {/* ── Header ─────────────────────────────────────────────── */}
       <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>
         Monthly gathering

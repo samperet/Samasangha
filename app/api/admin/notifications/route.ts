@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { NotificationPage } from "@prisma/client";
 
-const VALID_PAGES: NotificationPage[] = ["HOMEPAGE", "TUESDAY", "DANCES"];
+const VALID_PAGES: NotificationPage[] = ["HOMEPAGE", "TUESDAY", "DANCES", "MUREEDS"];
 
 export async function GET() {
   const session = await auth();

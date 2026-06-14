@@ -197,6 +197,7 @@ enum NotificationPage {
   HOMEPAGE
   TUESDAY
   DANCES
+  MUREEDS
 }
 
 model Media {
