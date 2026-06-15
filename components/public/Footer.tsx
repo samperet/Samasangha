@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import HeartTicker from "./HeartTicker";
 
 function FacebookIcon({ size = 17 }: { size?: number }) {
   return (
@@ -30,6 +31,11 @@ export default function Footer() {
       }}
       className="mt-auto"
     >
+      {/* Hearts, scroll-driven (right → left) */}
+      <div className="py-4 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.10)" }}>
+        <HeartTicker direction="rtl" />
+      </div>
+
       <div className="max-w-5xl mx-auto px-5 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-center">
         {/* Inspiration */}
         <div className="flex justify-center">
@@ -101,25 +107,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Prayer */}
-      <div
-        className="text-center py-4 px-4"
-        style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}
-      >
-        <p
-          className="font-serif"
-          aria-label="HEART"
-          style={{
-            color: "var(--gold-400)",
-            opacity: 0.75,
-            fontSize: "0.95rem",
-            letterSpacing: "0.06em",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-          }}
-        >
-          {"HEART".repeat(120)}
-        </p>
+      {/* Hearts, scroll-driven (left → right) */}
+      <div className="py-4 px-4" style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}>
+        <HeartTicker direction="ltr" />
       </div>
     </footer>
   );
