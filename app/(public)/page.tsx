@@ -261,10 +261,9 @@ export default async function HomePage() {
           ) : (
             <div className="space-y-4">
               {events.map((event) => (
-                <Link
+                <div
                   key={event.id}
-                  href={`/events/${event.slug}`}
-                  className="gold-shadow group block rounded-[14px] overflow-hidden relative"
+                  className="gold-shadow group rounded-[14px] overflow-hidden relative"
                   style={{ background: "#fff", border: "1px solid var(--surface-border)" }}
                 >
                   <div className="flex flex-col sm:flex-row">
@@ -285,25 +284,51 @@ export default async function HomePage() {
                         )}
                       </p>
                       <h3
-                        className="font-serif leading-snug mb-2 transition-colors duration-150 group-hover:[color:var(--crimson-700)]"
+                        className="font-serif leading-snug mb-2"
                         style={{ fontSize: "1.3rem", fontWeight: 500, color: "var(--ink-900)" }}
                       >
-                        {event.title}
+                        <Link
+                          href={`/events/${event.slug}`}
+                          className="transition-colors duration-150 hover:[color:var(--crimson-700)]"
+                          style={{ color: "var(--ink-900)" }}
+                        >
+                          {event.title}
+                        </Link>
                       </h3>
                       <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: "var(--fg2)" }}>
                         {event.description}
                       </p>
-                      <div className="flex justify-end">
-                        <span
+                      <div className="flex flex-wrap gap-3 justify-end">
+                        {event.registrationEnabled ? (
+                          <Link
+                            href={`/events/${event.slug}/register`}
+                            className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm whitespace-nowrap"
+                            style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)", boxShadow: "var(--shadow-sm)" }}
+                          >
+                            Register
+                          </Link>
+                        ) : event.registerUrl ? (
+                          <a
+                            href={event.registerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm whitespace-nowrap"
+                            style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)", boxShadow: "var(--shadow-sm)" }}
+                          >
+                            Register
+                          </a>
+                        ) : null}
+                        <Link
+                          href={`/events/${event.slug}`}
                           className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm whitespace-nowrap"
                           style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
                         >
-                          View details →
-                        </span>
+                          Learn more →
+                        </Link>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
