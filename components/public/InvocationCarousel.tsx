@@ -51,18 +51,19 @@ function Caret({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) 
         background: "none",
         border: "none",
         cursor: "pointer",
-        padding: "8px 56px",
+        padding: "8px 48px",
         color: "var(--gold-600)",
-        fontSize: "4rem",
+        fontSize: "6rem",
+        fontWeight: 700,
         lineHeight: 1,
         fontFamily: "var(--font-serif)",
-        opacity: 0.7,
+        opacity: 0.85,
         flexShrink: 0,
         transition: "opacity 0.2s ease",
         userSelect: "none",
       }}
       onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.7")}
+      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.85")}
     >
       {dir === "prev" ? "‹" : "›"}
     </button>
@@ -118,25 +119,6 @@ export default function InvocationCarousel() {
             gap: 14,
           }}
         >
-          {/* Gold winged-heart calligraphy, behind the invocation */}
-          <img
-            src="/assets/calligraphyheart.svg"
-            alt=""
-            aria-hidden
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "min(1100px, 130%)",
-              maxWidth: "none",
-              opacity: 0.22,
-              pointerEvents: "none",
-              userSelect: "none",
-              zIndex: 0,
-            }}
-          />
-
           {slide.lang !== "English" && (
             <p
               className="eyebrow"

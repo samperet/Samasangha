@@ -40,9 +40,29 @@ export default async function HomePage() {
           // Header chrome is now heart banner (~120px) + sticky menu (~75px)
           height: "calc(100vh - 200px)",
           minHeight: 420,
-          background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
+          // Sunlit-forest photo behind a light parchment wash; the wider white
+          // splash (below) keeps the invocation clearly readable.
+          backgroundColor: "var(--parch-50)",
+          backgroundImage:
+            "linear-gradient(rgba(251,247,236,0.42), rgba(251,247,236,0.55)), url('/assets/ForestIllumination.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
+        {/* Readability white splash, a wide soft parchment glow behind the
+            invocation so the text sits on a light area while the forest shows
+            around it. */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+            width: "min(1700px, 100vw)", height: "min(760px, 92%)", borderRadius: "50%",
+            background:
+              "radial-gradient(ellipse at center, rgba(251,247,236,0.95) 0%, rgba(251,247,236,0.88) 42%, rgba(251,247,236,0.5) 64%, rgba(251,247,236,0) 80%)",
+            pointerEvents: "none",
+          }}
+        />
+
         {/* Gold halo */}
         <div
           aria-hidden
