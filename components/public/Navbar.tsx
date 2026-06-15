@@ -144,10 +144,8 @@ export default function Navbar() {
       <div
         className="flex justify-center items-center w-full"
         style={{
-          background: "rgba(255,255,255,0.6)",
-          borderRadius: "0.5rem",
+          background: "#ffffff",
           padding: "1rem 2rem 1.6rem",
-          backdropFilter: "blur(2px)",
         }}
       >
         <Link
