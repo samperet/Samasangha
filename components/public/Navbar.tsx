@@ -259,6 +259,19 @@ export default function Navbar() {
           >
             Music
           </Link>
+
+          <NavHeart />
+
+          {/* Retreats */}
+          <Link
+            href="/events/upcoming"
+            className="font-serif transition-colors duration-200"
+            style={{ ...DESKTOP_ITEM }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
+          >
+            Retreats
+          </Link>
         </div>
 
         {/* Mobile, menu listed inline, no hamburger. Large text and roomy
@@ -275,6 +288,8 @@ export default function Navbar() {
           <Link href="/deepen" className="font-serif" style={MOBILE_ITEM}>Teachings</Link>
           <NavHeart />
           <Link href="/deepen/music/albums" className="font-serif" style={MOBILE_ITEM}>Music</Link>
+          <NavHeart />
+          <Link href="/events/upcoming" className="font-serif" style={MOBILE_ITEM}>Retreats</Link>
         </nav>
       </header>
 
