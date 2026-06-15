@@ -162,15 +162,17 @@ export default function EatDancePrayLayout({
           className="rounded-2xl p-8"
           style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
         >
-          {event.featuredImageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={event.featuredImageUrl}
-              alt={event.title}
-              className="w-full rounded-xl mb-6 object-cover max-h-72"
-            />
-          )}
-          {priceMin != null && priceMax != null ? (
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 sm:items-center">
+            {event.featuredImageUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={event.featuredImageUrl}
+                alt={event.title}
+                className="w-40 h-40 sm:w-48 sm:h-48 rounded-xl object-cover shrink-0 mx-auto sm:mx-0"
+              />
+            )}
+            <div className="flex-1 min-w-0">
+              {priceMin != null && priceMax != null ? (
             <RetreatPriceSlider priceMin={priceMin} priceMax={priceMax} note={pricing?.note} />
           ) : event.registerUrl ? (
             <>
@@ -207,6 +209,8 @@ export default function EatDancePrayLayout({
               </Link>
             </>
           )}
+            </div>
+          </div>
         </div>
 
       </div>
