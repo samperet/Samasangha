@@ -20,8 +20,8 @@ export default function EventForm({ event }: { event?: Event }) {
   const [form, setForm] = useState({
     title: event?.title ?? "",
     description: event?.description ?? "",
-    startDate: event?.startDate ? new Date(event.startDate).toISOString().slice(0, 16) : "",
-    endDate: event?.endDate ? new Date(event.endDate).toISOString().slice(0, 16) : "",
+    startDate: event?.startDate ? new Date(event.startDate).toISOString().slice(0, 10) : "",
+    endDate: event?.endDate ? new Date(event.endDate).toISOString().slice(0, 10) : "",
     location: event?.location ?? "",
     isOnline: event?.isOnline ?? false,
     isRetreat: event?.isRetreat ?? false,
@@ -129,11 +129,11 @@ export default function EventForm({ event }: { event?: Event }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Start date *</label>
-              <Input type="datetime-local" value={form.startDate} onChange={(e) => set("startDate", e.target.value)} required />
+              <Input type="date" value={form.startDate} onChange={(e) => set("startDate", e.target.value)} required />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>End date</label>
-              <Input type="datetime-local" value={form.endDate} onChange={(e) => set("endDate", e.target.value)} />
+              <Input type="date" value={form.endDate} onChange={(e) => set("endDate", e.target.value)} />
             </div>
           </div>
           <div>
@@ -147,7 +147,7 @@ export default function EventForm({ event }: { event?: Event }) {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Featured image</label>
-            <p className="text-xs text-gray-400 mb-1.5">Shown on the homepage and event listings. A wide landscape image works best.</p>
+            <p className="text-xs text-gray-400 mb-1.5">Shown on the homepage and event listings. A square image works best.</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <input
