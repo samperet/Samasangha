@@ -214,6 +214,8 @@ export default function Navbar() {
           borderBottom: "3px solid #8fbfd3",
           borderLeft: "3px solid #8fbfd3",
           borderRight: "3px solid #8fbfd3",
+          paddingTop: 6,
+          paddingBottom: 6,
         }}
       >
         {/* Desktop */}
