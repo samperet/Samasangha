@@ -54,20 +54,25 @@ export async function GET(
   const regs = await prisma.eventRegistration.findMany({
     where: { eventId: id },
     orderBy: { createdAt: "asc" },
-    include: { room: true },
+    include: { room: true, booking: true },
   });
 
   if (format === "csv") {
+    const dollars = (cents: number) => (cents / 100).toFixed(2);
     const rows = [
-      ["Name", "Email", "Phone", "Dietary", "Notes", "Status", "Room", "Checked In", "Registered At"].join(","),
+      ["Name", "Child", "Email", "Phone", "Dietary", "Notes", "Status", "Payment Method", "Payment Status", "Amount", "Room", "Checked In", "Registered At"].join(","),
       ...regs.map((r) =>
         [
           `"${r.name}"`,
+          r.isChild ? "Yes" : "No",
           `"${r.email}"`,
           `"${r.phone ?? ""}"`,
           `"${r.dietary ?? ""}"`,
           `"${(r.notes ?? "").replace(/"/g, '""')}"`,
           r.status,
+          r.booking?.paymentMethod ?? "",
+          r.booking?.paymentStatus ?? "",
+          r.booking ? dollars(r.booking.amountCents) : "",
           `"${r.room?.name ?? ""}"`,
           r.checkedIn ? "Yes" : "No",
           r.createdAt.toISOString(),

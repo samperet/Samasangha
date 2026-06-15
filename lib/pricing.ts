@@ -31,6 +31,54 @@ export type EventPricing = {
 
 const dollars = (cents: number) => `$${Math.round(cents / 100)}`;
 
+export type ParticipantQuoteInput = { isChild: boolean };
+
+export type BookingQuote = {
+  type: "FREE" | "FIXED" | "SLIDING";
+  /** Total cents. For SLIDING these bound the allowed amount; for FIXED min === max. */
+  minCents: number;
+  maxCents: number;
+  /** Suggested total (cents): the fixed total, or the midpoint for sliding. */
+  suggestedCents: number;
+};
+
+/**
+ * Total price for a booking, summing each participant and applying the kids
+ * (18 & under) discount. Early-bird-aware via eventPricing. The server uses
+ * this to validate the amount a client submits.
+ */
+export function bookingQuote(
+  event: PricedEvent,
+  participants: ParticipantQuoteInput[],
+  now: Date = new Date()
+): BookingQuote {
+  const pricing = eventPricing(event, now);
+  if (pricing.type === "FREE" || participants.length === 0) {
+    return { type: "FREE", minCents: 0, maxCents: 0, suggestedCents: 0 };
+  }
+
+  const factor = 1 - (event.kidsDiscountPercent ?? 0) / 100;
+  const perAdultMin = pricing.min ?? 0;
+  const perAdultMax = pricing.type === "SLIDING" ? (pricing.max ?? perAdultMin) : perAdultMin;
+
+  let minCents = 0;
+  let maxCents = 0;
+  for (const p of participants) {
+    minCents += p.isChild ? Math.round(perAdultMin * factor) : perAdultMin;
+    maxCents += p.isChild ? Math.round(perAdultMax * factor) : perAdultMax;
+  }
+
+  if (pricing.type === "FIXED") {
+    return { type: "FIXED", minCents, maxCents: minCents, suggestedCents: minCents };
+  }
+  return {
+    type: "SLIDING",
+    minCents,
+    maxCents,
+    suggestedCents: Math.round((minCents + maxCents) / 2),
+  };
+}
+
 export function eventPricing(event: PricedEvent, now: Date = new Date()): EventPricing {
   const { pricingType } = event;
 

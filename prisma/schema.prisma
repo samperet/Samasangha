@@ -71,6 +71,7 @@ model Event {
   kidsDiscountPercent  Int?
   registrationDeadline DateTime?
   registrations        EventRegistration[]
+  bookings             Booking[]
 }
 
 enum PricingType {
@@ -79,15 +80,48 @@ enum PricingType {
   SLIDING
 }
 
+// A single checkout: one contact paying for one or more participants.
+model Booking {
+  id            String              @id @default(cuid())
+  event         Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId       String
+  name          String // lead contact
+  email         String
+  phone         String?
+  notes         String?
+  status        RegistrationStatus  @default(PENDING)
+  paymentMethod PaymentMethod       @default(NONE)
+  paymentStatus PaymentStatus       @default(UNPAID)
+  amountCents   Int                 @default(0)
+  paypalOrderId String?
+  participants  EventRegistration[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
+enum PaymentMethod {
+  NONE
+  PAYPAL
+  CHECK
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+}
+
 model EventRegistration {
   id        String             @id @default(cuid())
   event     Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId   String
+  booking   Booking?           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId String?
   name      String
   email     String
   phone     String?
   dietary   String?
   notes     String?
+  isChild   Boolean            @default(false)
   status    RegistrationStatus @default(PENDING)
   checkedIn Boolean            @default(false)
   room      Room?              @relation(fields: [roomId], references: [id], onDelete: SetNull)

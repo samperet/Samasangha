@@ -139,10 +139,43 @@ value. Set all of these in **Vercel → Project → Settings → Environment Var
 | `SMTP_PASS` | ✅* | `lib/mail.ts` | SMTP password / **Gmail App Password** (not the account password) |
 | `EMAIL_FROM` | ✅* | `lib/mail.ts` | From address, e.g. `noreply@samasangha.org` |
 | `EMAIL_TO` | ✅* | `lib/mail.ts` | Inbox for contact + registration notifications |
+| `PAYPAL_CLIENT_ID` | ⬜ | `lib/paypal.ts` | REST app client id (see §3.1) — enables card/PayPal checkout |
+| `PAYPAL_SECRET` | ⬜ | `lib/paypal.ts` | REST app secret (see §3.1) |
+| `PAYPAL_ENV` | ⬜ | `lib/paypal.ts` | `live` in production, `sandbox` for testing |
+| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | ⬜ | checkout page | **Same value** as `PAYPAL_CLIENT_ID` (the browser SDK needs it) |
+| `CHECK_PAYABLE_TO` | ⬜ | `lib/mail.ts` | Payee name shown in check instructions (default `SamaSangha`) |
+| `CHECK_MAILING_ADDRESS` | ⬜ | `lib/mail.ts` | Address checks are mailed to; blank = "reply for the address" |
 
 \* Email vars are required for the contact form and retreat-registration emails to work.
 If you launch before email is ready, those POSTs will throw when sending — wire SMTP
 before announcing registration.
+
+### 3.1 PayPal — accepting credit cards & PayPal in event checkout
+
+The built-in event checkout can take payment online (credit/debit card **or** a
+PayPal account) via PayPal's Smart Buttons + Orders v2 API. If these vars are left
+blank, the online option is hidden and registrants can still **pay by check**.
+
+To get the credentials:
+1. Sign in at **https://developer.paypal.com/dashboard/** with the SamaSangha
+   PayPal **Business** account (card payments require a Business account; upgrade
+   under paypal.com → Settings if it's currently Personal).
+2. Go to **Apps & Credentials**. Toggle **Live** (top right) for production
+   credentials, or **Sandbox** for testing.
+3. Click **Create App**, name it e.g. `SamaSangha Website`, type **Merchant**.
+4. Copy the **Client ID** and **Secret** from the app page. Set:
+   - `PAYPAL_CLIENT_ID` and `NEXT_PUBLIC_PAYPAL_CLIENT_ID` → the Client ID (same value)
+   - `PAYPAL_SECRET` → the Secret
+   - `PAYPAL_ENV` → `live` (or `sandbox` while testing)
+5. In the app's settings, ensure **Accept payments** is enabled. To show the card
+   fields to buyers without a PayPal account, enable **Advanced (or standard) Credit
+   and Debit Card Payments** for the account (PayPal → Account Settings → Website
+   payments / Pay with card). PayPal reviews this for live accounts; until approved,
+   buyers can still pay with a PayPal balance/login.
+6. Redeploy. Test one real low-value registration in `live` to confirm funds land.
+
+That is everything the site needs from PayPal: a Business account, and one REST
+app's **Client ID + Secret** (per environment).
 
 **Notes**
 - `NODE_ENV` is set by Vercel automatically — don't add it.

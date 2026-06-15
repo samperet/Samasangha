@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { formatDate, formatDateRange } from "@/lib/utils";
 import { eventPricing } from "@/lib/pricing";
+import { isPaypalConfigured } from "@/lib/paypal";
 import type { Metadata } from "next";
 import RegistrationForm from "./RegistrationForm";
 
@@ -29,11 +30,12 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
   if (!event.registrationEnabled) notFound();
 
   const deadlinePassed = event.registrationDeadline ? new Date() > event.registrationDeadline : false;
-  const spotsLeft = event.capacity ? event.capacity - event._count.registrations : null;
+  const spotsLeft = event.capacity ? Math.max(0, event.capacity - event._count.registrations) : null;
   const full = spotsLeft !== null && spotsLeft <= 0;
 
   const pricing = eventPricing(event);
-  const priceStr = pricing.type === "FREE" ? null : pricing.label;
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? null;
+  const paypalEnabled = isPaypalConfigured() && Boolean(paypalClientId);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
@@ -51,25 +53,23 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
             <span> · {event.isOnline ? "Online" : event.location}</span>
           )}
         </p>
-        {priceStr && (
+        {pricing.type !== "FREE" && (
           <p className="text-sm mt-1" style={{ color: "var(--gold-700)" }}>
-            {priceStr}
+            {pricing.label}
             {pricing.earlyBirdActive && pricing.earlyBirdDeadline && (
               <span> · until {formatDate(pricing.earlyBirdDeadline)}</span>
             )}
           </p>
         )}
         {pricing.kidsLabel && (
-          <p className="text-sm mt-1" style={{ color: "var(--fg2)" }}>
-            {pricing.kidsLabel}
-          </p>
+          <p className="text-sm mt-1" style={{ color: "var(--fg2)" }}>{pricing.kidsLabel}</p>
         )}
         {full && (
           <p
             className="text-sm mt-3 px-3 py-2 rounded-lg inline-block"
             style={{ background: "var(--terra-100)", color: "var(--terra-700)" }}
           >
-            This retreat is full. You'll be added to the waitlist.
+            This event is full. You'll be added to the waitlist.
           </p>
         )}
       </div>
@@ -82,7 +82,16 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
           </p>
         </div>
       ) : (
-        <RegistrationForm slug={slug} isFull={full} />
+        <RegistrationForm
+          slug={slug}
+          isFull={full}
+          spotsLeft={spotsLeft}
+          pricingType={pricing.type}
+          perPersonMinCents={pricing.min ?? 0}
+          perPersonMaxCents={pricing.max ?? pricing.min ?? 0}
+          kidsDiscountPercent={event.kidsDiscountPercent ?? 0}
+          paypalClientId={paypalEnabled ? paypalClientId : null}
+        />
       )}
     </div>
   );

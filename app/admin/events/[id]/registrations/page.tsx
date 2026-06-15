@@ -5,13 +5,17 @@ import { formatDate } from "@/lib/utils";
 import RegistrationActions from "./RegistrationActions";
 import { CheckInBox, RoomSelect, RoomsManager } from "./RoomingControls";
 import AddRegistrant from "./AddRegistrant";
+import PaymentActions from "./PaymentActions";
+
+const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 async function getData(id: string) {
   const [event, rooms] = await Promise.all([
     prisma.event.findUnique({
       where: { id },
       include: {
-        registrations: { orderBy: [{ createdAt: "asc" }, { id: "asc" }], include: { room: true } },
+        registrations: { orderBy: [{ createdAt: "asc" }, { id: "asc" }], include: { room: true, booking: true } },
+        bookings: { orderBy: { createdAt: "asc" }, include: { _count: { select: { participants: true } } } },
       },
     }),
     prisma.room.findMany({ orderBy: [{ order: "asc" }, { name: "asc" }] }),
@@ -117,6 +121,83 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
         </div>
       )}
 
+      {/* Payments */}
+      {(() => {
+        const payBookings = event.bookings.filter((b) => b.paymentMethod !== "NONE");
+        if (payBookings.length === 0) return null;
+        const collected = payBookings
+          .filter((b) => b.paymentStatus === "PAID")
+          .reduce((s, b) => s + b.amountCents, 0);
+        const outstanding = payBookings
+          .filter((b) => b.paymentStatus === "UNPAID")
+          .reduce((s, b) => s + b.amountCents, 0);
+        return (
+          <div className="mb-8 bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="flex flex-wrap justify-between items-center gap-2 px-5 py-3 border-b border-gray-100">
+              <h2 className="text-sm font-medium text-gray-700">Payments</h2>
+              <p className="text-xs text-gray-500">
+                <span className="text-green-700 font-medium">{dollars(collected)}</span> collected
+                {outstanding > 0 && (
+                  <> · <span className="text-amber-700 font-medium">{dollars(outstanding)}</span> outstanding</>
+                )}
+              </p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm min-w-[640px]">
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    <th className="px-4 py-2.5 text-left font-medium text-gray-500">Contact</th>
+                    <th className="px-4 py-2.5 text-left font-medium text-gray-500">Party</th>
+                    <th className="px-4 py-2.5 text-left font-medium text-gray-500">Amount</th>
+                    <th className="px-4 py-2.5 text-left font-medium text-gray-500">Method</th>
+                    <th className="px-4 py-2.5 text-left font-medium text-gray-500">Payment</th>
+                    <th className="px-4 py-2.5 text-left font-medium text-gray-500">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {payBookings.map((b) => {
+                    const paid = b.paymentStatus === "PAID";
+                    return (
+                      <tr key={b.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-2.5">
+                          <span className="font-medium text-gray-800">{b.name}</span>
+                          <span className="block text-xs text-gray-400">{b.email}</span>
+                        </td>
+                        <td className="px-4 py-2.5 text-gray-600">{b._count.participants}</td>
+                        <td className="px-4 py-2.5 text-gray-800">{dollars(b.amountCents)}</td>
+                        <td className="px-4 py-2.5 text-gray-600">
+                          {b.paymentMethod === "PAYPAL" ? "Online" : "Check"}
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                              paid
+                                ? "bg-green-100 text-green-800"
+                                : b.paymentMethod === "CHECK"
+                                ? "bg-amber-100 text-amber-800"
+                                : "bg-gray-100 text-gray-500"
+                            }`}
+                          >
+                            {paid ? "Paid" : b.paymentMethod === "CHECK" ? "Awaiting check" : "Unpaid"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          {b.paymentMethod === "CHECK" || paid ? (
+                            <PaymentActions bookingId={b.id} paymentStatus={b.paymentStatus} />
+                          ) : (
+                            <span className="text-xs text-gray-300">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Rooming */}
       {showRooming && (
         <>
@@ -217,8 +298,21 @@ export default async function RegistrationsPage({ params }: { params: Promise<{ 
                 <tr key={reg.id} className={`hover:bg-gray-50 ${reg.status === "CANCELLED" ? "opacity-50" : ""}`}>
                   <td className="px-4 py-3 font-medium text-gray-800">
                     {reg.name}
+                    {reg.isChild && (
+                      <span className="ml-1.5 text-xs font-normal text-gray-400">(18 &amp; under)</span>
+                    )}
                     {reg.phone && (
                       <span className="block text-xs font-normal text-gray-400">{reg.phone}</span>
+                    )}
+                    {reg.booking && reg.booking.paymentMethod !== "NONE" && (
+                      <span
+                        className={`block text-xs font-normal mt-0.5 ${
+                          reg.booking.paymentStatus === "PAID" ? "text-green-600" : "text-amber-600"
+                        }`}
+                      >
+                        {reg.booking.paymentMethod === "PAYPAL" ? "Online" : "Check"} ·{" "}
+                        {reg.booking.paymentStatus === "PAID" ? "Paid" : "Unpaid"}
+                      </span>
                     )}
                   </td>
                   <td className="px-4 py-3">

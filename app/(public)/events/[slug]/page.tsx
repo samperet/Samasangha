@@ -153,17 +153,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         className="rounded-2xl p-7"
         style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
       >
-        {event.isRetreat && pricing.type === "SLIDING" && pricing.min != null && pricing.max != null ? (
-          <RetreatPriceSlider
-            priceMin={pricing.min}
-            priceMax={pricing.max}
-            note={
-              pricing.earlyBirdActive && pricing.earlyBirdDeadline
-                ? `Early-bird pricing until ${formatDate(pricing.earlyBirdDeadline)}`
-                : undefined
-            }
-          />
-        ) : event.registrationEnabled && !registrationClosed ? (
+        {event.registrationEnabled && !registrationClosed ? (
           <>
             <h2 className="font-serif mb-2" style={{ fontSize: "1.4rem", fontWeight: 500, color: "var(--ink-900)" }}>
               {full ? "Join the waitlist" : "Register for this event"}
@@ -181,6 +171,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               {full ? "Join waitlist" : "Register now"}
             </Link>
           </>
+        ) : event.isRetreat && pricing.type === "SLIDING" && pricing.min != null && pricing.max != null ? (
+          <RetreatPriceSlider
+            priceMin={pricing.min}
+            priceMax={pricing.max}
+            note={
+              pricing.earlyBirdActive && pricing.earlyBirdDeadline
+                ? `Early-bird pricing until ${formatDate(pricing.earlyBirdDeadline)}`
+                : undefined
+            }
+          />
         ) : event.registerUrl ? (
           <>
             <h2 className="font-serif mb-2" style={{ fontSize: "1.4rem", fontWeight: 500 }}>
