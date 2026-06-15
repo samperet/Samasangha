@@ -46,7 +46,7 @@ export default async function HomePage() {
           // gradient also acts as a graceful fallback if the image is missing.
           backgroundColor: "var(--parch-50)",
           backgroundImage:
-            "linear-gradient(rgba(251,247,236,0.45), rgba(251,247,236,0.58)), url('/assets/forest-light.jpg')",
+            "linear-gradient(rgba(251,247,236,0.45), rgba(251,247,236,0.58)), url('/assets/ForestIllumination.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
