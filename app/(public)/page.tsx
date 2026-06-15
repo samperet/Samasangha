@@ -10,7 +10,7 @@ export const revalidate = 60;
 async function getUpcomingEvents() {
   try {
     return await prisma.event.findMany({
-      where: { published: true, startDate: { gt: new Date() } },
+      where: { published: true, featured: true, startDate: { gt: new Date() } },
       orderBy: { startDate: "asc" },
     });
   } catch {
