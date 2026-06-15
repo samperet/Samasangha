@@ -32,7 +32,7 @@ const LINKS = [
     external: true,
   },
   {
-    label: "Mureed Directory",
+    label: "Sangha Connections",
     description: "Find one another, names, places, and ways to connect.",
     href: "/mureeds-corner/directory",
     external: false,

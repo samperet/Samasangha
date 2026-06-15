@@ -11,7 +11,7 @@ import DeepeningGate from "../../deepen/deepening/DeepeningGate";
 import AddProfileForm from "./AddProfileForm";
 import DirectoryList from "./DirectoryList";
 
-export const metadata: Metadata = { title: "Mureed Directory" };
+export const metadata: Metadata = { title: "Sangha Connections" };
 export const dynamic = "force-dynamic";
 
 async function getProfiles() {
@@ -33,7 +33,7 @@ export default async function MureedDirectoryPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16">
         <h1 className="text-4xl font-bold text-stone-800 mb-10 text-center">
-          Mureed Directory
+          Sangha Connections
         </h1>
         <DeepeningGate />
       </div>
@@ -49,7 +49,7 @@ export default async function MureedDirectoryPage() {
           className="font-serif"
           style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.1 }}
         >
-          Mureed Directory
+          Sangha Connections
         </h1>
         <div className="flex justify-center my-4" aria-hidden>
           <img src="/assets/decorative-line.png" alt="" className="h-6 w-auto" />

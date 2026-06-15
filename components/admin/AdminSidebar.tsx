@@ -15,7 +15,7 @@ const links: NavLink[] = [
   { href: "/admin/events",        label: "Events",             icon: Calendar },
   { href: "/admin/posts",         label: "Posts & teachings",  icon: FileText },
   { href: "/admin/albums",        label: "Albums & music",     icon: Music },
-  { href: "/admin/mureeds",       label: "Mureed directory",   icon: Users },
+  { href: "/admin/mureeds",       label: "Sangha Connections", icon: Users },
   { href: "/admin/notifications", label: "Notifications",      icon: Bell },
 ];
 

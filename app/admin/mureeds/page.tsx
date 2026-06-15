@@ -17,7 +17,7 @@ export default async function AdminMureedsPage() {
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-[#1a2744]">Mureed Directory</h1>
+        <h1 className="text-2xl font-bold text-[#1a2744]">Sangha Connections</h1>
         <Link href="/admin/mureeds/new">
           <Button>+ Add mureed</Button>
         </Link>
