@@ -32,13 +32,10 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ── 100vh masthead, homepage only ────────────────────────── */}
+      {/* ── Masthead, homepage only — sized to content with vertical margin ── */}
       <div
-        className="relative flex items-center justify-center overflow-hidden px-5"
+        className="relative flex items-center justify-center overflow-hidden px-5 py-20 sm:py-24"
         style={{
-          // Header chrome is now heart banner (~120px) + sticky menu (~75px)
-          height: "calc(100vh - 200px)",
-          minHeight: 420,
           background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
         }}
       >
