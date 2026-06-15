@@ -241,7 +241,7 @@ export default async function HomePage() {
         aria-label="Retreats"
         className="py-16 md:py-20 px-5"
         style={{
-          backgroundColor: "#d9bbb3",
+          backgroundColor: "#fbf7ec",
           borderTop: "1px solid var(--surface-border)",
         }}
       >

@@ -36,8 +36,14 @@ export default async function UpcomingEventsPage() {
           {events.map((event) => (
             <div
               key={event.id}
-              className="relative rounded-2xl border border-stone-200 bg-white px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5"
+              className="group relative rounded-2xl border border-stone-200 bg-white px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5 transition-shadow hover:shadow-md"
             >
+              {/* Full-card link to the details page (stretched-link pattern) */}
+              <Link
+                href={`/events/${event.slug}`}
+                aria-label={event.title}
+                className="absolute inset-0 z-0 rounded-2xl"
+              />
               {event.featuredImageUrl && (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
@@ -57,16 +63,14 @@ export default async function UpcomingEventsPage() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-bold text-stone-800 pr-16 leading-snug mb-2">
-                  <Link href={`/events/${event.slug}`} className="hover:underline" style={{ color: "var(--ink-900)" }}>
-                    {event.title}
-                  </Link>
+                <h3 className="text-lg font-bold text-stone-800 pr-16 leading-snug mb-2 group-hover:underline" style={{ color: "var(--ink-900)" }}>
+                  {event.title}
                 </h3>
                 <p className="text-sm text-stone-500 leading-relaxed line-clamp-2">
                   {event.description}
                 </p>
               </div>
-              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-3 shrink-0 sm:pt-0.5">
+              <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-end gap-3 shrink-0 sm:pt-0.5">
                 {event.registrationEnabled ? (
                   <Link
                     href={`/events/${event.slug}/register`}
