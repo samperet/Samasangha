@@ -30,22 +30,7 @@ export default function Footer() {
       }}
       className="mt-auto"
     >
-      {/* Calligraphy divider */}
-      <div className="flex items-center justify-center py-8 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.14)" }}>
-        <div className="flex items-center gap-4">
-          <span style={{ width: 72, height: 1, background: "var(--gold-700)", opacity: 0.5, display: "block" }} />
-          <img
-            src="/assets/calligraphyheart.svg"
-            alt=""
-            aria-hidden
-            className="opacity-70"
-            style={{ width: 140, height: "auto" }}
-          />
-          <span style={{ width: 72, height: 1, background: "var(--gold-700)", opacity: 0.5, display: "block" }} />
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div className="max-w-5xl mx-auto px-5 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-center">
         {/* Inspiration */}
         <div className="flex justify-center">
           <Image
@@ -94,32 +79,33 @@ export default function Footer() {
           >
             ♡ Donate
           </a>
+          {/* Socials, under the Donate button */}
+          <div className="flex items-center justify-center gap-x-5 gap-y-2 w-full max-w-xs">
+            <a
+              href="https://www.facebook.com/groups/148665083286"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link inline-flex items-center gap-2 text-sm"
+            >
+              <FacebookIcon /> Facebook
+            </a>
+            <a
+              href="https://www.instagram.com/dup.cambridge.ma/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link inline-flex items-center gap-2 text-sm"
+            >
+              <InstagramIcon /> Instagram
+            </a>
+          </div>
         </div>
       </div>
 
       {/* Prayer */}
       <div
-        className="text-center py-6 px-4"
+        className="text-center py-4 px-4"
         style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}
       >
-        <div className="mb-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-          <a
-            href="https://www.facebook.com/groups/148665083286"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-link inline-flex items-center gap-2 text-sm"
-          >
-            <FacebookIcon /> Facebook
-          </a>
-          <a
-            href="https://www.instagram.com/dup.cambridge.ma/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-link inline-flex items-center gap-2 text-sm"
-          >
-            <InstagramIcon /> Instagram
-          </a>
-        </div>
         <p
           className="font-serif"
           aria-label="HEART"
