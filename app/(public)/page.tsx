@@ -340,8 +340,8 @@ export default async function HomePage() {
           <div className="mt-10 text-center">
             <Link
               href="/events/upcoming"
-              className="inline-block font-semibold px-7 py-3 rounded-lg text-sm"
-              style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
+              className="text-sm font-semibold underline underline-offset-2"
+              style={{ color: "var(--link)" }}
             >
               View all retreats →
             </Link>
