@@ -66,36 +66,39 @@ export default async function HomePage() {
         }}
       >
 
-        {/* Section 2: the community intro card — main image with the text
-            below. Combined into one rounded card via overflow-hidden. */}
-        <div className="relative z-10 mx-auto flex justify-center">
-          <div
-            className="w-full shrink-0 rounded-2xl overflow-hidden"
-            style={{ maxWidth: 480, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
-          >
-            <Image
-              src="/assets/AHHA.png"
-              alt="Abraham and Halima"
-              width={480}
-              height={320}
-              className="block w-full"
-            />
+        {/* Section 2: community intro — image on the left, text on the right
+            (stacked on mobile), with a link to the Welcome page. */}
+        <div
+          className="relative z-10 mx-auto flex flex-col md:flex-row items-center max-w-4xl rounded-2xl overflow-hidden"
+          style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
+        >
+          <Image
+            src="/assets/AHHA.png"
+            alt="Abraham and Halima"
+            width={480}
+            height={320}
+            className="block w-full md:w-1/2 shrink-0 self-stretch object-cover"
+          />
+          <div className="text-center md:text-left px-6 pb-8 pt-6 md:p-9">
             <blockquote
-              className="font-serif not-italic text-center"
+              className="font-serif not-italic"
               style={{
                 fontSize: "clamp(1.15rem, 2.5vw, 1.5rem)",
                 fontWeight: 500,
                 lineHeight: 1.6,
                 color: "var(--ink-900)",
-                padding: "1.75rem 2rem",
                 margin: 0,
-                background: "rgba(255,255,255,0.97)",
                 borderLeft: "none",
               }}
             >
               SamaSangha is the community of seekers who have gathered in Massachusetts, and also
               far and wide, with the guidance of Sufi Murshids Halima and Abraham.
             </blockquote>
+            <p className="mt-4 text-sm">
+              <Link href="/about/teachers" className="underline" style={{ color: "var(--crimson-700)" }}>
+                Learn more on our Welcome page
+              </Link>
+            </p>
           </div>
         </div>
       </section>
