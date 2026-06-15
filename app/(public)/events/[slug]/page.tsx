@@ -66,19 +66,19 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
       {/* Header */}
       <div className="mb-10">
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-3 mb-4">
           {event.isRetreat && (
             <span
-              className="text-xs font-semibold uppercase px-2.5 py-1 rounded-full"
-              style={{ background: "var(--gold-100)", color: "var(--gold-700)", letterSpacing: "0.12em" }}
+              className="text-xs font-semibold uppercase"
+              style={{ color: "var(--gold-700)", letterSpacing: "0.12em" }}
             >
               Retreat
             </span>
           )}
           {event.isOnline && (
             <span
-              className="text-xs font-semibold uppercase px-2.5 py-1 rounded-full"
-              style={{ background: "var(--lapis-100)", color: "var(--lapis-700)", letterSpacing: "0.12em" }}
+              className="text-xs font-semibold uppercase"
+              style={{ color: "var(--lapis-700)", letterSpacing: "0.12em" }}
             >
               Online
             </span>
