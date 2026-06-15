@@ -258,7 +258,7 @@ export default async function HomePage() {
               className="font-serif"
               style={{ fontSize: "2.25rem", fontWeight: 500, color: "var(--ink-900)", textTransform: "uppercase", letterSpacing: "0.04em" }}
             >
-              Retreats
+              Home Retreats
             </h2>
           </div>
 
@@ -318,6 +318,16 @@ export default async function HomePage() {
               ))}
             </div>
           )}
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/events/upcoming"
+              className="inline-block font-semibold px-7 py-3 rounded-lg text-sm"
+              style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+            >
+              View all retreats →
+            </Link>
+          </div>
         </div>
       </section>
     </>
