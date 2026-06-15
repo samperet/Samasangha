@@ -40,45 +40,29 @@ export default async function HomePage() {
           // Header chrome is now heart banner (~120px) + sticky menu (~75px)
           height: "calc(100vh - 200px)",
           minHeight: 420,
-          // Sunlit-forest photo behind a light parchment wash; the wider white
-          // splash (below) keeps the invocation clearly readable.
-          backgroundColor: "var(--parch-50)",
+          // Blue-tiled temple photo, with a slight dark wash so the opaque
+          // invocation box reads as a calm focal point against the busy tiles.
+          backgroundColor: "#0e2b3a",
           backgroundImage:
-            "linear-gradient(rgba(251,247,236,0.42), rgba(251,247,236,0.55)), url('/assets/ForestIllumination.jpg')",
+            "linear-gradient(rgba(8,24,34,0.35), rgba(8,24,34,0.45)), url('/assets/BlueTemple.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        {/* Readability scrim behind the text, a soft parchment veil with a
-            long gradual fade so the edges dissolve rather than reading as a
-            defined shape. */}
+        {/* Opaque box behind the invocation text + calligraphy heart, for
+            readability over the tilework. */}
         <div
-          aria-hidden
+          className="relative w-full"
           style={{
-            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-            width: "min(1500px, 100vw)", height: "min(720px, 90%)",
-            background:
-              "radial-gradient(ellipse at center, rgba(251,247,236,0.82) 0%, rgba(251,247,236,0.7) 28%, rgba(251,247,236,0.45) 50%, rgba(251,247,236,0.18) 70%, rgba(251,247,236,0) 90%)",
-            // Feather the top and bottom so the scrim has no hard border there.
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%)",
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%)",
-            pointerEvents: "none",
+            maxWidth: "min(94vw, 1100px)",
+            background: "var(--parch-50)",
+            borderRadius: 24,
+            border: "1px solid var(--gold-300)",
+            boxShadow: "0 24px 70px rgba(0,0,0,0.45)",
+            padding: "clamp(20px, 4vw, 56px)",
+            overflow: "hidden",
           }}
-        />
-
-        {/* Gold halo */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute", top: "-60px", left: "50%", transform: "translateX(-50%)",
-            width: "min(680px, 90vw)", height: "560px", borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(217,164,54,0.20) 0%, rgba(217,164,54,0) 62%)",
-            pointerEvents: "none",
-          }}
-        />
-        <div className="relative w-full" style={{ maxWidth: "min(94vw, 1280px)" }}>
+        >
           <InvocationCarousel />
         </div>
       </div>
