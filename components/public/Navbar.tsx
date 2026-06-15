@@ -126,17 +126,25 @@ export default function Navbar() {
     <>
       {/* ── Header chrome above the menu, on the blue-temple background ── */}
       <div
-        className="relative z-[60]"
+        className="relative z-[60] py-3"
         style={{
           backgroundColor: "#0e2b3a",
           backgroundImage:
-            "linear-gradient(rgba(247,238,219,0.32), rgba(247,238,219,0.32)), url('/assets/BlueTemple.png')",
+            "linear-gradient(rgba(13,43,58,0.12), rgba(13,43,58,0.12)), url('/assets/BlueTemple.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-      {/* ── Winged heart banner, scrolls away with the page ───────── */}
-      <div className="flex justify-center pt-6 pb-3 px-5">
+      {/* ── Winged heart banner, in a translucent band with a blue outline ── */}
+      <div
+        className="flex justify-center pt-5 pb-3 px-5"
+        style={{
+          background: "rgba(221,236,241,0.62)",
+          borderTop: "2px solid #2f6285",
+          borderBottom: "2px solid #2f6285",
+          backdropFilter: "blur(1px)",
+        }}
+      >
         <Link
           href="/"
           aria-label="SamaSangha home"
@@ -212,7 +220,15 @@ export default function Navbar() {
       {/* ── Nav bar, sticky, elegant text ─────────────────────────── */}
       <header
         ref={headerRef}
-        className="parchment header-paper sticky top-0 z-50"
+        className="sticky top-0 z-50"
+        style={{
+          backgroundColor: "#0e2b3a",
+          backgroundImage:
+            "linear-gradient(rgba(221,236,241,0.66), rgba(221,236,241,0.66)), url('/assets/BlueTemple.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          borderBottom: "2px solid #2f6285",
+        }}
       >
         {/* Desktop */}
         <div
