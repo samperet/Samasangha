@@ -34,7 +34,7 @@ export default async function HomePage() {
     <>
       {/* ── Masthead, homepage only — sized to content with vertical margin ── */}
       <div
-        className="relative flex items-center justify-center overflow-hidden px-5 py-20 sm:py-24"
+        className="relative flex items-center justify-center overflow-hidden px-5 pt-16 pb-20 sm:pt-20 sm:pb-24"
         style={{
           background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
         }}
