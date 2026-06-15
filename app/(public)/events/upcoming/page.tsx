@@ -74,8 +74,8 @@ export default async function UpcomingEventsPage() {
                 {event.registrationEnabled ? (
                   <Link
                     href={`/events/${event.slug}/register`}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-200"
-                    style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
+                    className="text-sm font-semibold underline underline-offset-2 whitespace-nowrap transition-colors"
+                    style={{ color: "var(--link)" }}
                   >
                     Register
                   </Link>
@@ -84,8 +84,8 @@ export default async function UpcomingEventsPage() {
                     href={event.registerUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap"
-                    style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
+                    className="text-sm font-semibold underline underline-offset-2 whitespace-nowrap"
+                    style={{ color: "var(--link)" }}
                   >
                     Register
                   </a>
