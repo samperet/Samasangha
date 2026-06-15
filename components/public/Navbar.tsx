@@ -139,7 +139,7 @@ export default function Navbar() {
           borderRight: "3px solid #8fbfd3",
         }}
       >
-      {/* ── Winged heart + wordmark, in a frosted white panel inset from the
+      {/* ── Winged heart + wordmark, in an opaque white panel inset from the
             frame so the temple texture shows around its edges ── */}
       <div
         className="flex justify-center items-center w-full"
@@ -203,21 +203,6 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* ── Decorative flourish (flipped), on top of the menu, not sticky ── */}
-      <div
-        className="hidden lg:flex justify-center px-5"
-        style={{ paddingTop: 18, paddingBottom: 6 }}
-      >
-        <Image
-          src="/assets/decorative-line.png"
-          alt=""
-          aria-hidden
-          width={400}
-          height={44}
-          className="h-6 w-auto"
-          style={{ transform: "scaleY(-1)" }}
-        />
-      </div>
       </div>
 
       {/* ── Nav bar, sticky, elegant text ─────────────────────────── */}
