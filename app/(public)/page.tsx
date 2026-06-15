@@ -110,8 +110,6 @@ export default async function HomePage() {
         className="pt-28 pb-16 md:pt-32 md:pb-20 px-5"
         style={{
           backgroundColor: "var(--parch-100)",
-          backgroundImage: "url('/assets/SufiHeartPattern.png')",
-          backgroundRepeat: "repeat",
           borderTop: "1px solid var(--surface-border)",
           borderBottom: "1px solid var(--surface-border)",
         }}
@@ -243,9 +241,7 @@ export default async function HomePage() {
         aria-label="Retreats"
         className="py-16 md:py-20 px-5"
         style={{
-          backgroundColor: "var(--parch-100)",
-          backgroundImage: "url('/assets/SufiHeartPattern.png')",
-          backgroundRepeat: "repeat",
+          backgroundColor: "#d9bbb3",
           borderTop: "1px solid var(--surface-border)",
         }}
       >
