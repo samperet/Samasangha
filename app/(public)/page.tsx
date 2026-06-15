@@ -59,6 +59,11 @@ export default async function HomePage() {
             width: "min(1500px, 100vw)", height: "min(720px, 90%)",
             background:
               "radial-gradient(ellipse at center, rgba(251,247,236,0.82) 0%, rgba(251,247,236,0.7) 28%, rgba(251,247,236,0.45) 50%, rgba(251,247,236,0.18) 70%, rgba(251,247,236,0) 90%)",
+            // Feather the top and bottom so the scrim has no hard border there.
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%)",
             pointerEvents: "none",
           }}
         />
