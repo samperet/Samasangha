@@ -1,4 +1,4 @@
-// Static invocation with the calligraphy winged-heart behind it.
+// Static invocation with the calligraphy winged-heart above it.
 // (Previously a multi-language scroll carousel; reverted to English only.)
 
 const INVOCATION =
@@ -10,7 +10,7 @@ export default function InvocationCarousel() {
   return (
     <div
       className="flex flex-col items-center text-center"
-      style={{ width: "100%", paddingTop: "clamp(12px, 4vh, 56px)", paddingBottom: "clamp(12px, 4vh, 56px)", gap: 0 }}
+      style={{ width: "100%", paddingTop: "clamp(12px, 4vh, 56px)", paddingBottom: "clamp(12px, 4vh, 56px)", gap: "clamp(16px, 3vh, 36px)" }}
     >
       {/* Heading kept for SEO/structure, visually hidden. */}
       <h1
@@ -20,53 +20,34 @@ export default function InvocationCarousel() {
         SamaSangha
       </h1>
 
-      <div
+      {/* Gold winged-heart calligraphy, above the invocation */}
+      <img
+        src="/assets/calligraphyheart.svg"
+        alt=""
+        aria-hidden
         style={{
-          position: "relative",
-          width: "100%",
-          minHeight: "clamp(220px, 42vh, 380px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          width: "min(520px, 80%)",
+          maxWidth: "none",
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      />
+
+      <p
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontStyle: "italic",
+          fontWeight: 500,
+          fontSize: "clamp(1.65rem, 3.7vw, 2.85rem)",
+          lineHeight: 1.5,
+          maxWidth: "100%",
+          color: TEXT_BLUE,
+          margin: 0,
           padding: "0 8px",
         }}
       >
-        {/* Gold winged-heart calligraphy, behind the invocation */}
-        <img
-          src="/assets/calligraphyheart.svg"
-          alt=""
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "min(1100px, 130%)",
-            maxWidth: "none",
-            opacity: 0.22,
-            pointerEvents: "none",
-            userSelect: "none",
-            zIndex: 0,
-          }}
-        />
-
-        <p
-          style={{
-            position: "relative",
-            zIndex: 1,
-            fontFamily: "var(--font-serif)",
-            fontStyle: "italic",
-            fontWeight: 500,
-            fontSize: "clamp(1.65rem, 3.7vw, 2.85rem)",
-            lineHeight: 1.5,
-            maxWidth: "100%",
-            color: TEXT_BLUE,
-            margin: 0,
-          }}
-        >
-          {INVOCATION}
-        </p>
-      </div>
+        {INVOCATION}
+      </p>
     </div>
   );
 }
