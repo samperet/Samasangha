@@ -8,6 +8,7 @@ type PricedEvent = {
   earlyBirdPriceMin: number | null;
   earlyBirdPriceMax: number | null;
   earlyBirdDeadline: Date | null;
+  kidsDiscountPercent?: number | null;
 };
 
 export type EventPricing = {
@@ -22,6 +23,10 @@ export type EventPricing = {
   regularMax: number | null;
   /** Human label, e.g. "$120 early bird", "$250–$450 sliding scale", "Free". */
   label: string;
+  /** Kids (18 & under) discount percent, if set. */
+  kidsDiscountPercent: number | null;
+  /** Kids price label, e.g. "Kids 18 & under: $60 (50% off)", or null. */
+  kidsLabel: string | null;
 };
 
 const dollars = (cents: number) => `$${Math.round(cents / 100)}`;
@@ -35,6 +40,7 @@ export function eventPricing(event: PricedEvent, now: Date = new Date()): EventP
       earlyBirdActive: false, earlyBirdDeadline: null,
       regularMin: null, regularMax: null,
       label: "Free",
+      kidsDiscountPercent: null, kidsLabel: null,
     };
   }
 
@@ -64,6 +70,23 @@ export function eventPricing(event: PricedEvent, now: Date = new Date()): EventP
     if (earlyBirdActive) label += " (early bird)";
   }
 
+  // Kids (18 & under) discount applied to the currently-active price.
+  const kidsPct = event.kidsDiscountPercent ?? null;
+  let kidsLabel: string | null = null;
+  if (kidsPct && kidsPct > 0 && min != null) {
+    const factor = 1 - kidsPct / 100;
+    const kMin = Math.round(min * factor);
+    if (pricingType === "FIXED") {
+      kidsLabel = `Kids 18 & under: ${dollars(kMin)} (${kidsPct}% off)`;
+    } else {
+      const kMax = max != null ? Math.round(max * factor) : null;
+      kidsLabel =
+        kMax != null
+          ? `Kids 18 & under: ${dollars(kMin)}–${dollars(kMax)} (${kidsPct}% off)`
+          : `Kids 18 & under: from ${dollars(kMin)} (${kidsPct}% off)`;
+    }
+  }
+
   return {
     type: pricingType,
     min: min ?? null,
@@ -73,5 +96,7 @@ export function eventPricing(event: PricedEvent, now: Date = new Date()): EventP
     regularMin: event.priceMin,
     regularMax: event.priceMax,
     label,
+    kidsDiscountPercent: kidsPct,
+    kidsLabel,
   };
 }

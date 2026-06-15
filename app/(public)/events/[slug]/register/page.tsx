@@ -59,6 +59,11 @@ export default async function RegisterPage({ params }: { params: Promise<{ slug:
             )}
           </p>
         )}
+        {pricing.kidsLabel && (
+          <p className="text-sm mt-1" style={{ color: "var(--fg2)" }}>
+            {pricing.kidsLabel}
+          </p>
+        )}
         {full && (
           <p
             className="text-sm mt-3 px-3 py-2 rounded-lg inline-block"

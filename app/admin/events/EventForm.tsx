@@ -49,6 +49,7 @@ export default function EventForm({ event }: { event?: Event }) {
     earlyBirdDeadline: event?.earlyBirdDeadline
       ? new Date(event.earlyBirdDeadline).toISOString().slice(0, 16)
       : "",
+    kidsDiscountPercent: event?.kidsDiscountPercent?.toString() ?? "",
     registrationDeadline: event?.registrationDeadline
       ? new Date(event.registrationDeadline).toISOString().slice(0, 16)
       : "",
@@ -98,6 +99,7 @@ export default function EventForm({ event }: { event?: Event }) {
         earlyBirdPriceMin: form.earlyBirdPriceMin ? Math.round(parseFloat(form.earlyBirdPriceMin) * 100) : null,
         earlyBirdPriceMax: form.earlyBirdPriceMax ? Math.round(parseFloat(form.earlyBirdPriceMax) * 100) : null,
         earlyBirdDeadline: form.earlyBirdDeadline || null,
+        kidsDiscountPercent: form.kidsDiscountPercent ? parseInt(form.kidsDiscountPercent) : null,
         registrationDeadline: form.registrationDeadline || null,
       }),
     });
@@ -356,6 +358,16 @@ export default function EventForm({ event }: { event?: Event }) {
                     <label className="text-xs text-gray-500 mb-1 block">Early bird ends</label>
                     <Input type="datetime-local" value={form.earlyBirdDeadline} onChange={(e) => set("earlyBirdDeadline", e.target.value)} />
                   </div>
+                </div>
+              </div>
+            )}
+            {form.pricingType !== "FREE" && (
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Kids discount (18 &amp; under)</label>
+                <p className="text-xs text-gray-400 mb-1.5">Percent off the price for children 18 and under. Leave blank for none.</p>
+                <div className="flex items-center gap-2 max-w-[8rem]">
+                  <Input type="number" min="0" max="100" value={form.kidsDiscountPercent} onChange={(e) => set("kidsDiscountPercent", e.target.value)} placeholder="e.g. 50" />
+                  <span className="text-sm" style={{ color: "var(--fg2)" }}>%</span>
                 </div>
               </div>
             )}

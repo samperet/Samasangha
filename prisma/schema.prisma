@@ -67,6 +67,8 @@ model Event {
   earlyBirdPriceMin    Int?
   earlyBirdPriceMax    Int?
   earlyBirdDeadline    DateTime?
+  // Percent discount applied to the price for kids 18 and under (0–100).
+  kidsDiscountPercent  Int?
   registrationDeadline DateTime?
   registrations        EventRegistration[]
 }

@@ -33,6 +33,10 @@ export function parseEventData(data: Record<string, unknown>) {
       pricingType !== "FREE" && data.earlyBirdDeadline
         ? new Date(data.earlyBirdDeadline as string)
         : null,
+    kidsDiscountPercent:
+      pricingType !== "FREE" && data.kidsDiscountPercent
+        ? Number(data.kidsDiscountPercent)
+        : null,
     startDate: new Date(data.startDate as string),
     endDate: data.endDate ? new Date(data.endDate as string) : null,
     registrationDeadline: data.registrationDeadline

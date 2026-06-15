@@ -114,6 +114,11 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                     Early bird until {formatDate(pricing.earlyBirdDeadline)}
                   </span>
                 )}
+                {pricing.kidsLabel && (
+                  <span className="block text-xs mt-0.5" style={{ color: "var(--fg2)" }}>
+                    {pricing.kidsLabel}
+                  </span>
+                )}
               </dd>
             </div>
           )}
