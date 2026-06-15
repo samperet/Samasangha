@@ -49,20 +49,6 @@ export default async function HomePage() {
           backgroundPosition: "center",
         }}
       >
-        {/* Readability white splash, a wide soft parchment glow behind the
-            invocation so the text sits on a light area while the forest shows
-            around it. */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-            width: "min(1700px, 100vw)", height: "min(760px, 92%)", borderRadius: "50%",
-            background:
-              "radial-gradient(ellipse at center, rgba(251,247,236,0.95) 0%, rgba(251,247,236,0.88) 42%, rgba(251,247,236,0.5) 64%, rgba(251,247,236,0) 80%)",
-            pointerEvents: "none",
-          }}
-        />
-
         {/* Gold halo */}
         <div
           aria-hidden
