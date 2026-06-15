@@ -23,7 +23,7 @@ async function getProfiles() {
 }
 
 export default async function MureedDirectoryPage() {
-  // Same gate as the rest of the Mureeds' Corner (shared cookie)
+  // Same gate as the rest of the Mureeds Circle (shared cookie)
   const store = await cookies();
   const unlocked =
     (await verifyDeepeningToken(store.get(DEEPENING_COOKIE)?.value)) ||

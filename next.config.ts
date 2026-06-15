@@ -18,6 +18,13 @@ if (process.env.R2_PUBLIC_URL) {
 
 const nextConfig: NextConfig = {
   images: { remotePatterns },
+  // Mureeds' Corner was renamed to Mureeds Circle; keep old links working.
+  async redirects() {
+    return [
+      { source: "/mureeds-corner", destination: "/mureeds-circle", permanent: true },
+      { source: "/mureeds-corner/:path*", destination: "/mureeds-circle/:path*", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

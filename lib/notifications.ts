@@ -5,7 +5,7 @@ export const NOTIFICATION_PAGES: { value: NotificationPage; label: string; path:
   { value: "HOMEPAGE", label: "Homepage", path: "/" },
   { value: "TUESDAY", label: "Tuesday classes", path: "/deepen/tuesday-practice" },
   { value: "DANCES", label: "Dances of Universal Peace", path: "/dances" },
-  { value: "MUREEDS", label: "Mureeds' Corner", path: "/mureeds-corner" },
+  { value: "MUREEDS", label: "Mureeds Circle", path: "/mureeds-circle" },
 ];
 
 export const NOTIFICATION_PAGE_LABELS: Record<NotificationPage, string> = Object.fromEntries(

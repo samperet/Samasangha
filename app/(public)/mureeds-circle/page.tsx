@@ -9,7 +9,7 @@ import {
 } from "@/lib/admin-token";
 import DeepeningGate from "../deepen/deepening/DeepeningGate";
 
-export const metadata: Metadata = { title: "Mureeds' Corner" };
+export const metadata: Metadata = { title: "Mureeds Circle" };
 
 // Links shown once the corner is unlocked
 const LINKS = [
@@ -34,7 +34,7 @@ const LINKS = [
   {
     label: "Sangha Connections",
     description: "Find one another, names, places, and ways to connect.",
-    href: "/mureeds-corner/directory",
+    href: "/mureeds-circle/directory",
     external: false,
   },
 ];
@@ -51,7 +51,7 @@ export default async function MureedsCornerPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16">
         <h1 className="text-4xl font-bold text-stone-800 mb-10 text-center">
-          Mureeds&rsquo; Corner
+          Mureeds Circle
         </h1>
         <DeepeningGate />
       </div>
@@ -65,7 +65,7 @@ export default async function MureedsCornerPage() {
           className="font-serif"
           style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.1 }}
         >
-          Mureeds&rsquo; Corner
+          Mureeds Circle
         </h1>
       </div>
 

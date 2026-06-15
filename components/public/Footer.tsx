@@ -21,7 +21,15 @@ function InstagramIcon({ size = 17 }: { size?: number }) {
 
 export default function Footer() {
   return (
-    <footer style={{ background: "var(--bg-ink)", color: "var(--fg-on-dark)" }} className="mt-auto">
+    <footer
+      style={{
+        background:
+          "radial-gradient(120% 130% at 50% -10%, #0a7d12 0%, #036007 50%, #024c06 100%)",
+        backgroundColor: "#036007",
+        color: "var(--fg-on-dark)",
+      }}
+      className="mt-auto"
+    >
       {/* Calligraphy divider */}
       <div className="flex items-center justify-center py-8 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.14)" }}>
         <div className="flex items-center gap-4">
@@ -51,7 +59,7 @@ export default function Footer() {
 
         <div className="flex flex-col items-center md:items-start gap-4">
           <Link
-            href="/mureeds-corner"
+            href="/mureeds-circle"
             className="inline-flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg px-5 text-sm font-semibold"
             style={{
               background: "var(--parch-50)",
@@ -68,7 +76,7 @@ export default function Footer() {
               height={272}
               className="w-auto h-8"
             />
-            Mureeds&rsquo; Corner
+            Mureeds Circle
           </Link>
           <a
             href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
@@ -113,10 +121,18 @@ export default function Footer() {
           </a>
         </div>
         <p
-          className="font-serif italic"
-          style={{ color: "var(--gold-400)", opacity: 0.75, fontSize: "0.95rem", lineHeight: 1.8 }}
+          className="font-serif"
+          aria-label="HEART"
+          style={{
+            color: "var(--gold-400)",
+            opacity: 0.75,
+            fontSize: "0.95rem",
+            letterSpacing: "0.06em",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+          }}
         >
-          May all Beings be Well! · May all Beings be Happy! Peace! Peace! Peace!
+          {"HEART".repeat(120)}
         </p>
       </div>
     </footer>

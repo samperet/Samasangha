@@ -24,7 +24,7 @@ export default async function AdminMureedsPage() {
       </div>
 
       <p className="text-sm text-gray-500 mb-6">
-        Listings shown in the Mureeds&apos; Corner directory. Members can add themselves there;
+        Listings shown in the Mureeds Circle directory. Members can add themselves there;
         you can edit or remove any listing here.
       </p>
 
