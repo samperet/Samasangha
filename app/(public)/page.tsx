@@ -126,7 +126,7 @@ export default async function HomePage() {
                 width={200}
                 height={200}
                 className="rounded-2xl"
-                style={{ marginTop: "-6rem", border: "5px solid var(--parch-50)", boxShadow: "0 16px 40px rgba(0,0,0,0.28)" }}
+                style={{ marginTop: "-6rem" }}
               />
             </div>
             <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
@@ -186,7 +186,7 @@ export default async function HomePage() {
                 width={200}
                 height={200}
                 className="rounded-2xl"
-                style={{ marginTop: "-6rem", border: "5px solid var(--parch-50)", boxShadow: "0 16px 40px rgba(0,0,0,0.28)" }}
+                style={{ marginTop: "-6rem" }}
               />
             </div>
             <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
