@@ -61,7 +61,7 @@ export default async function AdminPostsPage() {
                   <td className="px-4 py-3 text-gray-400 text-xs">{formatDateShort(p.createdAt)}</td>
                   <td className="px-4 py-3 flex gap-2">
                     <Link href={`/admin/posts/${p.id}`} className="text-[#1a2744] hover:underline text-xs">Edit</Link>
-                    <DeleteButton id={p.id} endpoint="/api/admin/posts" label="post" />
+                    <DeleteButton id={p.id} endpoint="/api/admin/posts" label="post" name={p.title} />
                   </td>
                 </tr>
               ))}
