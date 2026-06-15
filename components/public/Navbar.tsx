@@ -139,12 +139,12 @@ export default function Navbar() {
           borderRight: "3px solid #8fbfd3",
         }}
       >
-      {/* ── Winged heart + wordmark, in an opaque white panel inset from the
-            frame so the temple texture shows around its edges ── */}
+      {/* ── Winged heart + wordmark, in a see-through white panel (no blur) so
+            the temple texture shows through it and around its edges ── */}
       <div
         className="flex justify-center items-center w-full"
         style={{
-          background: "#ffffff",
+          background: "rgba(255,255,255,0.55)",
           padding: "1rem 2rem 1.6rem",
         }}
       >
