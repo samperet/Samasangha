@@ -63,9 +63,6 @@ function DownloadModal({
         </button>
 
         <p className="text-3xl mb-3" aria-hidden style={{ color: "var(--gold-500)" }}>♥</p>
-        <h2 className="font-serif mb-3" style={{ fontSize: "1.6rem", fontWeight: 500, color: "var(--ink-900)" }}>
-          Offered by donation
-        </h2>
         <p className="text-sm leading-relaxed mb-7" style={{ color: "var(--fg2)" }}>
           This music is shared freely with our community and supported by your generosity.
           If it moves you, please consider a gift of dana, then download with our blessing.
