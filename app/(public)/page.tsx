@@ -49,6 +49,20 @@ export default async function HomePage() {
           backgroundPosition: "center",
         }}
       >
+        {/* Readability scrim behind the text, a soft parchment veil with a
+            long gradual fade so the edges dissolve rather than reading as a
+            defined shape. */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+            width: "min(1500px, 100vw)", height: "min(720px, 90%)",
+            background:
+              "radial-gradient(ellipse at center, rgba(251,247,236,0.82) 0%, rgba(251,247,236,0.7) 28%, rgba(251,247,236,0.45) 50%, rgba(251,247,236,0.18) 70%, rgba(251,247,236,0) 90%)",
+            pointerEvents: "none",
+          }}
+        />
+
         {/* Gold halo */}
         <div
           aria-hidden
