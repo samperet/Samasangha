@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
 import Link from "next/link";
 
-export const metadata: Metadata = { title: "Upcoming Events" };
+export const metadata: Metadata = { title: "Upcoming Retreats" };
 export const revalidate = 60;
 
 async function getEvents() {
@@ -22,8 +22,7 @@ export default async function UpcomingEventsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-stone-800 mb-2">Upcoming Events</h1>
-      <p className="text-stone-500 mb-12">Practices, retreats, and gatherings open to all.</p>
+      <h1 className="text-4xl font-bold text-stone-800 mb-12">UPCOMING RETREATS</h1>
 
       {events.length === 0 ? (
         <div className="text-stone-400 italic">
@@ -39,11 +38,6 @@ export default async function UpcomingEventsPage() {
               key={event.id}
               className="relative rounded-2xl border border-stone-200 bg-white px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5"
             >
-              {event.isRetreat && (
-                <span className="absolute top-5 right-6 text-xs font-semibold uppercase tracking-widest text-stone-400">
-                  Retreat
-                </span>
-              )}
               {event.featuredImageUrl && (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
