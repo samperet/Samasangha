@@ -244,7 +244,7 @@ export default function Navbar() {
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
           >
-            Deepen
+            Teachings
           </Link>
 
           <NavHeart />
@@ -272,7 +272,7 @@ export default function Navbar() {
           )}
           <Link href="/about/teachers" className="font-serif" style={MOBILE_ITEM}>{DISCOVER.label}</Link>
           <NavHeart />
-          <Link href="/deepen" className="font-serif" style={MOBILE_ITEM}>Deepen</Link>
+          <Link href="/deepen" className="font-serif" style={MOBILE_ITEM}>Teachings</Link>
           <NavHeart />
           <Link href="/deepen/music/albums" className="font-serif" style={MOBILE_ITEM}>Music</Link>
         </nav>

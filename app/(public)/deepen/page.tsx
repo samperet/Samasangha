@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { youtubeThumbnail } from "@/components/public/YouTubeEmbed";
 import TeachingsBrowser, { type TeachingItem } from "./TeachingsBrowser";
 
-export const metadata: Metadata = { title: "Deepen" };
+export const metadata: Metadata = { title: "Teachings" };
 export const revalidate = 60;
 
 // Detail routes per category, talks and dance articles keep their original
@@ -98,7 +98,7 @@ export default async function TeachingsPage() {
           className="font-serif"
           style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.1 }}
         >
-          Deepen
+          Teachings
         </h1>
         <div className="flex justify-center my-4" aria-hidden>
           <img src="/assets/decorative-line.png" alt="" className="h-6 w-auto" />
