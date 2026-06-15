@@ -109,7 +109,7 @@ export default async function HomePage() {
         aria-label="Regular gatherings"
         className="pt-28 pb-16 md:pt-32 md:pb-20 px-5"
         style={{
-          backgroundColor: "var(--parch-100)",
+          backgroundColor: "#d9bbb3",
           borderTop: "1px solid var(--surface-border)",
           borderBottom: "1px solid var(--surface-border)",
         }}
