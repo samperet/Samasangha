@@ -42,7 +42,7 @@ export default function AlbumCard({ album }: { album: AlbumCardData }) {
 
   return (
     <Link
-      href={`/deepen/music/albums/${album.slug}`}
+      href={`/teachings/music/albums/${album.slug}`}
       className="group block"
       aria-label={album.title}
     >

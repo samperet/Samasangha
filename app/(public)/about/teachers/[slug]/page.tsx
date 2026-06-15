@@ -157,7 +157,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
           </p>
           {slug === "abraham-sussman" && (
             <Link
-              href="/deepen/dances/articles/dancing-the-heart-awake"
+              href="/teachings/dances/articles/dancing-the-heart-awake"
               className="flex items-start gap-4 rounded-xl p-4 transition-shadow duration-200 teacher-card group"
             >
               <div className="flex-1 min-w-0">
@@ -177,7 +177,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
           )}
           {slug === "halima-sussman" && (
             <Link
-              href="/deepen/dances/articles/be-ye-songs-of-glory"
+              href="/teachings/dances/articles/be-ye-songs-of-glory"
               className="flex items-start gap-4 rounded-xl p-4 transition-shadow duration-200 teacher-card group"
             >
               <div className="flex-1 min-w-0">

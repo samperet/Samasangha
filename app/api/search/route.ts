@@ -16,10 +16,10 @@ const SEARCHABLE_CATEGORIES: PostCategory[] = ["TALK", "DANCE_ARTICLE", "DANCE_I
 
 function postHref(slug: string, category: string) {
   switch (category) {
-    case "TALK":            return `/deepen/talks/${slug}`;
-    case "DANCE_ARTICLE":   return `/deepen/dances/articles/${slug}`;
-    case "DANCE_INTERVIEW": return `/deepen/dances/interviews`;
-    default:                return `/deepen/talks/${slug}`;
+    case "TALK":            return `/teachings/talks/${slug}`;
+    case "DANCE_ARTICLE":   return `/teachings/dances/articles/${slug}`;
+    case "DANCE_INTERVIEW": return `/teachings/dances/interviews`;
+    default:                return `/teachings/talks/${slug}`;
   }
 }
 
@@ -109,21 +109,21 @@ export async function GET(req: NextRequest) {
       id: v.id,
       label: v.title,
       sublabel: "Video",
-      href: v.youtubeUrl ?? "/deepen?type=videos",
+      href: v.youtubeUrl ?? "/teachings?type=videos",
       group: "Teachings",
     })),
     ...albums.map((a) => ({
       id: a.id,
       label: a.title,
       sublabel: "Album",
-      href: `/deepen/music/albums/${a.slug}`,
+      href: `/teachings/music/albums/${a.slug}`,
       group: "Music & Video",
     })),
     ...tracks.map((t) => ({
       id: t.id,
       label: t.title,
       sublabel: `Song · ${t.album.title}`,
-      href: `/deepen/music/albums/${t.album.slug}`,
+      href: `/teachings/music/albums/${t.album.slug}`,
       group: "Music & Video",
     })),
     ...events.map((e) => ({

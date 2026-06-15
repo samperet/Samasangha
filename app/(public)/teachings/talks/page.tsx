@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 // Talks are now part of the consolidated Teachings page.
-// Detail pages still live at /deepen/talks/[slug].
+// Detail pages still live at /teachings/talks/[slug].
 export default function TalksPage() {
-  redirect("/deepen?type=talks");
+  redirect("/teachings?type=talks");
 }

@@ -80,7 +80,7 @@ export default function TeachingsBrowser({ items }: { items: TeachingItem[] }) {
   const searchParams = useSearchParams();
 
   // The URL is the single source of truth, so navbar links like
-  // /deepen?type=talks work even when already on this page.
+  // /teachings?type=talks work even when already on this page.
   const rawType = searchParams.get("type");
   const type = TYPES.some((x) => x.key === rawType) ? (rawType as string) : "all";
 
@@ -99,7 +99,7 @@ export default function TeachingsBrowser({ items }: { items: TeachingItem[] }) {
     const t = next.type ?? type;
     if (t !== "all") params.set("type", t);
     const qs = params.toString();
-    router.replace(`/deepen${qs ? `?${qs}` : ""}`, { scroll: false });
+    router.replace(`/teachings${qs ? `?${qs}` : ""}`, { scroll: false });
   }
 
   const filtered = useMemo(() => {

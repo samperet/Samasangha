@@ -38,7 +38,7 @@ export default async function AlbumPage({ params }: { params: Promise<{ slug: st
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <Link
-        href="/deepen/music/albums"
+        href="/teachings/music/albums"
         className="inline-flex items-center gap-1.5 text-sm text-ink-600 hover:text-ink-900 transition-colors mb-10"
       >
         <span aria-hidden>←</span> All albums

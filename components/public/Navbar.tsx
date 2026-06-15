@@ -247,7 +247,7 @@ export default function Navbar() {
 
           {/* Teachings */}
           <Link
-            href="/deepen"
+            href="/teachings"
             className="font-serif transition-colors duration-200"
             style={{ ...DESKTOP_ITEM }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
@@ -260,7 +260,7 @@ export default function Navbar() {
 
           {/* Music */}
           <Link
-            href="/deepen/music/albums"
+            href="/teachings/music/albums"
             className="font-serif transition-colors duration-200"
             style={{ ...DESKTOP_ITEM }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
@@ -294,9 +294,9 @@ export default function Navbar() {
           )}
           <Link href="/about/teachers" className="font-serif" style={MOBILE_ITEM}>{DISCOVER.label}</Link>
           <NavHeart />
-          <Link href="/deepen" className="font-serif" style={MOBILE_ITEM}>Teachings</Link>
+          <Link href="/teachings" className="font-serif" style={MOBILE_ITEM}>Teachings</Link>
           <NavHeart />
-          <Link href="/deepen/music/albums" className="font-serif" style={MOBILE_ITEM}>Music</Link>
+          <Link href="/teachings/music/albums" className="font-serif" style={MOBILE_ITEM}>Music</Link>
           <NavHeart />
           <Link href="/events/upcoming" className="font-serif" style={MOBILE_ITEM}>Retreats</Link>
         </nav>

@@ -7,7 +7,7 @@ import {
   verifyDeepeningToken,
   verifySessionToken,
 } from "@/lib/admin-token";
-import DeepeningGate from "../../deepen/deepening/DeepeningGate";
+import DeepeningGate from "../../teachings/deepening/DeepeningGate";
 import AddProfileForm from "./AddProfileForm";
 import DirectoryList from "./DirectoryList";
 

@@ -8,12 +8,12 @@ export const metadata: Metadata = { title: "Teachings" };
 export const revalidate = 60;
 
 // Detail routes per category, talks and dance articles keep their original
-// permalinks; everything else renders through the generic /deepen/[slug].
+// permalinks; everything else renders through the generic /teachings/[slug].
 function hrefFor(category: string, slug: string) {
   switch (category) {
-    case "TALK":          return `/deepen/talks/${slug}`;
-    case "DANCE_ARTICLE": return `/deepen/dances/articles/${slug}`;
-    default:              return `/deepen/${slug}`;
+    case "TALK":          return `/teachings/talks/${slug}`;
+    case "DANCE_ARTICLE": return `/teachings/dances/articles/${slug}`;
+    default:              return `/teachings/${slug}`;
   }
 }
 

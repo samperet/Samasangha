@@ -3,7 +3,7 @@ import type { NotificationPage } from "@prisma/client";
 /** Human-readable labels for each page a notification can target. */
 export const NOTIFICATION_PAGES: { value: NotificationPage; label: string; path: string }[] = [
   { value: "HOMEPAGE", label: "Homepage", path: "/" },
-  { value: "TUESDAY", label: "Tuesday classes", path: "/deepen/tuesday-practice" },
+  { value: "TUESDAY", label: "Tuesday classes", path: "/teachings/tuesday-practice" },
   { value: "DANCES", label: "Dances of Universal Peace", path: "/dances" },
   { value: "MUREEDS", label: "Mureeds Circle", path: "/mureeds-circle" },
 ];

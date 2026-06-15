@@ -32,7 +32,7 @@ export default async function DanceArticlesPage() {
         <div className="space-y-8">
           {articles.map((a) => (
             <article key={a.id} className="border-b border-stone-100 pb-8">
-              <Link href={`/deepen/dances/articles/${a.slug}`}>
+              <Link href={`/teachings/dances/articles/${a.slug}`}>
                 <h2 className="text-xl font-bold text-stone-800 hover:text-stone-600 transition-colors mb-2 leading-snug">
                   {a.title}
                 </h2>
@@ -41,7 +41,7 @@ export default async function DanceArticlesPage() {
                 <p className="text-stone-500 text-sm leading-relaxed mb-3">{a.excerpt}</p>
               )}
               <Link
-                href={`/deepen/dances/articles/${a.slug}`}
+                href={`/teachings/dances/articles/${a.slug}`}
                 className="text-sm text-stone-500 hover:text-stone-800 underline underline-offset-2 transition-colors"
               >
                 Read →

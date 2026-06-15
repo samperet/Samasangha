@@ -220,14 +220,14 @@ export default function DancesPage() {
       {/* ── Footer links ───────────────────────────────────────── */}
       <div className="mt-12 flex flex-wrap gap-3">
         <Link
-          href="/deepen/music/albums/original-dances"
+          href="/teachings/music/albums/original-dances"
           className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
           style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
         >
           Listen to the dances →
         </Link>
         <Link
-          href="/deepen?type=articles"
+          href="/teachings?type=articles"
           className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
           style={{ border: "1px solid var(--surface-border)", color: "var(--ink-800)" }}
         >

@@ -68,7 +68,7 @@ export default async function DanceArticlePage({ params }: { params: Promise<{ s
       {/* ── Back link ──────────────────────────────────────────── */}
       <div className="max-w-4xl mx-auto px-5 pt-10">
         <Link
-          href="/deepen/dances/articles"
+          href="/teachings/dances/articles"
           className="inline-flex items-center gap-1.5 text-sm transition-colors duration-150"
           style={{ color: "var(--fg3)" }}
         >

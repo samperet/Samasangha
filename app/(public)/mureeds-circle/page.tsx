@@ -7,7 +7,7 @@ import {
   verifyDeepeningToken,
   verifySessionToken,
 } from "@/lib/admin-token";
-import DeepeningGate from "../deepen/deepening/DeepeningGate";
+import DeepeningGate from "../teachings/deepening/DeepeningGate";
 
 export const metadata: Metadata = { title: "Mureeds Circle" };
 
@@ -16,7 +16,7 @@ const LINKS = [
   {
     label: "Mureeds' Deepening",
     description: "The God is Breath study course and class materials.",
-    href: "/deepen/deepening",
+    href: "/teachings/deepening",
     external: false,
   },
   {

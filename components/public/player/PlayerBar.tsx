@@ -102,7 +102,7 @@ export default function PlayerBar() {
         <div className="max-w-6xl mx-auto h-[76px] flex items-center gap-4">
           {/* Now playing */}
           <Link
-            href={`/deepen/music/albums/${current.albumSlug}`}
+            href={`/teachings/music/albums/${current.albumSlug}`}
             className="flex items-center gap-3 min-w-0 flex-1 sm:flex-initial sm:w-72 group"
           >
             {current.coverUrl && (
