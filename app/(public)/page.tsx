@@ -168,7 +168,7 @@ export default async function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
-                  style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                  style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
                 >
                   Join our Newsletter →
                 </a>
@@ -227,7 +227,7 @@ export default async function HomePage() {
                 <Link
                   href="/dances"
                   className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
-                  style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                  style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
                 >
                   About the Dances →
                 </Link>
@@ -242,7 +242,12 @@ export default async function HomePage() {
         role="region"
         aria-label="Retreats"
         className="py-16 md:py-20 px-5"
-        style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)" }}
+        style={{
+          backgroundColor: "var(--parch-100)",
+          backgroundImage: "url('/assets/SufiHeartPattern.png')",
+          backgroundRepeat: "repeat",
+          borderTop: "1px solid var(--surface-border)",
+        }}
       >
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 text-center">
@@ -278,17 +283,9 @@ export default async function HomePage() {
                       />
                     )}
                     <div className="flex-1 min-w-0 px-7 py-6">
-                      <p className="text-sm font-semibold mb-1" style={{ color: "var(--gold-700)" }}>
-                        {formatDateRange(event.startDate, event.endDate)}
-                        {(event.location || event.isOnline) && (
-                          <span className="font-normal" style={{ color: "var(--fg2)" }}>
-                            {"  ·  "}{event.isOnline ? "Online" : event.location}
-                          </span>
-                        )}
-                      </p>
                       <h3
-                        className="font-serif leading-snug mb-2"
-                        style={{ fontSize: "1.3rem", fontWeight: 500, color: "var(--ink-900)" }}
+                        className="font-serif leading-snug mb-1.5"
+                        style={{ fontSize: "1.7rem", fontWeight: 500, color: "var(--ink-900)" }}
                       >
                         <Link
                           href={`/events/${event.slug}`}
@@ -298,6 +295,14 @@ export default async function HomePage() {
                           {event.title}
                         </Link>
                       </h3>
+                      <p className="text-sm font-semibold mb-2" style={{ color: "var(--gold-700)" }}>
+                        {formatDateRange(event.startDate, event.endDate)}
+                        {(event.location || event.isOnline) && (
+                          <span className="font-normal" style={{ color: "var(--fg2)" }}>
+                            {"  ·  "}{event.isOnline ? "Online" : event.location}
+                          </span>
+                        )}
+                      </p>
                       <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: "var(--fg2)" }}>
                         {event.description}
                       </p>
@@ -324,7 +329,7 @@ export default async function HomePage() {
                         <Link
                           href={`/events/${event.slug}`}
                           className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm whitespace-nowrap"
-                          style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                          style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
                         >
                           Learn more →
                         </Link>
@@ -340,7 +345,7 @@ export default async function HomePage() {
             <Link
               href="/events/upcoming"
               className="inline-block font-semibold px-7 py-3 rounded-lg text-sm"
-              style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+              style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
             >
               View all retreats →
             </Link>

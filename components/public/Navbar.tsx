@@ -124,8 +124,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ── Header chrome: blue temple texture, framed by a soft blue border.
-            The sticky menu below closes the frame on the bottom + sides. ── */}
+      {/* ── Header chrome: blue temple texture ── */}
       <div
         className="relative z-[60] px-4 sm:px-10 py-4"
         style={{
@@ -134,9 +133,6 @@ export default function Navbar() {
             "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          borderTop: "3px solid #8fbfd3",
-          borderLeft: "3px solid #8fbfd3",
-          borderRight: "3px solid #8fbfd3",
         }}
       >
       {/* ── Winged heart + wordmark, in a see-through white panel (no blur) so
@@ -211,9 +207,6 @@ export default function Navbar() {
         className="sticky top-0 z-50"
         style={{
           backgroundColor: "#c3e0ea",
-          borderBottom: "3px solid #8fbfd3",
-          borderLeft: "3px solid #8fbfd3",
-          borderRight: "3px solid #8fbfd3",
           paddingTop: 6,
           paddingBottom: 6,
         }}
