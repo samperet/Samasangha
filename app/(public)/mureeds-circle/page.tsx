@@ -26,7 +26,7 @@ const LINKS = [
     external: true,
   },
   {
-    label: "Tuesday Practice Link (9AM EDT)",
+    label: "Weekly Practice Link (9AM EDT)",
     description: "Join the Tuesday morning practice gathering online.",
     href: "https://us02web.zoom.us/j/81957982405?pwd=UWFLNjZnY0hOMGJVWEV6MTkzaUFBdz09",
     external: true,

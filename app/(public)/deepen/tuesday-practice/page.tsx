@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = { title: "Tuesday Practice" };
+export const metadata: Metadata = { title: "Weekly Practice" };
 export const revalidate = 300;
 
 export default async function TuesdayPracticePage() {
@@ -13,7 +13,7 @@ export default async function TuesdayPracticePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-stone-800 mb-10">Tuesday Practice</h1>
+      <h1 className="text-4xl font-bold text-stone-800 mb-10">Weekly Practice</h1>
       {content ? (
         <div
           className="prose prose-stone max-w-none leading-relaxed"

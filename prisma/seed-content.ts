@@ -170,9 +170,9 @@ const pages = [
   },
   {
     slug: "tuesday-practice",
-    title: "Tuesday Practice",
+    title: "Weekly Practice",
     content:
-      h2("Weekly Tuesday Practice with Abraham, Halima and Sama Sangha") +
+      h2("Weekly Practice with Abraham, Halima and Sama Sangha") +
       p(
         "Join us Tuesday Mornings for Sufi Practice & Meditation beginning at <strong>9AM EST</strong> (Boston MA, USA). We continue to advocate for actions and realizations that support a harmonious relationship between people, nature, and life itself, knowing that this realization begins inside ourselves. Our intentions are towards 7 generations, towards Peace on Earth.",
         "Please arrive a few minutes early so we can begin together. Our practice time is approximately 45 minutes long.",

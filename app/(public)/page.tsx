@@ -1,6 +1,5 @@
 import Link from "next/link";
 import InvocationCarousel from "@/components/public/InvocationCarousel";
-import CommunityCollage from "@/components/public/CommunityCollage";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
@@ -70,11 +69,9 @@ export default async function HomePage() {
         }}
       >
 
-        {/* Section 2: center card flanked by community photos. Click a photo
-            to open the lightbox (handled by CommunityCollage). */}
-        <CommunityCollage>
-          {/* Combined card: image on top (top corners rounded), text below
-              (bottom corners rounded). overflow-hidden unifies them into one. */}
+        {/* Section 2: the community intro card — main image with the text
+            below. Combined into one rounded card via overflow-hidden. */}
+        <div className="relative z-10 mx-auto flex justify-center">
           <div
             className="w-full shrink-0 rounded-2xl overflow-hidden"
             style={{ maxWidth: 480, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
@@ -103,7 +100,7 @@ export default async function HomePage() {
               far and wide, with the guidance of Sufi Murshids Halima and Abraham.
             </blockquote>
           </div>
-        </CommunityCollage>
+        </div>
       </section>
 
       {/* ── Tuesday Practice & Dances, side by side when they fit ── */}
@@ -122,7 +119,7 @@ export default async function HomePage() {
             <div className="flex justify-center">
               <Image
                 src="/assets/TuesdayPractice.png"
-                alt="Tuesday Practice, people in a circle"
+                alt="Weekly Practice, people in a circle"
                 width={200}
                 height={200}
                 className="rounded-2xl"
@@ -131,7 +128,7 @@ export default async function HomePage() {
             </div>
             <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
               <h2 className="font-serif mb-4 text-center" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
-                Tuesday Practice
+                Weekly Practice
               </h2>
               <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
                 Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
