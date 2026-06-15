@@ -130,6 +130,14 @@ blockquote {
 }
 
 /* ── Reusable classes ────────────────────────────────────────────── */
+.no-scrollbar {
+  -ms-overflow-style: none;   /* IE/Edge */
+  scrollbar-width: none;      /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;              /* Chrome/Safari */
+}
+
 .eyebrow {
   font-family: var(--font-sans);
   font-size: 0.78rem;

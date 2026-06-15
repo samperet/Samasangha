@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useRef } from "react";
 
 // Single-string text so CSS handles wrapping naturally, no artificial line breaks
 const SLIDES = [
@@ -38,8 +38,7 @@ const SLIDES = [
   },
 ];
 
-const FADE_MS    = 2000;
-const CLICK_FADE = 500;
+const TEXT_BLUE = "#1b7187";
 
 function Caret({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) {
   return (
@@ -52,7 +51,7 @@ function Caret({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) 
         border: "none",
         cursor: "pointer",
         padding: "8px 48px",
-        color: "var(--gold-600)",
+        color: TEXT_BLUE,
         fontSize: "6rem",
         fontWeight: 700,
         lineHeight: 1,
@@ -72,23 +71,13 @@ function Caret({ dir, onClick }: { dir: "prev" | "next"; onClick: () => void }) 
 }
 
 export default function InvocationCarousel() {
-  const [idx, setIdx]         = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [fadeMs, setFadeMs]   = useState(FADE_MS);
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
-  const go = useCallback((next: number, duration = FADE_MS) => {
-    setFadeMs(duration);
-    setVisible(false);
-    setTimeout(() => {
-      setIdx((next + SLIDES.length) % SLIDES.length);
-      setVisible(true);
-    }, duration);
-  }, []);
-
-  const prev = () => go(idx - 1, CLICK_FADE);
-  const next = () => go(idx + 1, CLICK_FADE);
-
-  const slide = SLIDES[idx];
+  const scrollBySlide = (dir: -1 | 1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth, behavior: "smooth" });
+  };
 
   return (
     <div
@@ -103,61 +92,69 @@ export default function InvocationCarousel() {
         SamaSangha
       </h1>
 
-      {/* Carousel row: caret · text · caret */}
+      {/* Carousel row: caret · scroll track · caret */}
       <div className="flex items-center" style={{ width: "100%", gap: 0 }}>
-        <Caret dir="prev" onClick={prev} />
+        <Caret dir="prev" onClick={() => scrollBySlide(-1)} />
 
-        {/* Fixed-height text area so carets never shift */}
+        {/* Horizontal scroll-snap track. Carets scroll it; on mobile the
+            visitor swipes with a finger. */}
         <div
+          ref={scrollerRef}
+          className="no-scrollbar"
           style={{
-            position: "relative",
             flex: 1,
-            minHeight: "clamp(220px, 42vh, 380px)",
+            minWidth: 0,
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 14,
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            overscrollBehaviorX: "contain",
+            minHeight: "clamp(220px, 42vh, 380px)",
           }}
         >
-          {slide.lang !== "English" && (
-            <p
-              className="eyebrow"
+          {SLIDES.map((slide) => (
+            <div
+              key={slide.lang}
               style={{
-                position: "relative",
-                zIndex: 1,
-                fontSize: "0.85rem",
-                color: "var(--gold-600)",
-                margin: 0,
-                opacity: visible ? 1 : 0,
-                transition: `opacity ${fadeMs}ms ease`,
+                flex: "0 0 100%",
+                scrollSnapAlign: "center",
+                scrollSnapStop: "always",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 14,
+                padding: "0 8px",
               }}
             >
-              {`Invocation in ${slide.lang}`}
-            </p>
-          )}
+              {slide.lang !== "English" && (
+                <p
+                  className="eyebrow"
+                  style={{ fontSize: "0.85rem", color: "var(--gold-600)", margin: 0 }}
+                >
+                  {`Invocation in ${slide.lang}`}
+                </p>
+              )}
 
-          <p
-            style={{
-              position: "relative",
-              zIndex: 1,
-              fontFamily: "var(--font-serif)",
-              fontStyle: "italic",
-              fontWeight: 500,
-              fontSize: "clamp(1.5rem, 3.2vw, 2.4rem)",
-              lineHeight: 1.55,
-              maxWidth: "100%",
-              color: "#1b7187",
-              margin: 0,
-              opacity: visible ? 1 : 0,
-              transition: `opacity ${fadeMs}ms ease`,
-            }}
-          >
-            {slide.text}
-          </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontStyle: "italic",
+                  fontWeight: 500,
+                  fontSize: "clamp(1.5rem, 3.2vw, 2.4rem)",
+                  lineHeight: 1.55,
+                  maxWidth: "100%",
+                  color: TEXT_BLUE,
+                  margin: 0,
+                }}
+              >
+                {slide.text}
+              </p>
+            </div>
+          ))}
         </div>
 
-        <Caret dir="next" onClick={next} />
+        <Caret dir="next" onClick={() => scrollBySlide(1)} />
       </div>
     </div>
   );
