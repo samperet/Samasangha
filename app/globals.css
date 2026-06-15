@@ -46,8 +46,8 @@
   --fg3:  #8a7f6b;
   --fg-on-dark: #f4ead2;
   --fg-on-gold: #3a2a08;
-  --link:       var(--crimson-700);
-  --link-hover: var(--crimson-900);
+  --link:       #3a8db7;
+  --link-hover: #2c6f90;
   --accent:        var(--gold-600);
   --accent-strong: var(--gold-700);
   --deco-line:     rgba(156, 116, 33, 0.42);   /* soft gold for art-deco corners */
@@ -265,7 +265,7 @@ header.header-paper {
   font-family: var(--font-serif);
   color: var(--ink-900);
 }
-.prose a { color: var(--crimson-700); }
+.prose a { color: var(--link); }
 .prose a:hover { color: var(--crimson-900); }
 .prose blockquote {
   font-family: var(--font-serif);

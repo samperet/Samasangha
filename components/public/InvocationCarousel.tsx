@@ -12,10 +12,11 @@ export default function InvocationCarousel() {
       className="flex flex-col items-center text-center"
       style={{ width: "100%", paddingTop: "clamp(12px, 4vh, 56px)", paddingBottom: "clamp(12px, 4vh, 56px)", gap: "clamp(16px, 3vh, 36px)" }}
     >
-      {/* Heading kept for SEO/structure, visually hidden. */}
+      {/* Heading kept for SEO/structure, visually hidden and out of flow so
+          it doesn't add space above the heart. */}
       <h1
         className="select-none"
-        style={{ margin: 0, width: 96, height: 14, fontSize: 0, color: "transparent" }}
+        style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}
       >
         SamaSangha
       </h1>

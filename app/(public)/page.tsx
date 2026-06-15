@@ -94,9 +94,9 @@ export default async function HomePage() {
               SamaSangha is the community of seekers who have gathered in Massachusetts, and also
               far and wide, with the guidance of Sufi Murshids Halima and Abraham.
             </blockquote>
-            <p className="mt-4 text-sm">
-              <Link href="/about/teachers" className="underline" style={{ color: "var(--crimson-700)" }}>
-                Learn more on our Welcome page
+            <p className="mt-4 text-sm text-right">
+              <Link href="/about/teachers" className="underline" style={{ color: "var(--link)" }}>
+                Learn more on our Welcome page →
               </Link>
             </p>
           </div>
