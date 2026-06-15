@@ -107,6 +107,22 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
         dangerouslySetInnerHTML={{ __html: teacher.bio }}
       />
 
+      {/* ── Elemental Invocation (Hazrat Inayat Khan only) ────────── */}
+      {slug === "hazrat-inayat-khan" && (
+        <div className="mt-12 pt-10" style={{ borderTop: "1px solid var(--surface-border)" }}>
+          <p className="eyebrow mb-2" style={{ fontSize: "0.72rem", color: "var(--gold-700)" }}>
+            Listen · Elemental Invocation
+          </p>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--fg2)" }}>
+            The Elemental Invocation, sung in the tradition of Hazrat Inayat Khan.
+          </p>
+          <audio controls preload="none" className="w-full">
+            <source src="/assets/Elementsinging.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      )}
+
       {/* ── Photographs ───────────────────────────────────────────── */}
       {meta?.gallery && meta.gallery.length > 0 && (
         <div className="mt-12 pt-10" style={{ borderTop: "1px solid var(--surface-border)" }}>
