@@ -273,6 +273,17 @@ header.header-paper {
   color: var(--lapis-700);
   border-left-color: var(--gold-400);
 }
+/* Vertical rhythm for long-form prose (rendered HTML has no spacing
+   otherwise, since the base reset zeroes element margins). */
+.prose p { margin: 0 0 1.15em; }
+.prose p:last-child { margin-bottom: 0; }
+.prose h2 { margin: 1.7em 0 0.6em; }
+.prose h3 { margin: 1.4em 0 0.5em; }
+.prose > :first-child { margin-top: 0; }
+.prose ul, .prose ol { margin: 0 0 1.15em; padding-left: 1.5em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin: 0.35em 0; }
 
 /* ── Tiptap ──────────────────────────────────────────────────────── */
 .tiptap { outline: none; min-height: 300px; padding: 1rem; }
