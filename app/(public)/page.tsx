@@ -147,7 +147,6 @@ export default async function HomePage() {
               {/* Text + image — stacked on mobile, side by side once there's room */}
               <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 sm:items-start mb-5">
                 <div className="flex-1 min-w-0">
-                  <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>Weekly practice</p>
                   <h2 className="font-serif mb-4" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
                     Tuesday Practice
                   </h2>
@@ -209,7 +208,6 @@ export default async function HomePage() {
               {/* Text + image — stacked on mobile, side by side once there's room */}
               <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 sm:items-start mb-5">
                 <div className="flex-1 min-w-0">
-                  <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>Monthly gathering</p>
                   <h2 className="font-serif mb-4" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
                     Dances of Universal Peace
                   </h2>
