@@ -110,8 +110,7 @@ const albums: SeedAlbum[] = [
   {
     slug: "healing-love",
     title: "Healing Love",
-    description:
-      "Chants and songs of healing offered by the SamaSangha community, invoking compassion across traditions, from Kwan Zeon Bosal and Green Tara to Darood and the Medicine Buddha.",
+    description: "Chants and healing music offered by SamaSangha",
     cover: "/music/covers/healing-love.png",
     year: 2025,
     buyUrl: "https://northeastsufis.org/healing-love/",
