@@ -263,18 +263,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Upcoming Events ─────────────────────────────────────── */}
+      {/* ── Retreats ────────────────────────────────────────────── */}
       <section
         role="region"
-        aria-label="Upcoming events"
+        aria-label="Retreats"
         className="py-16 md:py-20 px-5"
         style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)" }}
       >
         <div className="max-w-5xl mx-auto">
           <div className="mb-10 text-center">
-            <p className="eyebrow mb-2">Gatherings</p>
-            <h2 className="font-serif" style={{ fontSize: "2.25rem", fontWeight: 500, color: "var(--ink-900)" }}>
-              Upcoming events
+            <h2
+              className="font-serif"
+              style={{ fontSize: "2.25rem", fontWeight: 500, color: "var(--ink-900)", textTransform: "uppercase", letterSpacing: "0.04em" }}
+            >
+              Retreats
             </h2>
           </div>
 
