@@ -122,12 +122,12 @@ export default async function TeachersPage() {
                   className="teacher-card rounded-2xl overflow-hidden group"
                 >
                   <div className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-start gap-4 mb-4">
                       <img
                         src={meta?.portrait ?? t.photoUrl ?? ""}
                         alt={t.name}
-                        className="rounded-full object-cover object-top shrink-0"
-                        style={{ width: 84, height: 84, border: "2px solid var(--gold-200)" }}
+                        className="rounded-xl object-cover object-top shrink-0"
+                        style={{ width: 88, height: 110, border: "2px solid var(--gold-200)", boxShadow: "var(--shadow-sm)", background: "var(--parch-100)" }}
                       />
                       <div>
                         <h2
