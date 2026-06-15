@@ -124,8 +124,19 @@ export default function Navbar() {
 
   return (
     <>
+      {/* ── Header chrome above the menu, on the blue-temple background ── */}
+      <div
+        className="relative z-[60]"
+        style={{
+          backgroundColor: "#0e2b3a",
+          backgroundImage:
+            "linear-gradient(rgba(247,238,219,0.32), rgba(247,238,219,0.32)), url('/assets/BlueTemple.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
       {/* ── Winged heart banner, scrolls away with the page ───────── */}
-      <div className="parchment header-paper z-[60] flex justify-center pt-6 pb-3 px-5">
+      <div className="flex justify-center pt-6 pb-3 px-5">
         <Link
           href="/"
           aria-label="SamaSangha home"
@@ -137,7 +148,7 @@ export default function Navbar() {
               balances the two sides and centers the heart on the page. */}
           <span
             className="leading-none select-none text-2xl sm:text-4xl lg:text-6xl"
-            style={{ fontFamily: "var(--font-sama)", color: "#2c4264", paddingLeft: "1.115em" }}
+            style={{ fontFamily: "var(--font-sama)", color: "#2c4264", paddingLeft: "1.115em", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
           >
             Sama
           </span>
@@ -174,7 +185,7 @@ export default function Navbar() {
           {/* "Sangha", right of the heart */}
           <span
             className="leading-none select-none text-2xl sm:text-4xl lg:text-6xl"
-            style={{ fontFamily: "var(--font-sama)", color: "#2c4264" }}
+            style={{ fontFamily: "var(--font-sama)", color: "#2c4264", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
           >
             Sangha
           </span>
@@ -183,7 +194,7 @@ export default function Navbar() {
 
       {/* ── Decorative flourish (flipped), on top of the menu, not sticky ── */}
       <div
-        className="parchment header-paper hidden lg:flex justify-center px-5"
+        className="hidden lg:flex justify-center px-5"
         style={{ paddingTop: 18, paddingBottom: 6 }}
       >
         <Image
@@ -195,6 +206,7 @@ export default function Navbar() {
           className="h-6 w-auto"
           style={{ transform: "scaleY(-1)" }}
         />
+      </div>
       </div>
 
       {/* ── Nav bar, sticky, elegant text ─────────────────────────── */}

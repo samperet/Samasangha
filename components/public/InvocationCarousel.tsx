@@ -41,7 +41,7 @@ export default function InvocationCarousel() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "min(900px, 100%)",
+            width: "min(1100px, 130%)",
             maxWidth: "none",
             opacity: 0.22,
             pointerEvents: "none",

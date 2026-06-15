@@ -40,29 +40,20 @@ export default async function HomePage() {
           // Header chrome is now heart banner (~120px) + sticky menu (~75px)
           height: "calc(100vh - 200px)",
           minHeight: 420,
-          // Blue-tiled temple photo, with a slight dark wash so the opaque
-          // invocation box reads as a calm focal point against the busy tiles.
-          backgroundColor: "#0e2b3a",
-          backgroundImage:
-            "linear-gradient(rgba(8,24,34,0.35), rgba(8,24,34,0.45)), url('/assets/BlueTemple.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
         }}
       >
-        {/* Opaque box behind the invocation text + calligraphy heart, for
-            readability over the tilework. */}
+        {/* Gold halo */}
         <div
-          className="relative w-full"
+          aria-hidden
           style={{
-            maxWidth: "min(94vw, 1100px)",
-            background: "var(--parch-50)",
-            borderRadius: 24,
-            border: "1px solid var(--gold-300)",
-            boxShadow: "0 24px 70px rgba(0,0,0,0.45)",
-            padding: "clamp(20px, 4vw, 56px)",
-            overflow: "hidden",
+            position: "absolute", top: "-60px", left: "50%", transform: "translateX(-50%)",
+            width: "min(680px, 90vw)", height: "560px", borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(217,164,54,0.20) 0%, rgba(217,164,54,0) 62%)",
+            pointerEvents: "none",
           }}
-        >
+        />
+        <div className="relative w-full" style={{ maxWidth: "min(94vw, 1280px)" }}>
           <InvocationCarousel />
         </div>
       </div>
@@ -119,50 +110,38 @@ export default async function HomePage() {
       <section
         role="region"
         aria-label="Regular gatherings"
-        className="py-16 md:py-20 px-5"
+        className="pt-28 pb-16 md:pt-32 md:pb-20 px-5"
         style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)", borderBottom: "1px solid var(--surface-border)" }}
       >
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-x-6 gap-y-28 lg:gap-y-6 items-stretch">
           <div
-            className="gold-shadow rounded-2xl overflow-hidden"
+            className="gold-shadow rounded-2xl relative"
             style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)" }}
           >
-            <div className="p-6 sm:p-7">
-              {/* Text + image — stacked on mobile, side by side once there's room */}
-              <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 sm:items-start mb-5">
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-serif mb-4" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
-                    Tuesday Practice
-                  </h2>
-                  <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
-                    Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
-                    Sufi practice and meditation, zikr, breath, and heart awakening. All are welcome.
-                  </p>
-                  <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
-                    Our intentions are toward 7 generations, toward Peace on Earth. Practice is free,
-                    supported by dana.
-                  </p>
-                </div>
-                <div className="shrink-0 flex flex-col items-center gap-3">
-                  <Image
-                    src="/assets/TuesdayPractice.png"
-                    alt="Tuesday Practice, people in a circle"
-                    width={140}
-                    height={140}
-                    className="rounded-xl"
-                  />
-                  <a
-                    href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
-                    style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
-                  >
-                    Join our Newsletter →
-                  </a>
-                </div>
-              </div>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
+            {/* Highlight image, protruding above the top of the card */}
+            <div className="flex justify-center">
+              <Image
+                src="/assets/TuesdayPractice.png"
+                alt="Tuesday Practice, people in a circle"
+                width={200}
+                height={200}
+                className="rounded-2xl"
+                style={{ marginTop: "-6rem", border: "5px solid var(--parch-50)", boxShadow: "0 16px 40px rgba(0,0,0,0.28)" }}
+              />
+            </div>
+            <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
+              <h2 className="font-serif mb-4 text-center" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
+                Tuesday Practice
+              </h2>
+              <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
+                Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
+                Sufi practice and meditation, zikr, breath, and heart awakening. All are welcome.
+              </p>
+              <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
+                Our intentions are toward 7 generations, toward Peace on Earth. Practice is free,
+                supported by dana.
+              </p>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5 mt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
                 <div>
                   <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>When</dt>
                   <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Every Tuesday, 9 AM EST</dd>
@@ -180,49 +159,50 @@ export default async function HomePage() {
                   <dd style={{ color: "var(--fg2)" }}>All, no experience needed</dd>
                 </div>
               </dl>
+              <div className="mt-5 flex justify-center">
+                <a
+                  href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
+                  style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                >
+                  Join our Newsletter →
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Cambridge Dances of Universal Peace */}
           <div
-            className="gold-shadow rounded-2xl overflow-hidden"
+            className="gold-shadow rounded-2xl relative"
             style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)" }}
           >
-            <div className="p-6 sm:p-7">
-              {/* Text + image — stacked on mobile, side by side once there's room */}
-              <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 sm:items-start mb-5">
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-serif mb-4" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
-                    Dances of Universal Peace
-                  </h2>
-                  <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
-                    Sacred circle dances drawing from the spiritual traditions of the world, Hindu,
-                    Buddhist, Sufi, Christian, Jewish, and Indigenous. Singing and moving together,
-                    we embrace the unity at the heart of all paths.
-                  </p>
-                  <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
-                    The Dances of Universal Peace are held in trust by the Sufi Ruhaniat International
-                    for the benefit of all people. No experience required, only your presence.
-                  </p>
-                </div>
-                <div className="shrink-0 flex flex-col items-center gap-3">
-                  <Image
-                    src="/assets/UDPcircle.png"
-                    alt="Dances of Universal Peace circle"
-                    width={140}
-                    height={140}
-                    className="rounded-xl"
-                  />
-                  <Link
-                    href="/dances"
-                    className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
-                    style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
-                  >
-                    About the Dances →
-                  </Link>
-                </div>
-              </div>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
+            {/* Highlight image, protruding above the top of the card */}
+            <div className="flex justify-center">
+              <Image
+                src="/assets/UDPcircle.png"
+                alt="Dances of Universal Peace circle"
+                width={200}
+                height={200}
+                className="rounded-2xl"
+                style={{ marginTop: "-6rem", border: "5px solid var(--parch-50)", boxShadow: "0 16px 40px rgba(0,0,0,0.28)" }}
+              />
+            </div>
+            <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
+              <h2 className="font-serif mb-4 text-center" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
+                Dances of Universal Peace
+              </h2>
+              <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
+                Sacred circle dances drawing from the spiritual traditions of the world, Hindu,
+                Buddhist, Sufi, Christian, Jewish, and Indigenous. Singing and moving together,
+                we embrace the unity at the heart of all paths.
+              </p>
+              <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
+                The Dances of Universal Peace are held in trust by the Sufi Ruhaniat International
+                for the benefit of all people. No experience required, only your presence.
+              </p>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5 mt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
                 <div>
                   <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>When</dt>
                   <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Third Saturday · 7:30–9:45 PM</dd>
@@ -240,6 +220,15 @@ export default async function HomePage() {
                   <dd style={{ color: "var(--fg2)" }}>Abraham, Halima & Friends</dd>
                 </div>
               </dl>
+              <div className="mt-5 flex justify-center">
+                <Link
+                  href="/dances"
+                  className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
+                  style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+                >
+                  About the Dances →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
