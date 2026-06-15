@@ -45,7 +45,7 @@ function DecoCorners() {
 const DESKTOP_ITEM: React.CSSProperties = {
   fontSize: "1.45rem",
   fontWeight: 700,
-  color: "var(--ink-800)",
+  color: "var(--parch-50)",
   textDecoration: "none",
   letterSpacing: "0.01em",
   lineHeight: 1,
@@ -57,7 +57,7 @@ const DESKTOP_ITEM: React.CSSProperties = {
 const MOBILE_ITEM: React.CSSProperties = {
   fontSize: "1.3rem",
   fontWeight: 700,
-  color: "var(--ink-800)",
+  color: "var(--parch-50)",
   textDecoration: "none",
   lineHeight: 1.2,
   padding: "0.6rem 0.75rem",
@@ -124,31 +124,29 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ── Header chrome above the menu, on the blue-temple background ── */}
+      {/* ── Header chrome above the menu, pure blue (no texture). The blue
+            border frames the top + sides; the sticky menu closes the frame. ── */}
       <div
         className="relative z-[60] py-3"
         style={{
           backgroundColor: "#0e2b3a",
-          backgroundImage:
-            "linear-gradient(rgba(13,43,58,0.12), rgba(13,43,58,0.12)), url('/assets/BlueTemple.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-      {/* ── Winged heart banner, in a translucent band with a blue outline ── */}
-      <div
-        className="flex justify-center pt-5 pb-3 px-5"
-        style={{
-          background: "rgba(221,236,241,0.62)",
           borderTop: "2px solid #2f6285",
-          borderBottom: "2px solid #2f6285",
-          backdropFilter: "blur(1px)",
+          borderLeft: "2px solid #2f6285",
+          borderRight: "2px solid #2f6285",
         }}
       >
+      {/* ── Winged heart banner, in an opaque white box sized to its contents ── */}
+      <div className="flex justify-center px-8 sm:px-16 lg:px-24 pt-4 pb-2">
         <Link
           href="/"
           aria-label="SamaSangha home"
           className="relative inline-flex items-center justify-center gap-2 sm:gap-4 lg:gap-5"
+          style={{
+            background: "#ffffff",
+            borderRadius: "1.1rem",
+            padding: "0.6rem 2rem 1.9rem",
+            boxShadow: "0 6px 22px rgba(0,0,0,0.18)",
+          }}
           onClick={onHeartClick}
         >
           {/* "Sama", left of the heart. The left padding equals the width
@@ -223,11 +221,9 @@ export default function Navbar() {
         className="sticky top-0 z-50"
         style={{
           backgroundColor: "#0e2b3a",
-          backgroundImage:
-            "linear-gradient(rgba(221,236,241,0.66), rgba(221,236,241,0.66)), url('/assets/BlueTemple.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           borderBottom: "2px solid #2f6285",
+          borderLeft: "2px solid #2f6285",
+          borderRight: "2px solid #2f6285",
         }}
       >
         {/* Desktop */}
@@ -242,8 +238,8 @@ export default function Navbar() {
                 href="/"
                 className="font-serif transition-colors duration-200"
                 style={{ ...DESKTOP_ITEM }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--gold-400)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--parch-50)")}
               >
                 Home
               </Link>
