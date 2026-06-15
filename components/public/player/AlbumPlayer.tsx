@@ -65,7 +65,7 @@ function DownloadModal({
         <p className="text-3xl mb-3" aria-hidden style={{ color: "var(--gold-500)" }}>♥</p>
         <p className="text-sm leading-relaxed mb-7" style={{ color: "var(--fg2)" }}>
           This music is shared freely with our community and supported by your generosity.
-          If it moves you, please consider a gift of dana, then download with our blessing.
+          If it moves you, please consider a gift of dana.
         </p>
 
         <div className="flex flex-col gap-3">
