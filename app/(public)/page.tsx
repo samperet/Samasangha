@@ -40,9 +40,30 @@ export default async function HomePage() {
           // Header chrome is now heart banner (~120px) + sticky menu (~75px)
           height: "calc(100vh - 200px)",
           minHeight: 420,
-          background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
+          // Sunlit-forest photo behind a parchment scrim. A lighter overall
+          // wash lets the forest show through; a stronger "light pool" behind
+          // the text (below) keeps the dark serif invocation readable. The
+          // gradient also acts as a graceful fallback if the image is missing.
+          backgroundColor: "var(--parch-50)",
+          backgroundImage:
+            "linear-gradient(rgba(251,247,236,0.45), rgba(251,247,236,0.58)), url('/assets/forest-light.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
+        {/* Readability light pool, a soft parchment glow behind the invocation
+            so the text sits on a light area while the forest shows around it. */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+            width: "min(1100px, 96vw)", height: "min(620px, 80%)", borderRadius: "50%",
+            background:
+              "radial-gradient(ellipse at center, rgba(251,247,236,0.92) 0%, rgba(251,247,236,0.78) 38%, rgba(251,247,236,0) 72%)",
+            pointerEvents: "none",
+          }}
+        />
+
         {/* Gold halo */}
         <div
           aria-hidden
