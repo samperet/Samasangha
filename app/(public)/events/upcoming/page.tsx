@@ -44,6 +44,14 @@ export default async function UpcomingEventsPage() {
                   Retreat
                 </span>
               )}
+              {event.featuredImageUrl && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={event.featuredImageUrl}
+                  alt={event.title}
+                  className="w-full h-44 sm:w-48 sm:h-32 object-cover rounded-xl shrink-0"
+                />
+              )}
               <div className="sm:w-44 shrink-0">
                 <p className="text-sm font-medium text-stone-500 leading-snug">
                   {formatDateRange(event.startDate, event.endDate)}
