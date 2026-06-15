@@ -108,7 +108,13 @@ export default async function HomePage() {
         role="region"
         aria-label="Regular gatherings"
         className="pt-28 pb-16 md:pt-32 md:pb-20 px-5"
-        style={{ background: "var(--parch-100)", borderTop: "1px solid var(--surface-border)", borderBottom: "1px solid var(--surface-border)" }}
+        style={{
+          backgroundColor: "var(--parch-100)",
+          backgroundImage: "url('/assets/SufiHeartPattern.png')",
+          backgroundRepeat: "repeat",
+          borderTop: "1px solid var(--surface-border)",
+          borderBottom: "1px solid var(--surface-border)",
+        }}
       >
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-x-6 gap-y-28 lg:gap-y-6 items-stretch">
           <div
