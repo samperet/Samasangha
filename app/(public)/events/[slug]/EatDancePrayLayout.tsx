@@ -29,9 +29,15 @@ interface PricingProps {
 export default function EatDancePrayLayout({
   event,
   pricing,
+  slug,
+  canRegister,
+  full,
 }: {
   event: EventData;
   pricing?: PricingProps;
+  slug: string;
+  canRegister: boolean;
+  full: boolean;
 }) {
   const priceMin = pricing?.min ?? event.priceMin;
   const priceMax = pricing?.max ?? event.priceMax;
@@ -172,7 +178,25 @@ export default function EatDancePrayLayout({
               />
             )}
             <div className="flex-1 min-w-0">
-              {priceMin != null && priceMax != null ? (
+              {canRegister ? (
+            <>
+              <h2 className="font-serif mb-2" style={{ fontSize: "1.4rem", fontWeight: 500, color: "var(--ink-900)" }}>
+                {full ? "Join the waitlist" : "Reserve your place"}
+              </h2>
+              <p className="text-sm mb-5" style={{ color: "var(--fg2)" }}>
+                {full
+                  ? "This retreat is full. Add your party to the waitlist and we'll be in touch if space opens."
+                  : "Spaces are limited. Register early to secure your spot."}
+              </p>
+              <Link
+                href={`/events/${slug}/register`}
+                className="inline-block font-semibold px-7 py-3 rounded-lg text-sm"
+                style={{ background: "var(--lapis-700)", color: "var(--fg-on-dark)", boxShadow: "var(--shadow-sm)" }}
+              >
+                {full ? "Join waitlist" : "Register now →"}
+              </Link>
+            </>
+          ) : priceMin != null && priceMax != null ? (
             <RetreatPriceSlider priceMin={priceMin} priceMax={priceMax} note={pricing?.note} />
           ) : event.registerUrl ? (
             <>

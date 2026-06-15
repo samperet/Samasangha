@@ -41,6 +41,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     return (
       <EatDancePrayLayout
         event={event}
+        slug={slug}
+        canRegister={event.registrationEnabled && !registrationClosed}
+        full={full}
         pricing={{
           min: pricing.min,
           max: pricing.max,
