@@ -122,17 +122,29 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  // Instant, zero-byte geometric lattice (inline SVG data URI) shown beneath
+  // the large BlueTemple background so the header isn't blank while it loads.
+  const geoPattern =
+    'url("data:image/svg+xml,' +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><path d="M0 20 20 0 40 20 20 40Z" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1"/><path d="M20 8 32 20 20 32 8 20Z" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/></svg>'
+    ) +
+    '")';
+
   return (
     <>
-      {/* ── Header chrome: blue temple texture ── */}
+      {/* ── Header chrome: blue temple texture, over an instant geometric
+            pattern so the header isn't blank while BlueTemple.png loads ── */}
       <div
         className="relative z-[60] px-4 sm:px-10 py-4"
         style={{
           backgroundColor: "#0e2b3a",
           backgroundImage:
-            "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+            "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.png'), " +
+            geoPattern,
+          backgroundSize: "cover, cover, 40px 40px",
+          backgroundPosition: "center, center, center",
+          backgroundRepeat: "no-repeat, no-repeat, repeat",
         }}
       >
       {/* ── Winged heart + wordmark, in a see-through white panel (no blur) so
