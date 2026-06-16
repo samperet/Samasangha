@@ -31,9 +31,9 @@ export default function Footer() {
       }}
       className="mt-auto"
     >
-      {/* Hearts, scroll-driven (right → left) */}
+      {/* Hearts */}
       <div className="py-4 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.10)" }}>
-        <HeartTicker direction="rtl" />
+        <HeartTicker />
       </div>
 
       <div className="max-w-5xl mx-auto px-5 py-8 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-center">
@@ -107,9 +107,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Hearts, scroll-driven (left → right) */}
+      {/* Hearts */}
       <div className="py-4 px-4" style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}>
-        <HeartTicker direction="ltr" />
+        <HeartTicker />
       </div>
     </footer>
   );
