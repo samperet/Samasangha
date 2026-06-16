@@ -21,7 +21,11 @@ export async function GET() {
       },
     })
     .catch(() => []);
-  return NextResponse.json(recordings);
+  // Serve takes through our same-origin proxy so the Web Audio mixer can fetch
+  // + decode them without needing CORS on the storage bucket.
+  return NextResponse.json(
+    recordings.map((r) => ({ ...r, audioUrl: `/api/loka/audio/${r.id}` }))
+  );
 }
 
 const MAX_BYTES = 30 * 1024 * 1024; // 30 MB
