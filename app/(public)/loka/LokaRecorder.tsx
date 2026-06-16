@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import {
-  BACKING_URL,
   extForMime,
   fetchAudioBuffer,
   formatTime,
@@ -13,7 +12,7 @@ import {
 
 type Phase = "intro" | "ready" | "countdown" | "recording" | "review" | "submitting" | "done";
 
-export default function LokaRecorder({ onDone }: { onDone: () => void }) {
+export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: string; onDone: () => void }) {
   const [phase, setPhase] = useState<Phase>("intro");
   const [form, setForm] = useState({ name: "", email: "", voiceType: "", consent: false });
   const [error, setError] = useState("");
@@ -95,7 +94,7 @@ export default function LokaRecorder({ onDone }: { onDone: () => void }) {
 
       // Load the backing track in the background.
       setBackingState("loading");
-      fetchAudioBuffer(ctx, BACKING_URL)
+      fetchAudioBuffer(ctx, backingUrl)
         .then((buf) => {
           backingBufRef.current = buf;
           setBackingState("ready");

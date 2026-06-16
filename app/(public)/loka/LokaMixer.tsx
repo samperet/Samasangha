@@ -4,13 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@/components/ui/Button";
 import {
   audioBufferToWav,
-  BACKING_URL,
   fetchAudioBuffer,
   formatTime,
   type Recording,
 } from "./loka-shared";
 
-export default function LokaMixer({ active }: { active: boolean }) {
+export default function LokaMixer({ backingUrl, active }: { backingUrl: string; active: boolean }) {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [listState, setListState] = useState<"loading" | "ready" | "error">("loading");
   const [preparing, setPreparing] = useState(false);
@@ -94,7 +93,7 @@ export default function LokaMixer({ active }: { active: boolean }) {
   const prepare = useCallback(async () => {
     const ctx = ensureCtx();
     await ctx.resume();
-    if (!backingBufRef.current) backingBufRef.current = await fetchAudioBuffer(ctx, BACKING_URL);
+    if (!backingBufRef.current) backingBufRef.current = await fetchAudioBuffer(ctx, backingUrl);
     for (const r of recordings) {
       if (!buffersRef.current.has(r.id)) {
         try {
@@ -104,7 +103,7 @@ export default function LokaMixer({ active }: { active: boolean }) {
         }
       }
     }
-  }, [ensureCtx, recordings]);
+  }, [ensureCtx, recordings, backingUrl]);
 
   const stop = useCallback(() => {
     cancelAnimationFrame(rafRef.current);

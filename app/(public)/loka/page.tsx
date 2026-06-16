@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
 import LokaStudio from "./LokaStudio";
+import { BACKING_URL } from "./loka-shared";
 
 export const metadata: Metadata = {
   title: "Sing Loka Samasta Together",
@@ -7,7 +9,20 @@ export const metadata: Metadata = {
     "Add your voice to a collective recording of Lokah Samastah Sukhino Bhavantu, may all beings everywhere be happy and free.",
 };
 
-export default function LokaPage() {
+export default async function LokaPage() {
+  // Backing track is the "Loka" chant from the Healing Love album.
+  const track = await prisma.track
+    .findFirst({
+      where: {
+        album: { slug: "healing-love" },
+        title: { contains: "Loka", mode: "insensitive" },
+        audioUrl: { not: null },
+      },
+      select: { audioUrl: true },
+    })
+    .catch(() => null);
+  const backingUrl = track?.audioUrl || BACKING_URL;
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-14">
       <header className="text-center mb-10">
@@ -27,7 +42,7 @@ export default function LokaPage() {
         </p>
       </header>
 
-      <LokaStudio />
+      <LokaStudio backingUrl={backingUrl} />
     </div>
   );
 }

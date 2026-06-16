@@ -6,7 +6,7 @@ import LokaMixer from "./LokaMixer";
 
 type Tab = "record" | "listen";
 
-export default function LokaStudio() {
+export default function LokaStudio({ backingUrl }: { backingUrl: string }) {
   const [tab, setTab] = useState<Tab>("record");
 
   return (
@@ -34,10 +34,10 @@ export default function LokaStudio() {
       {/* Both stay mounted so switching tabs doesn't tear down audio graphs;
           the inactive one is hidden. */}
       <div hidden={tab !== "record"}>
-        <LokaRecorder onDone={() => setTab("listen")} />
+        <LokaRecorder backingUrl={backingUrl} onDone={() => setTab("listen")} />
       </div>
       <div hidden={tab !== "listen"}>
-        <LokaMixer active={tab === "listen"} />
+        <LokaMixer backingUrl={backingUrl} active={tab === "listen"} />
       </div>
     </div>
   );
