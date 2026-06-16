@@ -2,24 +2,36 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
 import {
+  CHANT_LINE,
+  CHANT_TRANSLATION,
+  CHANT_WORDS,
+  COUNTDOWN_SEC,
   extForMime,
   fetchAudioBuffer,
   formatTime,
   pickRecorderMime,
+  VOCALS_START_SEC,
 } from "./loka-shared";
 
-type Phase = "intro" | "ready" | "countdown" | "recording" | "review" | "submitting" | "done";
+type Phase = "form" | "ready" | "countdown" | "recording" | "review" | "submitting" | "done";
 
-export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: string; onDone: () => void }) {
-  const [phase, setPhase] = useState<Phase>("intro");
+export default function LokaRecorder({
+  backingUrl,
+  goal,
+  onDone,
+}: {
+  backingUrl: string;
+  goal: number;
+  onDone: () => void;
+}) {
+  const [phase, setPhase] = useState<Phase>("form");
   const [form, setForm] = useState({ name: "", email: "", voiceType: "", consent: false });
   const [error, setError] = useState("");
   const [backingState, setBackingState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [level, setLevel] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const [count, setCount] = useState(3);
+  const [count, setCount] = useState(COUNTDOWN_SEC);
   const [reviewPlaying, setReviewPlaying] = useState(false);
 
   const ctxRef = useRef<AudioContext | null>(null);
@@ -31,6 +43,7 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
   const mimeRef = useRef<string>("");
   const backingSrcRef = useRef<AudioBufferSourceNode | null>(null);
   const t0Ref = useRef<number>(0);
+  const startSecRef = useRef<number>(0); // backing position the take began at
   const offsetMsRef = useRef<number>(0);
   const rafRef = useRef<number>(0);
   const timerRef = useRef<number>(0);
@@ -48,7 +61,6 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     return ctxRef.current;
   }, []);
 
-  // Live mic level meter (runs during ready + recording).
   const runMeter = useCallback(() => {
     const analyser = analyserRef.current;
     if (!analyser) return;
@@ -66,23 +78,19 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     tick();
   }, []);
 
-  async function requestMic() {
+  async function turnOnMic() {
     setError("");
-    if (!form.name.trim()) return setError("Please enter your name.");
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim())) return setError("Please enter a valid email.");
-    if (!form.voiceType) return setError("Please choose your voice range.");
-    if (!form.consent) return setError("Please give consent to include your voice.");
-
+    if (!form.name.trim()) return setError("Please tell us your name.");
+    if (!form.voiceType) return setError("Please choose lower or higher.");
+    if (!form.consent) return setError("Please tick the box to include your voice.");
+    if (form.email.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim())) {
+      return setError("That email doesn't look right. You can also leave it blank.");
+    }
     try {
       const ctx = ensureCtx();
       await ctx.resume();
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-          channelCount: 1,
-        },
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
       });
       streamRef.current = stream;
       const src = ctx.createMediaStreamSource(stream);
@@ -92,7 +100,6 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
       analyserRef.current = analyser;
       runMeter();
 
-      // Load the backing track in the background.
       setBackingState("loading");
       fetchAudioBuffer(ctx, backingUrl)
         .then((buf) => {
@@ -103,16 +110,17 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
 
       setPhase("ready");
     } catch {
-      setError("Microphone access was blocked. Please allow it in your browser and try again.");
+      setError("We couldn't reach your microphone. Please allow it when your browser asks, then try again.");
     }
   }
 
-  function beginCountdown() {
+  function beginCountdown(skipToVocals: boolean) {
     if (backingState !== "ready") return;
     setError("");
-    setCount(3);
+    startSecRef.current = skipToVocals ? VOCALS_START_SEC : 0;
+    setCount(COUNTDOWN_SEC);
     setPhase("countdown");
-    let n = 3;
+    let n = COUNTDOWN_SEC;
     const id = window.setInterval(() => {
       n -= 1;
       if (n <= 0) {
@@ -140,7 +148,6 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     };
     recorder.onstop = handleRecorderStop;
 
-    // Play the backing track (heard through headphones) and align the take to it.
     const backing = ctx.createBufferSource();
     backing.buffer = buf;
     backing.connect(ctx.destination);
@@ -159,7 +166,7 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     };
 
     recorder.start();
-    backing.start(t0);
+    backing.start(t0, startSecRef.current);
   }
 
   function stopRecording() {
@@ -209,7 +216,7 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     const b = ctx.createBufferSource();
     b.buffer = backing;
     b.connect(ctx.destination);
-    b.start(start);
+    b.start(start, startSecRef.current); // replay the section they sang against
     reviewSrcRef.current.push(b);
 
     if (take) {
@@ -236,32 +243,30 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     setPhase("submitting");
     setError("");
     const ext = extForMime(takeBlobRef.current.type);
-    const file = new File([takeBlobRef.current], `loka-${Date.now()}.${ext}`, {
-      type: takeBlobRef.current.type,
-    });
+    const file = new File([takeBlobRef.current], `loka-${Date.now()}.${ext}`, { type: takeBlobRef.current.type });
     const fd = new FormData();
     fd.append("file", file);
     fd.append("name", form.name.trim());
     fd.append("email", form.email.trim());
     fd.append("voiceType", form.voiceType);
     fd.append("offsetMs", String(offsetMsRef.current));
+    fd.append("startMs", String(Math.round(startSecRef.current * 1000)));
     fd.append("durationMs", String(takeDurationMs));
     try {
       const res = await fetch("/api/loka/recordings", { method: "POST", body: fd });
       const json = await res.json();
       if (!res.ok) {
-        setError(typeof json.error === "string" ? json.error : "Upload failed. Please try again.");
+        setError(typeof json.error === "string" ? json.error : "Something went wrong. Please try again.");
         setPhase("review");
         return;
       }
       setPhase("done");
     } catch {
-      setError("Network error. Please try again.");
+      setError("We couldn't send your prayer. Please check your connection and try again.");
       setPhase("review");
     }
   }
 
-  // Cleanup on unmount.
   useEffect(() => {
     return () => {
       cancelAnimationFrame(rafRef.current);
@@ -277,15 +282,15 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
     return (
       <Card>
         <div className="text-center py-6">
-          <div className="text-4xl mb-3">✦</div>
-          <h2 className="font-serif mb-2" style={{ fontSize: "1.6rem", fontWeight: 500, color: "var(--ink-900)" }}>
-            Thank you, your voice is received.
+          <div className="text-5xl mb-4">✦</div>
+          <h2 className="font-serif mb-3" style={{ fontSize: "2rem", fontWeight: 500, color: "var(--ink-900)" }}>
+            Thank you. Your prayer is received.
           </h2>
-          <p className="text-sm mb-6" style={{ color: "var(--fg2)", maxWidth: "42ch", margin: "0 auto" }}>
-            We&apos;ll add your take to the collective song after a quick review. Meanwhile, listen to
-            the voices already gathered.
+          <p style={{ fontSize: "1.2rem", lineHeight: 1.7, color: "var(--fg2)", maxWidth: "32ch", margin: "0 auto 1.75rem" }}>
+            Your voice will join the others in the prayer wheel after a gentle review. Bless you for
+            singing.
           </p>
-          <Button onClick={onDone}>Listen to the sangha →</Button>
+          <BigButton onClick={onDone}>Hear the prayer wheel →</BigButton>
         </div>
       </Card>
     );
@@ -293,134 +298,200 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
 
   return (
     <Card>
-      {/* Headphone / mic guidance is always visible at the top */}
+      {/* Headphone guidance, always visible and large */}
       <div
-        className="rounded-xl p-4 mb-6 flex gap-3 text-sm"
+        className="rounded-2xl p-5 mb-7 flex gap-4 items-start"
         style={{ background: "var(--gold-100)", color: "var(--ink-800)" }}
       >
-        <span className="text-lg leading-none">🎧</span>
-        <div>
-          <p className="font-semibold mb-1">Before you sing</p>
-          <ul className="list-disc pl-4 space-y-0.5" style={{ color: "var(--fg1)" }}>
-            <li><strong>Wear headphones</strong>, so the backing track isn&apos;t picked up by your mic.</li>
-            <li>Use a good microphone in a quiet room if you can.</li>
-            <li>You&apos;ll hear the song while you record; sing along with your heart.</li>
-          </ul>
-        </div>
+        <span style={{ fontSize: "2rem", lineHeight: 1 }}>🎧</span>
+        <p style={{ fontSize: "1.1rem", lineHeight: 1.6 }}>
+          <strong>Please put on headphones first.</strong> Then sing along gently with the song.
+          There is no wrong way to do this.
+        </p>
       </div>
 
-      {phase === "intro" && (
-        <div className="space-y-4">
-          <Field label="Your name" required>
-            <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Fatima al-Rashid" autoComplete="name" />
-          </Field>
-          <Field label="Email" required hint="Kept private, never shown publicly.">
-            <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" autoComplete="email" />
-          </Field>
-          <Field label="Your voice range" required>
-            <div className="flex gap-2">
+      {phase === "form" && (
+        <div className="space-y-6">
+          <BigField label="What is your name?">
+            <Input
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="Your name"
+              autoComplete="name"
+              style={{ fontSize: "1.2rem", padding: "0.85rem 1rem" }}
+            />
+          </BigField>
+
+          <BigField label="Is your voice lower or higher?">
+            <div className="grid grid-cols-2 gap-3">
               {[
-                { v: "LOWER", label: "Lower voice" },
-                { v: "HIGHER", label: "Higher voice" },
+                { v: "LOWER", label: "Lower" },
+                { v: "HIGHER", label: "Higher" },
               ].map(({ v, label }) => (
                 <button
                   key={v}
                   type="button"
                   onClick={() => setForm({ ...form, voiceType: v })}
-                  className="flex-1 py-2.5 rounded-lg border text-sm font-medium transition-colors"
+                  className="py-4 rounded-xl border font-semibold transition-colors"
                   style={
                     form.voiceType === v
-                      ? { background: "var(--gold-100)", borderColor: "var(--gold-500)", color: "var(--gold-700)" }
-                      : { background: "#fff", borderColor: "var(--surface-border)", color: "var(--fg2)" }
+                      ? { background: "var(--gold-100)", borderColor: "var(--gold-500)", color: "var(--gold-700)", fontSize: "1.25rem" }
+                      : { background: "#fff", borderColor: "var(--surface-border)", color: "var(--fg2)", fontSize: "1.25rem" }
                   }
                 >
                   {label}
                 </button>
               ))}
             </div>
-          </Field>
-          <label className="flex items-start gap-2 text-sm cursor-pointer" style={{ color: "var(--fg2)" }}>
+          </BigField>
+
+          <BigField label="Email (optional)">
+            <Input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              placeholder="Only if you'd like, kept private"
+              autoComplete="email"
+              style={{ fontSize: "1.1rem", padding: "0.75rem 1rem" }}
+            />
+          </BigField>
+
+          <label className="flex items-start gap-3 cursor-pointer" style={{ fontSize: "1.1rem", color: "var(--fg1)" }}>
             <input
               type="checkbox"
               checked={form.consent}
               onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-              className="accent-[#c4922b] mt-0.5"
+              className="accent-[#c4922b] mt-1"
+              style={{ width: 22, height: 22 }}
             />
-            I&apos;m happy for my voice to be part of this collective recording shared on this site.
+            Yes, please include my voice in this shared prayer.
           </label>
+
           {error && <ErrorNote msg={error} />}
-          <Button onClick={requestMic} size="lg" className="w-full sm:w-auto">
-            Enable microphone →
-          </Button>
+          <BigButton onClick={turnOnMic}>Turn on my microphone →</BigButton>
         </div>
       )}
 
       {(phase === "ready" || phase === "countdown" || phase === "recording") && (
-        <div className="space-y-5">
-          <Meter level={level} recording={phase === "recording"} />
-
-          {backingState === "loading" && <p className="text-sm" style={{ color: "var(--fg3)" }}>Loading the song…</p>}
+        <div className="space-y-6">
           {backingState === "error" && (
-            <ErrorNote msg="The backing track isn't available yet. Please check back soon." />
+            <ErrorNote msg="The song isn't ready just yet. Please try again in a little while." />
           )}
 
           {phase === "ready" && (
             <>
-              <p className="text-sm" style={{ color: "var(--fg2)" }}>
-                Your mic is live, the bar above should move when you speak. When you&apos;re ready, we&apos;ll
-                count you in and play the song.
+              <Meter level={level} recording={false} />
+              <p style={{ fontSize: "1.15rem", lineHeight: 1.6, color: "var(--fg2)" }}>
+                Your microphone is on. Speak a little and watch the bar move. When you feel ready,
+                press a button below and we will count you in.
               </p>
               {error && <ErrorNote msg={error} />}
-              <Button onClick={beginCountdown} size="lg" disabled={backingState !== "ready"} className="w-full sm:w-auto">
-                ● Start recording
-              </Button>
+              <div className="space-y-3">
+                <BigButton onClick={() => beginCountdown(false)} disabled={backingState !== "ready"}>
+                  ● Sing from the beginning
+                </BigButton>
+                <button
+                  onClick={() => beginCountdown(true)}
+                  disabled={backingState !== "ready"}
+                  className="w-full py-3 rounded-xl border font-semibold transition-colors disabled:opacity-50"
+                  style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.1rem" }}
+                >
+                  Skip to the chanting →
+                </button>
+                <p className="text-center" style={{ fontSize: "0.95rem", color: "var(--fg3)" }}>
+                  {backingState === "loading" ? "Loading the song…" : "“Skip to the chanting” starts where the voices begin."}
+                </p>
+              </div>
             </>
           )}
 
           {phase === "countdown" && (
-            <div className="text-center py-6">
-              <div className="font-serif" style={{ fontSize: "4rem", color: "var(--gold-700)", lineHeight: 1 }}>{count}</div>
-              <p className="text-sm mt-2" style={{ color: "var(--fg3)" }}>Get ready…</p>
+            <div className="text-center py-4">
+              <div className="font-serif" style={{ fontSize: "5.5rem", color: "var(--gold-700)", lineHeight: 1 }}>{count}</div>
+              <p style={{ fontSize: "1.3rem", color: "var(--fg2)", marginTop: "0.5rem" }}>Take a breath…</p>
+              <Subtitles active={false} elapsed={0} />
             </div>
           )}
 
           {phase === "recording" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-2 text-sm font-medium" style={{ color: "var(--crimson-700)" }}>
-                <span className="inline-block w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
-                Recording, {formatTime(elapsed)}
+            <div className="space-y-5">
+              <div className="flex items-center justify-center gap-2.5" style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--crimson-700)" }}>
+                <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
+                Recording your prayer · {formatTime(elapsed)}
               </div>
-              <Button onClick={stopRecording} variant="secondary" size="lg" className="w-full sm:w-auto">
-                ■ Stop &amp; review
-              </Button>
+              <Subtitles active elapsed={elapsed} />
+              <Meter level={level} recording />
+              <BigButton onClick={stopRecording} variant="secondary">■ I'm finished</BigButton>
             </div>
           )}
         </div>
       )}
 
       {(phase === "review" || phase === "submitting") && (
-        <div className="space-y-5">
-          <h2 className="font-serif" style={{ fontSize: "1.3rem", fontWeight: 500, color: "var(--ink-900)" }}>
-            Listen back
+        <div className="space-y-6 text-center">
+          <h2 className="font-serif" style={{ fontSize: "1.6rem", fontWeight: 500, color: "var(--ink-900)" }}>
+            Listen to your prayer
           </h2>
-          <p className="text-sm" style={{ color: "var(--fg2)" }}>
-            Here&apos;s your take with the song. Happy with it? Send it in. Or record again.
+          <p style={{ fontSize: "1.15rem", color: "var(--fg2)", lineHeight: 1.6 }}>
+            Here is your voice with the song. If it feels right, send it on. Or sing it again — as
+            many times as you like.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Button onClick={reviewPlaying ? stopReview : playReview} variant="secondary">
-              {reviewPlaying ? "■ Stop" : "▶ Play with song"}
-            </Button>
-            <Button onClick={discard} variant="ghost" disabled={phase === "submitting"}>
-              ↺ Record again
-            </Button>
-          </div>
+          <button
+            onClick={reviewPlaying ? stopReview : playReview}
+            className="w-full py-4 rounded-xl border font-semibold transition-colors"
+            style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.2rem" }}
+          >
+            {reviewPlaying ? "■ Stop" : "▶ Listen back"}
+          </button>
           {error && <ErrorNote msg={error} />}
-          <Button onClick={submit} size="lg" disabled={phase === "submitting"} className="w-full sm:w-auto">
-            {phase === "submitting" ? "Sending…" : "Add my voice ✦"}
-          </Button>
+          <BigButton onClick={submit} disabled={phase === "submitting"}>
+            {phase === "submitting" ? "Sending…" : "This is my prayer ✦ Send it"}
+          </BigButton>
+          <button
+            onClick={discard}
+            disabled={phase === "submitting"}
+            className="w-full py-3 font-medium disabled:opacity-50"
+            style={{ color: "var(--fg3)", fontSize: "1.05rem" }}
+          >
+            ↺ Sing again
+          </button>
         </div>
       )}
+
+      <p className="text-center mt-7" style={{ fontSize: "0.9rem", color: "var(--fg3)" }}>
+        Every voice is welcome. Together we are gathering {goal}.
+      </p>
     </Card>
+  );
+}
+
+/* ─────────────── subtitles ─────────────── */
+
+function Subtitles({ active, elapsed }: { active: boolean; elapsed: number }) {
+  // Gently highlight each word in turn so singers can follow along.
+  const wordDur = 1.1;
+  const idx = active ? Math.floor((elapsed / wordDur) % CHANT_WORDS.length) : -1;
+  return (
+    <div className="text-center select-none" aria-hidden>
+      <p className="font-serif" style={{ fontSize: "clamp(1.6rem, 6vw, 2.4rem)", lineHeight: 1.3, fontWeight: 500 }}>
+        {CHANT_WORDS.map((w, i) => (
+          <span
+            key={i}
+            style={{
+              color: i === idx ? "var(--gold-700)" : "var(--ink-800)",
+              opacity: idx === -1 || i === idx ? 1 : 0.55,
+              transition: "color 0.2s, opacity 0.2s",
+              marginRight: "0.4em",
+            }}
+          >
+            {w}
+          </span>
+        ))}
+      </p>
+      <p className="font-serif italic mt-2" style={{ fontSize: "1.1rem", color: "var(--fg2)" }}>
+        {CHANT_TRANSLATION}
+      </p>
+    </div>
   );
 }
 
@@ -429,57 +500,71 @@ export default function LokaRecorder({ backingUrl, onDone }: { backingUrl: strin
 function Card({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded-2xl p-6 sm:p-8"
-      style={{ background: "#fff", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-sm)" }}
+      className="rounded-3xl p-6 sm:p-9"
+      style={{ background: "#fff", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
     >
       {children}
     </div>
   );
 }
 
+function BigButton({
+  children,
+  onClick,
+  disabled,
+  variant = "primary",
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: "primary" | "secondary";
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full rounded-2xl font-semibold transition-all duration-150 disabled:opacity-50"
+      style={{
+        padding: "1.1rem 1.5rem",
+        fontSize: "1.25rem",
+        background: variant === "primary" ? "var(--gold-600)" : "var(--lapis-700)",
+        color: variant === "primary" ? "var(--fg-on-gold)" : "var(--fg-on-dark)",
+        boxShadow: "var(--shadow-sm)",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
 function Meter({ level, recording }: { level: number; recording: boolean }) {
   return (
     <div>
-      <div className="h-3 rounded-full overflow-hidden" style={{ background: "var(--parch-200)" }}>
+      <div className="h-4 rounded-full overflow-hidden" style={{ background: "var(--parch-200)" }}>
         <div
           className="h-full rounded-full transition-[width] duration-75"
-          style={{
-            width: `${Math.round(level * 100)}%`,
-            background: recording ? "var(--crimson-700)" : "var(--gold-500)",
-          }}
+          style={{ width: `${Math.round(level * 100)}%`, background: recording ? "var(--crimson-700)" : "var(--gold-500)" }}
         />
       </div>
-      <p className="text-xs mt-1" style={{ color: "var(--fg3)" }}>Mic level</p>
+      <p className="text-center mt-1" style={{ fontSize: "0.9rem", color: "var(--fg3)" }}>Microphone</p>
     </div>
   );
 }
 
 function ErrorNote({ msg }: { msg: string }) {
   return (
-    <p className="text-sm px-3 py-2 rounded-lg" style={{ background: "var(--terra-100)", color: "var(--terra-700)" }}>
+    <p className="px-4 py-3 rounded-xl" style={{ background: "var(--terra-100)", color: "var(--terra-700)", fontSize: "1.05rem" }}>
       {msg}
     </p>
   );
 }
 
-function Field({
-  label,
-  required,
-  hint,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  hint?: string;
-  children: React.ReactNode;
-}) {
+function BigField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-semibold mb-1" style={{ color: "var(--ink-800)" }}>
+      <label className="block mb-2 font-semibold" style={{ fontSize: "1.2rem", color: "var(--ink-800)" }}>
         {label}
-        {required && <span style={{ color: "var(--crimson-700)" }} aria-hidden> *</span>}
       </label>
-      {hint && <p className="text-xs mb-1.5" style={{ color: "var(--fg3)" }}>{hint}</p>}
       {children}
     </div>
   );

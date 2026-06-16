@@ -18,6 +18,7 @@ export async function GET() {
         mimeType: true,
         durationMs: true,
         offsetMs: true,
+        startMs: true,
       },
     })
     .catch(() => []);
@@ -46,11 +47,13 @@ export async function POST(req: NextRequest) {
   const email = (form.get("email") as string | null)?.trim() ?? "";
   const voiceType = (form.get("voiceType") as string | null)?.trim() ?? "";
   const offsetMs = Math.max(0, Math.round(Number(form.get("offsetMs") ?? 0)) || 0);
+  const startMs = Math.max(0, Math.round(Number(form.get("startMs") ?? 0)) || 0);
   const durationMs = Math.max(0, Math.round(Number(form.get("durationMs") ?? 0)) || 0);
 
   if (!(file instanceof File)) return NextResponse.json({ error: "No audio file" }, { status: 400 });
   if (!name) return NextResponse.json({ error: "Your name is required" }, { status: 400 });
-  if (!emailRe.test(email)) return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
+  // Email is optional, but if given it must look valid.
+  if (email && !emailRe.test(email)) return NextResponse.json({ error: "That email doesn't look right" }, { status: 400 });
   if (!VOICES.includes(voiceType as (typeof VOICES)[number])) {
     return NextResponse.json({ error: "Choose a voice range" }, { status: 400 });
   }
@@ -75,6 +78,7 @@ export async function POST(req: NextRequest) {
       mimeType: file.type,
       durationMs: durationMs || null,
       offsetMs,
+      startMs,
       approved: false,
     },
   });

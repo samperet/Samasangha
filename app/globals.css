@@ -457,3 +457,15 @@ input[type="range"].player-volume::-moz-range-track {
   border-radius: 2px;
   background: #4a4232;
 }
+
+/* Loka prayer wheel: slow, gentle rotation while playing */
+@keyframes lokaSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loka-wheel-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lokaSpin 120s linear infinite;
+}

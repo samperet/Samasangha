@@ -260,6 +260,9 @@ model LokaRecording {
   // Milliseconds the take should be delayed on playback to line up with the
   // backing track (compensates for the recorder's start-up gap).
   offsetMs   Int       @default(0)
+  // Position in the backing track (ms) where this take began — 0 from the
+  // start, or the vocals-start point when the singer used "skip to chanting".
+  startMs    Int       @default(0)
   approved   Boolean   @default(false)
   createdAt  DateTime  @default(now())
 }

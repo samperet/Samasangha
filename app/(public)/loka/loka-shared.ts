@@ -3,6 +3,21 @@
 export const BACKING_URL =
   process.env.NEXT_PUBLIC_LOKA_BACKING_URL || "/assets/loka-samasta.mp3";
 
+// The shared intention: gather 108 voices (a full mala of beads).
+export const GOAL_VOICES = 108;
+
+// Seconds to count the singer in before recording begins.
+export const COUNTDOWN_SEC = 5;
+
+// Where the chanting begins in the backing track (seconds). Used by the
+// "skip to the chanting" option. Adjust if the intro is longer/shorter.
+export const VOCALS_START_SEC = 15;
+
+// The chant, shown large as singalong subtitles.
+export const CHANT_LINE = "Lokah samastah sukhino bhavantu";
+export const CHANT_WORDS = ["Lokah", "samastah", "sukhino", "bhavantu"];
+export const CHANT_TRANSLATION = "May all beings everywhere be happy and free";
+
 export type Recording = {
   id: string;
   name: string;
@@ -11,6 +26,7 @@ export type Recording = {
   mimeType: string | null;
   durationMs: number | null;
   offsetMs: number;
+  startMs: number;
 };
 
 export function formatTime(seconds: number): string {
