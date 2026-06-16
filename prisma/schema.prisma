@@ -247,3 +247,24 @@ model Media {
   post      Post?    @relation(fields: [postId], references: [id])
   postId    String?
 }
+
+// Crowd-sourced voice recordings for the Loka Samasta collective song.
+model LokaRecording {
+  id         String    @id @default(cuid())
+  name       String
+  email      String
+  voiceType  VoiceType
+  audioUrl   String
+  mimeType   String?
+  durationMs Int?
+  // Milliseconds the take should be delayed on playback to line up with the
+  // backing track (compensates for the recorder's start-up gap).
+  offsetMs   Int       @default(0)
+  approved   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+}
+
+enum VoiceType {
+  LOWER
+  HIGHER
+}

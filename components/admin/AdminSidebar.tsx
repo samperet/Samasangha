@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  Calendar, FileText, Music, Bell, Users, LogOut, Home, Menu, X, type LucideIcon,
+  Calendar, FileText, Music, Bell, Users, LogOut, Home, Menu, X, Mic, type LucideIcon,
 } from "lucide-react";
 
 type NavLink = { href: string; label: string; icon: LucideIcon; exact?: boolean };
@@ -15,6 +15,7 @@ const links: NavLink[] = [
   { href: "/admin/events",        label: "Events",             icon: Calendar },
   { href: "/admin/posts",         label: "Posts & teachings",  icon: FileText },
   { href: "/admin/albums",        label: "Albums & music",     icon: Music },
+  { href: "/admin/loka",          label: "Loka voices",        icon: Mic },
   { href: "/admin/mureeds",       label: "Sangha Connections", icon: Users },
   { href: "/admin/notifications", label: "Notifications",      icon: Bell },
 ];

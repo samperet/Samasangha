@@ -58,3 +58,4 @@ next-env.d.ts
 migrate-to-neon.sh
 samasangha.sql
 upload-music.sh
+/public/loka
