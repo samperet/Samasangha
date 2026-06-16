@@ -134,13 +134,13 @@ export default function Navbar() {
   return (
     <>
       {/* ── Header chrome: blue temple texture, over an instant geometric
-            pattern so the header isn't blank while BlueTemple.png loads ── */}
+            pattern so the header isn't blank while BlueTemple.webp loads ── */}
       <div
         className="relative z-[60] px-4 sm:px-10 py-4"
         style={{
           backgroundColor: "#0e2b3a",
           backgroundImage:
-            "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.png'), " +
+            "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.webp'), " +
             geoPattern,
           backgroundSize: "cover, cover, 40px 40px",
           backgroundPosition: "center, center, center",
