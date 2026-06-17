@@ -10,27 +10,60 @@ export const GOAL_VOICES = 108;
 export const COUNTDOWN_SEC = 5;
 
 // Audio timing.
-// These two numbers align everything to the real recording. Set them from the
-// actual Loka track (see notes): the moment the first word is sung, and how
-// long one full "Lokah samastah sukhino bhavantu" line takes.
-export const LOKA_FIRST_WORD_SEC = 20; // TODO: confirm against the real audio
-export const LOKA_LINE_SEC = 4.5; // TODO: confirm, length of one chant line
+// These numbers align everything to the real recording: the moment the first
+// word is sung, how long one "Lokah samastah sukhino bhavantu" line takes, and
+// (when measured) the start time of every line. They come from analyzing the
+// backing track — run `npm run analyze:loka` to regenerate loka-timing.json.
+import timing from "./loka-timing.json";
+
+export const LOKA_FIRST_WORD_SEC = timing.firstWordSec;
+export const LOKA_LINE_SEC = timing.lineSec;
+
+// Measured start time of each chant line, if the track has been analyzed.
+// Empty until then, in which case we fall back to the fixed-tempo grid above.
+export const LOKA_LINE_STARTS: number[] = timing.lineStarts ?? [];
 
 // "Skip to the chanting" starts the backing track 5 seconds before the first
 // sung word, giving a gentle run-up.
-export const VOCALS_START_SEC = Math.max(0, LOKA_FIRST_WORD_SEC - 5);
+const RUNUP_SEC = 5;
+export const VOCALS_START_SEC = Math.max(
+  0,
+  (LOKA_LINE_STARTS[0] ?? LOKA_FIRST_WORD_SEC) - RUNUP_SEC
+);
 
 // The chant, shown large as singalong subtitles.
 export const CHANT_LINE = "Lokah samastah sukhino bhavantu";
 export const CHANT_WORDS = ["Lokah", "samastah", "sukhino", "bhavantu"];
 export const CHANT_TRANSLATION = "May all beings everywhere be happy and free";
 
+// The chant line currently being sung at `posSec` as [start, end] seconds, or
+// null before the chanting begins. Uses the measured line starts when present
+// (tracking any tempo drift), otherwise an even grid from the first word.
+function currentLine(posSec: number): [number, number] | null {
+  const starts = LOKA_LINE_STARTS;
+  if (starts.length >= 2) {
+    if (posSec < starts[0]) return null;
+    for (let i = 0; i < starts.length; i++) {
+      const end = i + 1 < starts.length ? starts[i + 1] : starts[i] + LOKA_LINE_SEC;
+      if (posSec < end) return [starts[i], end];
+    }
+    const last = starts[starts.length - 1];
+    return [last, last + LOKA_LINE_SEC];
+  }
+  if (posSec < LOKA_FIRST_WORD_SEC) return null;
+  const n = Math.floor((posSec - LOKA_FIRST_WORD_SEC) / LOKA_LINE_SEC);
+  const start = LOKA_FIRST_WORD_SEC + n * LOKA_LINE_SEC;
+  return [start, start + LOKA_LINE_SEC];
+}
+
 // Which chant word is being sung at a given position (seconds) in the backing
-// track, or -1 before the chanting starts. Cycles through the line on tempo.
+// track, or -1 before the chanting starts.
 export function activeChantWord(posSec: number): number {
-  if (posSec < LOKA_FIRST_WORD_SEC) return -1;
-  const perWord = LOKA_LINE_SEC / CHANT_WORDS.length;
-  return Math.floor((posSec - LOKA_FIRST_WORD_SEC) / perWord) % CHANT_WORDS.length;
+  const line = currentLine(posSec);
+  if (!line) return -1;
+  const [start, end] = line;
+  const frac = (posSec - start) / Math.max(0.001, end - start);
+  return Math.min(CHANT_WORDS.length - 1, Math.max(0, Math.floor(frac * CHANT_WORDS.length)));
 }
 
 export type Recording = {

@@ -1,0 +1,9 @@
+{
+  "measured": false,
+  "source": "fallback estimate — run `npm run analyze:loka` against the real backing track to replace this",
+  "analyzedAt": null,
+  "wordCount": 4,
+  "firstWordSec": 20,
+  "lineSec": 4.5,
+  "lineStarts": []
+}
