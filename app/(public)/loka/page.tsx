@@ -4,7 +4,7 @@ import LokaStudio from "./LokaStudio";
 import { GOAL_VOICES } from "./loka-shared";
 
 export const metadata: Metadata = {
-  title: "Sing a Prayer, Loka Samasta",
+  title: "Loka Samastah",
   description:
     "Add your voice to a collective prayer, Lokah Samastah Sukhino Bhavantu, may all beings everywhere be happy and free. Together we are gathering 108 voices.",
 };

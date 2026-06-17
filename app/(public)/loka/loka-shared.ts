@@ -9,14 +9,29 @@ export const GOAL_VOICES = 108;
 // Seconds to count the singer in before recording begins.
 export const COUNTDOWN_SEC = 5;
 
-// Where the chanting begins in the backing track (seconds). Used by the
-// "skip to the chanting" option. Adjust if the intro is longer/shorter.
-export const VOCALS_START_SEC = 15;
+// ── Audio timing ────────────────────────────────────────────────────────────
+// These two numbers align everything to the real recording. Set them from the
+// actual Loka track (see notes): the moment the first word is sung, and how
+// long one full "Lokah samastah sukhino bhavantu" line takes.
+export const LOKA_FIRST_WORD_SEC = 20; // TODO: confirm against the real audio
+export const LOKA_LINE_SEC = 4.5; // TODO: confirm — length of one chant line
+
+// "Skip to the chanting" starts the backing track 5 seconds before the first
+// sung word, giving a gentle run-up.
+export const VOCALS_START_SEC = Math.max(0, LOKA_FIRST_WORD_SEC - 5);
 
 // The chant, shown large as singalong subtitles.
 export const CHANT_LINE = "Lokah samastah sukhino bhavantu";
 export const CHANT_WORDS = ["Lokah", "samastah", "sukhino", "bhavantu"];
 export const CHANT_TRANSLATION = "May all beings everywhere be happy and free";
+
+// Which chant word is being sung at a given position (seconds) in the backing
+// track, or -1 before the chanting starts. Cycles through the line on tempo.
+export function activeChantWord(posSec: number): number {
+  if (posSec < LOKA_FIRST_WORD_SEC) return -1;
+  const perWord = LOKA_LINE_SEC / CHANT_WORDS.length;
+  return Math.floor((posSec - LOKA_FIRST_WORD_SEC) / perWord) % CHANT_WORDS.length;
+}
 
 export type Recording = {
   id: string;

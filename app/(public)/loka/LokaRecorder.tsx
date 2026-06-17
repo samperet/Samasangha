@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
 import {
-  CHANT_LINE,
+  activeChantWord,
   CHANT_TRANSLATION,
   CHANT_WORDS,
   COUNTDOWN_SEC,
@@ -409,7 +409,7 @@ export default function LokaRecorder({
             <div className="text-center py-4">
               <div className="font-serif" style={{ fontSize: "5.5rem", color: "var(--gold-700)", lineHeight: 1 }}>{count}</div>
               <p style={{ fontSize: "1.3rem", color: "var(--fg2)", marginTop: "0.5rem" }}>Take a breath…</p>
-              <Subtitles active={false} elapsed={0} />
+              <Subtitles posSec={startSecRef.current} />
             </div>
           )}
 
@@ -419,7 +419,7 @@ export default function LokaRecorder({
                 <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
                 Recording your prayer · {formatTime(elapsed)}
               </div>
-              <Subtitles active elapsed={elapsed} />
+              <Subtitles posSec={startSecRef.current + elapsed} />
               <Meter level={level} recording />
               <BigButton onClick={stopRecording} variant="secondary">■ I'm finished</BigButton>
             </div>
@@ -467,10 +467,10 @@ export default function LokaRecorder({
 
 /* ─────────────── subtitles ─────────────── */
 
-function Subtitles({ active, elapsed }: { active: boolean; elapsed: number }) {
-  // Gently highlight each word in turn so singers can follow along.
-  const wordDur = 1.1;
-  const idx = active ? Math.floor((elapsed / wordDur) % CHANT_WORDS.length) : -1;
+function Subtitles({ posSec }: { posSec: number }) {
+  // Highlight each word in turn, timed to the backing track position so it
+  // follows the actual chant.
+  const idx = activeChantWord(posSec);
   return (
     <div className="text-center select-none" aria-hidden>
       <p className="font-serif" style={{ fontSize: "clamp(1.6rem, 6vw, 2.4rem)", lineHeight: 1.3, fontWeight: 500 }}>
