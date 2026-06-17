@@ -288,8 +288,7 @@ export default function LokaRecorder({
             Thank you. Your prayer is received.
           </h2>
           <p style={{ fontSize: "1.2rem", lineHeight: 1.7, color: "var(--fg2)", maxWidth: "32ch", margin: "0 auto 1.75rem" }}>
-            Your voice will join the others in the prayer wheel after a gentle review. Bless you for
-            singing.
+            Your voice has joined the prayer wheel. Bless you for singing.
           </p>
           <BigButton onClick={onDone}>Hear the prayer wheel</BigButton>
         </div>

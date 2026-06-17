@@ -43,7 +43,7 @@ export default function LokaPrayerWheel({
   const totalRef = useRef(0);
   const rafRef = useRef(0);
 
-  useEffect(() => {
+  const loadList = useCallback(() => {
     fetch("/api/loka/recordings")
       .then((r) => r.json())
       .then((data: Recording[]) => {
@@ -52,6 +52,15 @@ export default function LokaPrayerWheel({
       })
       .catch(() => setListState("error"));
   }, []);
+
+  // Load on mount, and refresh each time the prayer-wheel tab is opened so a
+  // just-submitted voice shows up.
+  useEffect(() => {
+    loadList();
+  }, [loadList]);
+  useEffect(() => {
+    if (active) loadList();
+  }, [active, loadList]);
 
   const count = Math.max(initialCount, recordings.length);
   const higher = recordings.filter((r) => r.voiceType === "HIGHER");

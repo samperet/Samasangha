@@ -79,7 +79,8 @@ export async function POST(req: NextRequest) {
       durationMs: durationMs || null,
       offsetMs,
       startMs,
-      approved: false,
+      // Auto-published; admins can still remove a take from /admin/loka.
+      approved: true,
     },
   });
 
