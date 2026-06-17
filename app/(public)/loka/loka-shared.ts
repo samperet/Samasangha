@@ -9,12 +9,12 @@ export const GOAL_VOICES = 108;
 // Seconds to count the singer in before recording begins.
 export const COUNTDOWN_SEC = 5;
 
-// ── Audio timing ────────────────────────────────────────────────────────────
+// Audio timing.
 // These two numbers align everything to the real recording. Set them from the
 // actual Loka track (see notes): the moment the first word is sung, and how
 // long one full "Lokah samastah sukhino bhavantu" line takes.
 export const LOKA_FIRST_WORD_SEC = 20; // TODO: confirm against the real audio
-export const LOKA_LINE_SEC = 4.5; // TODO: confirm — length of one chant line
+export const LOKA_LINE_SEC = 4.5; // TODO: confirm, length of one chant line
 
 // "Skip to the chanting" starts the backing track 5 seconds before the first
 // sung word, giving a gentle run-up.

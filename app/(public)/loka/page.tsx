@@ -38,7 +38,7 @@ export default async function LokaPage() {
           style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)", maxWidth: "34rem" }}
         >
           <p className="mb-3" style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg1)" }}>
-            We are gathering <strong>108 voices</strong> — one for each bead of a mala — to sing
+            We are gathering <strong>108 voices</strong>, one for each bead of a mala, to sing
             this blessing together.
           </p>
           <p className="mb-3" style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg1)" }}>
@@ -47,7 +47,7 @@ export default async function LokaPage() {
           </p>
           <p style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg1)" }}>
             When the voices are gathered, they become a living{" "}
-            <strong>prayer wheel</strong> that sings as one — and you can turn it whenever your
+            <strong>prayer wheel</strong> that sings as one, and you can turn it whenever your
             heart needs it.
           </p>
         </div>

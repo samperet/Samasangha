@@ -276,13 +276,14 @@ export default function LokaRecorder({
     };
   }, []);
 
-  /* ─────────────── UI ─────────────── */
+  /* UI */
 
   if (phase === "done") {
     return (
       <Card>
         <div className="text-center py-6">
-          <div className="text-5xl mb-4">✦</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/assets/loka-mandala.png" alt="" aria-hidden className="mx-auto mb-4" style={{ width: 120, height: 120 }} />
           <h2 className="font-serif mb-3" style={{ fontSize: "2rem", fontWeight: 500, color: "var(--ink-900)" }}>
             Thank you. Your prayer is received.
           </h2>
@@ -290,7 +291,7 @@ export default function LokaRecorder({
             Your voice will join the others in the prayer wheel after a gentle review. Bless you for
             singing.
           </p>
-          <BigButton onClick={onDone}>Hear the prayer wheel →</BigButton>
+          <BigButton onClick={onDone}>Hear the prayer wheel</BigButton>
         </div>
       </Card>
     );
@@ -300,10 +301,9 @@ export default function LokaRecorder({
     <Card>
       {/* Headphone guidance, always visible and large */}
       <div
-        className="rounded-2xl p-5 mb-7 flex gap-4 items-start"
+        className="rounded-2xl p-5 mb-7"
         style={{ background: "var(--gold-100)", color: "var(--ink-800)" }}
       >
-        <span style={{ fontSize: "2rem", lineHeight: 1 }}>🎧</span>
         <p style={{ fontSize: "1.1rem", lineHeight: 1.6 }}>
           <strong>Please put on headphones first.</strong> Then sing along gently with the song.
           There is no wrong way to do this.
@@ -368,7 +368,7 @@ export default function LokaRecorder({
           </label>
 
           {error && <ErrorNote msg={error} />}
-          <BigButton onClick={turnOnMic}>Turn on my microphone →</BigButton>
+          <BigButton onClick={turnOnMic}>Turn on my microphone</BigButton>
         </div>
       )}
 
@@ -388,7 +388,7 @@ export default function LokaRecorder({
               {error && <ErrorNote msg={error} />}
               <div className="space-y-3">
                 <BigButton onClick={() => beginCountdown(false)} disabled={backingState !== "ready"}>
-                  ● Sing from the beginning
+                  Sing from the beginning
                 </BigButton>
                 <button
                   onClick={() => beginCountdown(true)}
@@ -396,10 +396,10 @@ export default function LokaRecorder({
                   className="w-full py-3 rounded-xl border font-semibold transition-colors disabled:opacity-50"
                   style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.1rem" }}
                 >
-                  Skip to the chanting →
+                  Skip to the chanting
                 </button>
                 <p className="text-center" style={{ fontSize: "0.95rem", color: "var(--fg3)" }}>
-                  {backingState === "loading" ? "Loading the song…" : "“Skip to the chanting” starts where the voices begin."}
+                  {backingState === "loading" ? "Loading the song" : "Skip to the chanting starts where the voices begin."}
                 </p>
               </div>
             </>
@@ -408,7 +408,7 @@ export default function LokaRecorder({
           {phase === "countdown" && (
             <div className="text-center py-4">
               <div className="font-serif" style={{ fontSize: "5.5rem", color: "var(--gold-700)", lineHeight: 1 }}>{count}</div>
-              <p style={{ fontSize: "1.3rem", color: "var(--fg2)", marginTop: "0.5rem" }}>Take a breath…</p>
+              <p style={{ fontSize: "1.3rem", color: "var(--fg2)", marginTop: "0.5rem" }}>Take a breath</p>
               <Subtitles posSec={startSecRef.current} />
             </div>
           )}
@@ -417,11 +417,11 @@ export default function LokaRecorder({
             <div className="space-y-5">
               <div className="flex items-center justify-center gap-2.5" style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--crimson-700)" }}>
                 <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
-                Recording your prayer · {formatTime(elapsed)}
+                Recording your prayer, {formatTime(elapsed)}
               </div>
               <Subtitles posSec={startSecRef.current + elapsed} />
               <Meter level={level} recording />
-              <BigButton onClick={stopRecording} variant="secondary">■ I'm finished</BigButton>
+              <BigButton onClick={stopRecording} variant="secondary">I&apos;m finished</BigButton>
             </div>
           )}
         </div>
@@ -433,7 +433,7 @@ export default function LokaRecorder({
             Listen to your prayer
           </h2>
           <p style={{ fontSize: "1.15rem", color: "var(--fg2)", lineHeight: 1.6 }}>
-            Here is your voice with the song. If it feels right, send it on. Or sing it again — as
+            Here is your voice with the song. If it feels right, send it on. Or sing it again, as
             many times as you like.
           </p>
           <button
@@ -441,11 +441,11 @@ export default function LokaRecorder({
             className="w-full py-4 rounded-xl border font-semibold transition-colors"
             style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.2rem" }}
           >
-            {reviewPlaying ? "■ Stop" : "▶ Listen back"}
+            {reviewPlaying ? "Stop" : "Listen back"}
           </button>
           {error && <ErrorNote msg={error} />}
           <BigButton onClick={submit} disabled={phase === "submitting"}>
-            {phase === "submitting" ? "Sending…" : "This is my prayer ✦ Send it"}
+            {phase === "submitting" ? "Sending" : "Send my prayer"}
           </BigButton>
           <button
             onClick={discard}
@@ -453,7 +453,7 @@ export default function LokaRecorder({
             className="w-full py-3 font-medium disabled:opacity-50"
             style={{ color: "var(--fg3)", fontSize: "1.05rem" }}
           >
-            ↺ Sing again
+            Sing again
           </button>
         </div>
       )}
@@ -465,7 +465,7 @@ export default function LokaRecorder({
   );
 }
 
-/* ─────────────── subtitles ─────────────── */
+/* subtitles */
 
 function Subtitles({ posSec }: { posSec: number }) {
   // Highlight each word in turn, timed to the backing track position so it
@@ -495,7 +495,7 @@ function Subtitles({ posSec }: { posSec: number }) {
   );
 }
 
-/* ─────────────── small presentational helpers ─────────────── */
+/* small presentational helpers */
 
 function Card({ children }: { children: React.ReactNode }) {
   return (

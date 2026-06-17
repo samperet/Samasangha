@@ -245,10 +245,10 @@ export default function LokaPrayerWheel({
 
   const soloName = soloIds.length === 1 ? recordings.find((r) => r.id === soloIds[0])?.name : null;
 
-  /* ─────────────── UI ─────────────── */
+  /* UI */
 
   if (listState === "loading") {
-    return <Card><p className="text-center" style={{ fontSize: "1.1rem", color: "var(--fg3)" }}>Gathering the voices…</p></Card>;
+    return <Card><p className="text-center" style={{ fontSize: "1.1rem", color: "var(--fg3)" }}>Gathering the voices</p></Card>;
   }
   if (listState === "error") {
     return <Card><p className="text-center" style={{ fontSize: "1.1rem", color: "var(--terra-700)" }}>We couldn&apos;t reach the prayer wheel. Please refresh.</p></Card>;
@@ -315,9 +315,9 @@ export default function LokaPrayerWheel({
               disabled={preparing || recordings.length === 0}
               aria-label={playing ? "Stop" : "Play all voices"}
               className="rounded-full flex items-center justify-center transition-transform active:scale-95 disabled:opacity-40"
-              style={{ width: 76, height: 76, background: "var(--gold-600)", color: "var(--fg-on-gold)", fontSize: "1.8rem", boxShadow: "var(--shadow-md)" }}
+              style={{ width: 84, height: 84, background: "var(--gold-600)", color: "var(--fg-on-gold)", fontSize: "1.15rem", fontWeight: 600, boxShadow: "var(--shadow-md)" }}
             >
-              {preparing ? "…" : playing ? "■" : "▶"}
+              {preparing ? "Wait" : playing ? "Stop" : "Play"}
             </button>
             <div style={{ fontSize: "0.95rem", color: "var(--fg2)", marginTop: "0.65rem", minHeight: "1.2em" }}>
               {soloName ? soloName : playing ? "All voices" : ""}
@@ -352,7 +352,7 @@ export default function LokaPrayerWheel({
           {soloIds.length > 0 && (
             <div className="text-center mt-3">
               <button onClick={() => setSoloIds([])} className="font-medium" style={{ fontSize: "1rem", color: "var(--gold-700)" }}>
-                ← Hear everyone again
+                Hear everyone again
               </button>
             </div>
           )}
@@ -365,7 +365,7 @@ export default function LokaPrayerWheel({
               className="font-medium disabled:opacity-50"
               style={{ fontSize: "0.95rem", color: "var(--fg3)" }}
             >
-              {downloading ? "Preparing…" : "↓ Download the prayer"}
+              {downloading ? "Preparing" : "Download the prayer"}
             </button>
             <details className="w-full max-w-xs">
               <summary className="text-center cursor-pointer" style={{ fontSize: "0.85rem", color: "var(--fg3)" }}>
