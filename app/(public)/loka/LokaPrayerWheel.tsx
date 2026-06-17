@@ -50,6 +50,9 @@ export default function LokaPrayerWheel({
   const [playing, setPlaying] = useState(false);
   const [disabled, setDisabled] = useState<Set<string>>(new Set());
   const [nudgeMs, setNudgeMs] = useState(0);
+  // Per-voice mix: volume (0–1.5, default 1) and timing nudge in ms (default 0).
+  const [volumes, setVolumes] = useState<Record<string, number>>({});
+  const [voiceNudge, setVoiceNudge] = useState<Record<string, number>>({});
   const [downloading, setDownloading] = useState(false);
   const [peaks, setPeaks] = useState<number[]>([]);
   const [duration, setDuration] = useState(0);
@@ -93,7 +96,13 @@ export default function LokaPrayerWheel({
   const higher = recordings.filter((r) => r.voiceType === "HIGHER");
   const lower = recordings.filter((r) => r.voiceType === "LOWER");
 
-  const effectiveGain = useCallback((r: Recording) => (disabled.has(r.id) ? 0 : 1), [disabled]);
+  const effectiveGain = useCallback(
+    (r: Recording) => (disabled.has(r.id) ? 0 : volumes[r.id] ?? 1),
+    [disabled, volumes]
+  );
+
+  // Per-voice timing nudge (ms) on top of the global nudge, in seconds.
+  const voiceNudgeSec = useCallback((r: Recording) => (voiceNudge[r.id] ?? 0) / 1000, [voiceNudge]);
 
   // Live-apply voice toggles while playing.
   useEffect(() => {
@@ -137,11 +146,12 @@ export default function LokaPrayerWheel({
     let total = backing.duration;
     recordings.forEach((r) => {
       const buf = buffersRef.current.get(r.id);
-      if (buf) total = Math.max(total, (r.startMs + r.offsetMs) / 1000 + nudge + buf.duration);
+      if (buf)
+        total = Math.max(total, (r.startMs + r.offsetMs) / 1000 + nudge + voiceNudgeSec(r) + buf.duration);
     });
     totalRef.current = total;
     setDuration(total);
-  }, [nudgeMs, recordings]);
+  }, [nudgeMs, recordings, voiceNudgeSec]);
 
   // Decode everything when the tab opens (or new voices arrive) so we can draw
   // the waveform and scrub.
@@ -248,7 +258,7 @@ export default function LokaPrayerWheel({
       recordings.forEach((r) => {
         const buf = buffersRef.current.get(r.id);
         if (!buf) return;
-        const ts = (r.startMs + r.offsetMs) / 1000 + nudge;
+        const ts = (r.startMs + r.offsetMs) / 1000 + nudge + voiceNudgeSec(r);
         const g = schedule(buf, ts, effectiveGain(r));
         if (g) trackGainRef.current.set(r.id, g);
       });
@@ -276,7 +286,7 @@ export default function LokaPrayerWheel({
       };
       rafRef.current = requestAnimationFrame(tick);
     },
-    [ensureCtx, prepared, prepare, recomputeDuration, nudgeMs, recordings, effectiveGain, stop]
+    [ensureCtx, prepared, prepare, recomputeDuration, nudgeMs, recordings, effectiveGain, voiceNudgeSec, stop]
   );
 
   const onPlayPause = useCallback(() => {
@@ -327,7 +337,8 @@ export default function LokaPrayerWheel({
       let total = backing.duration;
       recordings.forEach((r) => {
         const buf = buffersRef.current.get(r.id);
-        if (buf) total = Math.max(total, (r.startMs + r.offsetMs) / 1000 + nudge + buf.duration);
+        if (buf)
+          total = Math.max(total, (r.startMs + r.offsetMs) / 1000 + nudge + voiceNudgeSec(r) + buf.duration);
       });
       const offline = new OfflineAudioContext(2, Math.ceil(total * sr), sr);
       const master = offline.createGain();
@@ -348,7 +359,7 @@ export default function LokaPrayerWheel({
         const s = offline.createBufferSource();
         s.buffer = buf;
         s.connect(g);
-        s.start(Math.max(0, (r.startMs + r.offsetMs) / 1000 + nudge));
+        s.start(Math.max(0, (r.startMs + r.offsetMs) / 1000 + nudge + voiceNudgeSec(r)));
       });
       const rendered = await offline.startRendering();
       const url = URL.createObjectURL(audioBufferToWav(rendered));
@@ -384,6 +395,14 @@ export default function LokaPrayerWheel({
     });
   }
 
+  function setVolume(id: string, v: number) {
+    setVolumes((prev) => ({ ...prev, [id]: v }));
+  }
+
+  function setNudge(id: string, ms: number) {
+    setVoiceNudge((prev) => ({ ...prev, [id]: ms }));
+  }
+
   /* UI */
 
   if (listState === "loading") {
@@ -413,7 +432,7 @@ export default function LokaPrayerWheel({
       <p className="text-center mb-1" style={{ fontSize: "1.15rem", lineHeight: 1.6, color: "var(--fg2)" }}>
         {recordings.length === 0
           ? "No voices yet, be the first to begin the prayer."
-          : "Press play and let the prayer sing. Scrub the wave, or mute any voice."}
+          : "Press play and let the prayer sing. Scrub the wave, or mix each voice below."}
       </p>
 
       {recordings.length > 0 && (
@@ -499,20 +518,45 @@ export default function LokaPrayerWheel({
             />
           </div>
 
-          {/* Per-voice toggles */}
-          <div className="mt-5 space-y-4">
-            <VoiceRow
-              list={higher}
-              color="var(--gold-600)"
-              disabledSet={disabled}
-              onToggle={toggleVoice}
-            />
-            <VoiceRow
-              list={lower}
-              color="var(--lapis-700)"
-              disabledSet={disabled}
-              onToggle={toggleVoice}
-            />
+          {/* Per-voice mixer */}
+          <div className="mt-5 space-y-6">
+            {higher.length > 0 && (
+              <div>
+                <p className="mb-2 font-semibold" style={{ fontSize: "0.9rem", color: "var(--gold-700)" }}>
+                  Higher voices
+                </p>
+                <VoiceMixer
+                  list={higher}
+                  color="var(--gold-600)"
+                  disabledSet={disabled}
+                  volumes={volumes}
+                  nudges={voiceNudge}
+                  onToggle={toggleVoice}
+                  onVolume={setVolume}
+                  onNudge={setNudge}
+                />
+              </div>
+            )}
+            {lower.length > 0 && (
+              <div>
+                <p className="mb-2 font-semibold" style={{ fontSize: "0.9rem", color: "var(--lapis-700)" }}>
+                  Lower voices
+                </p>
+                <VoiceMixer
+                  list={lower}
+                  color="var(--lapis-700)"
+                  disabledSet={disabled}
+                  volumes={volumes}
+                  nudges={voiceNudge}
+                  onToggle={toggleVoice}
+                  onVolume={setVolume}
+                  onNudge={setNudge}
+                />
+              </div>
+            )}
+            <p className="text-center" style={{ fontSize: "0.8rem", color: "var(--fg3)" }}>
+              Volume changes apply as you listen. Press play to apply timing changes.
+            </p>
           </div>
 
           {/* Quiet extras */}
@@ -527,7 +571,7 @@ export default function LokaPrayerWheel({
             </button>
             <details className="w-full max-w-xs">
               <summary className="text-center cursor-pointer" style={{ fontSize: "0.85rem", color: "var(--fg3)" }}>
-                Adjust timing
+                Nudge all voices together
               </summary>
               <div className="mt-2">
                 <input
@@ -683,44 +727,100 @@ function WaveScrubber({
 
 /* ── Pieces ────────────────────────────────────────────────────────── */
 
-function VoiceRow({
+function VoiceMixer({
   list,
   color,
   disabledSet,
+  volumes,
+  nudges,
   onToggle,
+  onVolume,
+  onNudge,
 }: {
   list: Recording[];
   color: string;
   disabledSet: Set<string>;
+  volumes: Record<string, number>;
+  nudges: Record<string, number>;
   onToggle: (id: string) => void;
+  onVolume: (id: string, v: number) => void;
+  onNudge: (id: string, ms: number) => void;
 }) {
   if (list.length === 0) return null;
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="space-y-2.5">
       {list.map((r) => {
         const on = !disabledSet.has(r.id);
+        const vol = volumes[r.id] ?? 1;
+        const nudge = nudges[r.id] ?? 0;
         return (
-          <button
+          <div
             key={r.id}
-            onClick={() => onToggle(r.id)}
-            className="px-3 py-1.5 rounded-full border font-medium transition-colors"
-            style={
-              on
-                ? { background: color, borderColor: color, color: "#fff", fontSize: "0.9rem" }
-                : {
-                    background: "#fff",
-                    borderColor: "var(--surface-border)",
-                    color: "var(--fg3)",
-                    fontSize: "0.9rem",
-                    textDecoration: "line-through",
-                    textDecorationColor: "var(--fg3)",
-                  }
-            }
-            aria-pressed={on}
-            title={on ? `Mute ${r.name}` : `Unmute ${r.name}`}
+            className="rounded-xl px-3 py-2.5"
+            style={{
+              border: "1px solid var(--surface-border)",
+              background: on ? "#fff" : "var(--parch-100)",
+            }}
           >
-            {r.name}
-          </button>
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => onToggle(r.id)}
+                aria-pressed={on}
+                title={on ? `Mute ${r.name}` : `Unmute ${r.name}`}
+                className="shrink-0 rounded-full transition-colors"
+                style={{
+                  width: 18,
+                  height: 18,
+                  background: on ? color : "transparent",
+                  border: `2px solid ${on ? color : "var(--fg3)"}`,
+                }}
+              />
+              <span
+                className="flex-1 font-medium truncate"
+                style={{ fontSize: "0.95rem", color: on ? "var(--ink-800)" : "var(--fg3)" }}
+              >
+                {r.name}
+              </span>
+              <span className="tabular-nums" style={{ fontSize: "0.8rem", color: "var(--fg3)" }}>
+                {Math.round(vol * 100)}%
+              </span>
+            </div>
+
+            <label className="flex items-center gap-2 mt-2" style={{ fontSize: "0.78rem", color: "var(--fg3)" }}>
+              <span style={{ width: "3.5em" }}>Volume</span>
+              <input
+                type="range"
+                min={0}
+                max={1.5}
+                step={0.05}
+                value={vol}
+                disabled={!on}
+                onChange={(e) => onVolume(r.id, Number(e.target.value))}
+                className="flex-1 disabled:opacity-40"
+                style={{ accentColor: color }}
+                aria-label={`Volume for ${r.name}`}
+              />
+            </label>
+
+            <label className="flex items-center gap-2 mt-1.5" style={{ fontSize: "0.78rem", color: "var(--fg3)" }}>
+              <span style={{ width: "3.5em" }}>Timing</span>
+              <input
+                type="range"
+                min={-500}
+                max={500}
+                step={10}
+                value={nudge}
+                onChange={(e) => onNudge(r.id, Number(e.target.value))}
+                className="flex-1"
+                style={{ accentColor: color }}
+                aria-label={`Timing for ${r.name}`}
+              />
+              <span className="tabular-nums" style={{ width: "4.8em", textAlign: "right" }}>
+                {nudge > 0 ? "+" : ""}
+                {nudge} ms
+              </span>
+            </label>
+          </div>
         );
       })}
     </div>

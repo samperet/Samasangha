@@ -3,9 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
 import {
-  activeChantWord,
-  CHANT_TRANSLATION,
-  CHANT_WORDS,
   COUNTDOWN_SEC,
   extForMime,
   fetchAudioBuffer,
@@ -408,7 +405,6 @@ export default function LokaRecorder({
             <div className="text-center py-4">
               <div className="font-serif" style={{ fontSize: "5.5rem", color: "var(--gold-700)", lineHeight: 1 }}>{count}</div>
               <p style={{ fontSize: "1.3rem", color: "var(--fg2)", marginTop: "0.5rem" }}>Take a breath</p>
-              <Subtitles posSec={startSecRef.current} />
             </div>
           )}
 
@@ -418,7 +414,6 @@ export default function LokaRecorder({
                 <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
                 Recording your prayer, {formatTime(elapsed)}
               </div>
-              <Subtitles posSec={startSecRef.current + elapsed} />
               <Meter level={level} recording />
               <BigButton onClick={stopRecording} variant="secondary">I&apos;m finished</BigButton>
             </div>
@@ -461,36 +456,6 @@ export default function LokaRecorder({
         Every voice is welcome. Together we are gathering {goal}.
       </p>
     </Card>
-  );
-}
-
-/* subtitles */
-
-function Subtitles({ posSec }: { posSec: number }) {
-  // Highlight each word in turn, timed to the backing track position so it
-  // follows the actual chant.
-  const idx = activeChantWord(posSec);
-  return (
-    <div className="text-center select-none" aria-hidden>
-      <p className="font-serif" style={{ fontSize: "clamp(1.6rem, 6vw, 2.4rem)", lineHeight: 1.3, fontWeight: 500 }}>
-        {CHANT_WORDS.map((w, i) => (
-          <span
-            key={i}
-            style={{
-              color: i === idx ? "var(--gold-700)" : "var(--ink-800)",
-              opacity: idx === -1 || i === idx ? 1 : 0.55,
-              transition: "color 0.2s, opacity 0.2s",
-              marginRight: "0.4em",
-            }}
-          >
-            {w}
-          </span>
-        ))}
-      </p>
-      <p className="font-serif italic mt-2" style={{ fontSize: "1.1rem", color: "var(--fg2)" }}>
-        {CHANT_TRANSLATION}
-      </p>
-    </div>
   );
 }
 
