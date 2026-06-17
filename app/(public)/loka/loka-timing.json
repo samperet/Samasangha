@@ -1,9 +1,9 @@
 {
-  "measured": false,
-  "source": "fallback estimate — run `npm run analyze:loka` against the real backing track to replace this",
-  "analyzedAt": null,
+  "measured": true,
+  "source": "manual — vocals confirmed to start at 1:32 (92s) by ear; run `npm run analyze:loka` to add per-line starts",
+  "analyzedAt": "2026-06-17",
   "wordCount": 4,
-  "firstWordSec": 20,
+  "firstWordSec": 92,
   "lineSec": 4.5,
   "lineStarts": []
 }
