@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { prisma } from "@/lib/prisma";
 import LokaWidgetRecorder from "./LokaWidgetRecorder";
-import LokaListen from "./LokaListen";
 import { GOAL_VOICES } from "./loka-shared";
 
 export const metadata: Metadata = {
@@ -58,22 +57,6 @@ export default async function LokaPage() {
           We are gathering <strong>108 voices</strong>, one for each bead of a mala, to sing this
           blessing together.
         </p>
-      </section>
-
-      {/* Listen to the song first */}
-      <section
-        className="rounded-2xl p-6 mb-9 mx-auto"
-        style={{ background: "#fff", border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-sm)", maxWidth: "34rem" }}
-      >
-        <h2 className="font-serif mb-2" style={{ fontSize: "1.4rem", fontWeight: 600, color: "var(--ink-900)" }}>
-          Listen to the song first
-        </h2>
-        <p className="mb-4" style={{ fontSize: "1.05rem", lineHeight: 1.7, color: "var(--fg1)" }}>
-          Before you add your voice, take a few minutes to listen all the way through. Follow the
-          words as they scroll past the marker, let the melody settle in, and hum along quietly
-          until it feels familiar. There is no wrong way to do this.
-        </p>
-        <LokaListen />
       </section>
 
       <LokaWidgetRecorder goal={GOAL_VOICES} />

@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
+import LokaListen from "./LokaListen";
 
-type Phase = "form" | "record" | "done";
+type Phase = "form" | "listen" | "record" | "done";
 
 type WidgetHandle = {
   record: () => Promise<boolean>;
@@ -130,7 +131,7 @@ export default function LokaWidgetRecorder({ goal }: { goal: number }) {
     if (form.email.trim() && !emailRe.test(form.email.trim())) {
       return setError("That email doesn't look right. You can also leave it blank.");
     }
-    setPhase("record");
+    setPhase("listen");
   }
 
   async function beginRecording() {
@@ -227,7 +228,26 @@ export default function LokaWidgetRecorder({ goal }: { goal: number }) {
           </label>
 
           {error && <ErrorNote msg={error} />}
-          <BigButton onClick={toRecording}>Continue to the singalong</BigButton>
+          <BigButton onClick={toRecording}>Continue</BigButton>
+        </div>
+      )}
+
+      {phase === "listen" && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="font-serif mb-2" style={{ fontSize: "1.5rem", fontWeight: 600, color: "var(--ink-900)" }}>
+              Listen to the song
+            </h2>
+            <p style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg2)" }}>
+              Take a few minutes to listen all the way through. Follow the words as they scroll past
+              the marker, and hum along quietly until it feels familiar. When you are ready, record
+              your voice.
+            </p>
+          </div>
+
+          <LokaListen />
+
+          <BigButton onClick={() => setPhase("record")}>I&apos;m ready to record</BigButton>
         </div>
       )}
 
