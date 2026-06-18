@@ -65,7 +65,8 @@ export function createLokahRecorder(target, options){
   const host = typeof target==='string' ? document.querySelector(target) : target;
   if(!host) throw new Error('lokah-recorder: target element not found');
   const opt = Object.assign({ loopUrl:'loop.mp3', ballUrl:'ball.png', uploadUrl:null,
-    fieldName:'voice', onComplete:null, onError:null, collectName:true }, options||{});
+    fieldName:'voice', onComplete:null, onError:null, collectName:true,
+    showControls:true, loopOnce:false, onRecordStart:null }, options||{});
   injectCSS();
 
   const lines = buildUnits();
@@ -73,12 +74,13 @@ export function createLokahRecorder(target, options){
   host.classList.add('lokah-rec');
   host.innerHTML =
     '<div class="lk-stage"><canvas class="lk-cv"></canvas></div>'+
+    (opt.showControls ?
     '<div class="lk-controls">'+
       (opt.collectName?'<input class="lk-name" placeholder="Your name (optional)" maxlength="40">':'')+
       '<button class="lk-play" type="button">Play loop</button>'+
       '<button class="lk-rec" type="button">Record</button>'+
       '<span class="lk-status"></span>'+
-    '</div>';
+    '</div>' : '');
 
   const cv=host.querySelector('.lk-cv'), g=cv.getContext('2d');
   const playBtn=host.querySelector('.lk-play'), recBtn=host.querySelector('.lk-rec');
@@ -127,29 +129,43 @@ export function createLokahRecorder(target, options){
   let raf=0; function frame(){ draw(); raf=requestAnimationFrame(frame); }
   size(); frame(); window.addEventListener('resize', size);
 
-  function setStatus(msg, err){ statusEl.textContent=msg||''; statusEl.style.color=err?'#b3322f':''; }
+  function setStatus(msg, err){ if(!statusEl) return; statusEl.textContent=msg||''; statusEl.style.color=err?'#b3322f':''; }
 
-  playBtn.onclick=()=>{ if(audio.paused){ audio.play().catch(()=>{}); playBtn.textContent='Pause'; }
+  if(playBtn) playBtn.onclick=()=>{ if(audio.paused){ audio.play().catch(()=>{}); playBtn.textContent='Pause'; }
     else { audio.pause(); playBtn.textContent='Play loop'; } };
 
   // ---- recording ----
   let mediaRec=null, chunks=[], stream=null, recording=false, lastBlob=null;
   function ext(m){ return /mp4|m4a|aac/.test(m)?'mp4':/ogg/.test(m)?'ogg':'webm'; }
 
-  recBtn.onclick=async()=>{
-    if(recording){ if(mediaRec){ try{mediaRec.stop();}catch(e){} } return; }
+  // Start a take. Can be driven by the built-in button or programmatically via
+  // the returned handle's record(). With loopOnce, the loop plays a single pass
+  // and recording auto-stops when it ends. Returns true if it started.
+  async function startRecording(){
+    if(recording) return false;
     try{ if(!stream) stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false}}); }
-    catch(e){ setStatus('Microphone blocked: '+(e.message||e.name), true); return; }
-    try{ mediaRec=new MediaRecorder(stream); }catch(e){ setStatus('Recording not supported here', true); return; }
+    catch(e){ setStatus('Microphone blocked: '+(e.message||e.name), true); if(opt.onError) opt.onError(e); return false; }
+    try{ mediaRec=new MediaRecorder(stream); }catch(e){ setStatus('Recording not supported here', true); if(opt.onError) opt.onError(e); return false; }
     chunks=[]; mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
     mediaRec.onstop=onRecStop;
-    audio.currentTime=0; await audio.play().catch(()=>{}); playBtn.textContent='Pause';
-    mediaRec.start(); recording=true; recBtn.textContent='Stop'; recBtn.classList.add('lk-recording'); setStatus('Recording — sing along…');
-  };
+    if(opt.loopOnce) audio.loop=false;                    // record a single pass
+    audio.currentTime=0; await audio.play().catch(()=>{});
+    if(playBtn) playBtn.textContent='Pause';
+    audio.onended=()=>{ if(recording) stopRecording(); };  // auto-stop at loop end
+    mediaRec.start(); recording=true;
+    if(recBtn){ recBtn.textContent='Stop'; recBtn.classList.add('lk-recording'); }
+    setStatus('Recording — sing along…');
+    if(opt.onRecordStart){ try{ opt.onRecordStart(); }catch(e){} }
+    return true;
+  }
+  function stopRecording(){ if(recording && mediaRec){ try{mediaRec.stop();}catch(e){} } }
+
+  if(recBtn) recBtn.onclick=()=>{ recording ? stopRecording() : startRecording(); };
 
   async function onRecStop(){
-    recording=false; recBtn.textContent='Record'; recBtn.classList.remove('lk-recording');
-    if(!chunks.length){ setStatus('Nothing recorded — try again', true); return; }
+    recording=false; audio.onended=null;
+    if(recBtn){ recBtn.textContent='Record'; recBtn.classList.remove('lk-recording'); }
+    if(!chunks.length){ setStatus('Nothing recorded — try again', true); if(opt.onError) opt.onError(new Error('Nothing recorded')); return; }
     const blob=new Blob(chunks,{type:(mediaRec&&mediaRec.mimeType)||'audio/webm'}); lastBlob=blob;
     const meta={ name: nameEl?nameEl.value.trim():'', loopMs: Math.round((audio.duration||0)*1000), mime: blob.type, sizeBytes: blob.size };
     if(opt.onComplete){ try{ opt.onComplete(blob, meta); }catch(e){} }
@@ -167,6 +183,7 @@ export function createLokahRecorder(target, options){
 
   return {
     play:()=>audio.play(), pause:()=>audio.pause(),
+    record:()=>startRecording(), stopRecording:()=>stopRecording(),
     isRecording:()=>recording, getLastRecording:()=>lastBlob,
     destroy(){ cancelAnimationFrame(raf); window.removeEventListener('resize', size); audio.pause();
       if(stream) stream.getTracks().forEach(t=>t.stop()); host.innerHTML=''; host.classList.remove('lokah-rec'); }
