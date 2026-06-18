@@ -75,24 +75,22 @@ function HeartThermometer({ count, goal, pct }: { count: number; goal: number; p
   const fillY = H - fillH;
   return (
     <svg
-      viewBox="0 0 32 29.6"
-      width="148"
-      height="137"
+      viewBox="-2 -2 36 33.6"
+      width="140"
+      height="131"
       className="mx-auto block"
       role="img"
       aria-label={`${count} of ${goal} voices gathered`}
-      style={{ filter: "drop-shadow(0 2px 4px rgba(58,42,8,.12))" }}
     >
       <defs>
         <clipPath id="loka-heart-clip">
           <path d={HEART_PATH} />
         </clipPath>
       </defs>
-      <g clipPath="url(#loka-heart-clip)">
-        <rect x="0" y="0" width="32" height="29.6" fill="var(--parch-200)" />
-        <rect x="0" y={fillY} width="32" height={fillH} fill="var(--gold-600)" />
-      </g>
-      <path d={HEART_PATH} fill="none" stroke="var(--gold-700)" strokeWidth="1" />
+      {/* red vertical progress, filling from the bottom, clipped to the heart */}
+      <rect x="0" y={fillY} width="32" height={fillH} fill="#e0282e" clipPath="url(#loka-heart-clip)" />
+      {/* thin black outline */}
+      <path d={HEART_PATH} fill="none" stroke="#000" strokeWidth="1" strokeLinejoin="round" />
     </svg>
   );
 }
