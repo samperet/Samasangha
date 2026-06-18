@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { prisma } from "@/lib/prisma";
-import LokaStudio from "./LokaStudio";
+import LokaWidgetRecorder from "./LokaWidgetRecorder";
 import { GOAL_VOICES } from "./loka-shared";
 
 export const metadata: Metadata = {
@@ -86,12 +86,12 @@ export default async function LokaPage() {
           headphones, let the melody settle in, and hum along quietly until it feels familiar.
           There is no wrong way to do this.
         </p>
-        <audio controls preload="none" src="/api/loka/backing" className="w-full" style={{ maxWidth: "100%" }}>
+        <audio controls preload="none" src="/lokah/loop.mp3" className="w-full" style={{ maxWidth: "100%" }}>
           Your browser can&apos;t play the song. Please try another browser.
         </audio>
       </section>
 
-      <LokaStudio backingUrl="/api/loka/backing" initialCount={count} goal={GOAL_VOICES} />
+      <LokaWidgetRecorder goal={GOAL_VOICES} />
     </div>
   );
 }
