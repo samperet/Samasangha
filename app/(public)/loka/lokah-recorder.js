@@ -138,6 +138,13 @@ export function createLokahRecorder(target, options){
   let mediaRec=null, chunks=[], stream=null, recording=false, lastBlob=null;
   function ext(m){ return /mp4|m4a|aac/.test(m)?'mp4':/ogg/.test(m)?'ogg':'webm'; }
 
+  // Acquire the mic ahead of time so the permission prompt doesn't interrupt a
+  // count-in. record() reuses the cached stream. Returns true if granted.
+  async function prepareMic(){
+    try{ if(!stream) stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false}}); return true; }
+    catch(e){ setStatus('Microphone blocked: '+(e.message||e.name), true); if(opt.onError) opt.onError(e); return false; }
+  }
+
   // Start a take. Can be driven by the built-in button or programmatically via
   // the returned handle's record(). With loopOnce, the loop plays a single pass
   // and recording auto-stops when it ends. Returns true if it started.
@@ -183,6 +190,7 @@ export function createLokahRecorder(target, options){
 
   return {
     play:()=>audio.play(), pause:()=>audio.pause(),
+    prepare:()=>prepareMic(),
     record:()=>startRecording(), stopRecording:()=>stopRecording(),
     isRecording:()=>recording, getLastRecording:()=>lastBlob,
     destroy(){ cancelAnimationFrame(raf); window.removeEventListener('resize', size); audio.pause();

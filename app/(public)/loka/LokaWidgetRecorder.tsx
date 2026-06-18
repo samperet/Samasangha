@@ -4,10 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
 
 type Phase = "capture" | "form" | "done";
+type CapStatus = "idle" | "countdown" | "recording" | "recorded";
 
 type WidgetHandle = {
   play: () => void;
   pause: () => void;
+  prepare: () => Promise<boolean>;
   record: () => Promise<boolean>;
   stopRecording: () => void;
   destroy: () => void;
@@ -47,11 +49,12 @@ export default function LokaWidgetRecorder({
   pct: number;
 }) {
   const [phase, setPhase] = useState<Phase>("capture");
+  const [capStatus, setCapStatus] = useState<CapStatus>("idle");
+  const [countdownN, setCountdownN] = useState(3);
+  const [playing, setPlaying] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", voiceType: "", consent: false });
   const [error, setError] = useState("");
   const [showHeadphones, setShowHeadphones] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const [recording, setRecording] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showNotify, setShowNotify] = useState(false);
 
@@ -59,15 +62,24 @@ export default function LokaWidgetRecorder({
   const handleRef = useRef<WidgetHandle>(null);
   const takeBlobRef = useRef<Blob | null>(null);
   const takeMetaRef = useRef<TakeMeta>({});
+  const countdownTimerRef = useRef(0);
+  const resettingRef = useRef(false); // ignore the take from a reset-triggered stop
+  const submitAfterStopRef = useRef(false); // jump to form after a submit-triggered stop
 
-  // Receive a finished take from the widget, then move on to collect details.
+  // Receive a finished take from the widget (auto-stop at loop end, or a manual
+  // stop from Reset / Submit).
   const onTake = useCallback((blob: Blob, meta: TakeMeta) => {
+    if (resettingRef.current) {
+      resettingRef.current = false;
+      return; // a reset is restarting the count-in; discard this take
+    }
     takeBlobRef.current = blob;
     takeMetaRef.current = meta || {};
-    setPlaying(false);
-    setRecording(false);
-    setError("");
-    setPhase("form");
+    setCapStatus("recorded");
+    if (submitAfterStopRef.current) {
+      submitAfterStopRef.current = false;
+      setPhase("form");
+    }
   }, []);
 
   // Mount the singalong widget while we're capturing (sampling + recording).
@@ -81,12 +93,12 @@ export default function LokaWidgetRecorder({
         handleRef.current = createLokahRecorder(host, {
           loopUrl: "/lokah/loop.mp3",
           ballUrl: "/lokah/ball.png",
-          showControls: false, // our own sample / record buttons drive it
+          showControls: false, // our own play / record / reset / submit buttons drive it
           collectName: false,
           loopOnce: true, // one pass, then auto-stop
           onComplete: (blob: Blob, meta: TakeMeta) => onTake(blob, meta),
           onError: () => {
-            setRecording(false);
+            setCapStatus("idle");
             setError("We couldn't reach your microphone. Please allow it, then try again.");
           },
         });
@@ -94,6 +106,7 @@ export default function LokaWidgetRecorder({
       .catch(() => setError("The singalong couldn't load. Please refresh and try again."));
     return () => {
       cancelled = true;
+      window.clearInterval(countdownTimerRef.current);
       try {
         handleRef.current?.destroy();
       } catch {
@@ -102,6 +115,8 @@ export default function LokaWidgetRecorder({
       handleRef.current = null;
     };
   }, [phase, onTake]);
+
+  useEffect(() => () => window.clearInterval(countdownTimerRef.current), []);
 
   function toggleSample() {
     const h = handleRef.current;
@@ -115,21 +130,72 @@ export default function LokaWidgetRecorder({
     }
   }
 
-  async function beginRecording() {
+  function startCountdown() {
+    window.clearInterval(countdownTimerRef.current);
+    setError("");
+    setPlaying(false);
+    setCapStatus("countdown");
+    setCountdownN(3);
+    let n = 3;
+    countdownTimerRef.current = window.setInterval(() => {
+      n -= 1;
+      if (n <= 0) {
+        window.clearInterval(countdownTimerRef.current);
+        void startRec();
+      } else {
+        setCountdownN(n);
+      }
+    }, 1000);
+  }
+
+  async function startRec() {
+    setCapStatus("recording");
+    const ok = await handleRef.current?.record();
+    if (!ok) {
+      setCapStatus("idle");
+      setError("We couldn't start recording. Please allow your microphone and try again.");
+    }
+  }
+
+  // Headphones confirmed: arm the mic now (so its prompt doesn't interrupt the
+  // count-in), then start the 3-2-1 countdown.
+  async function confirmHeadphones() {
     setShowHeadphones(false);
     setError("");
     setPlaying(false);
-    const ok = await handleRef.current?.record();
-    if (ok) setRecording(true);
-    else setError("We couldn't start recording. Please allow your microphone and try again.");
+    const ok = await handleRef.current?.prepare();
+    if (!ok) {
+      setError("We couldn't reach your microphone. Please allow it, then try again.");
+      return;
+    }
+    startCountdown();
   }
 
-  function stopNow() {
-    handleRef.current?.stopRecording();
+  function reset() {
+    setError("");
+    takeBlobRef.current = null;
+    if (capStatus === "recording") {
+      resettingRef.current = true;
+      handleRef.current?.stopRecording();
+    }
+    startCountdown();
+  }
+
+  function submit() {
+    setError("");
+    if (capStatus === "recording") {
+      submitAfterStopRef.current = true;
+      handleRef.current?.stopRecording(); // onTake then advances to the form
+    } else if (takeBlobRef.current) {
+      setPhase("form");
+    } else {
+      setError("Please record your voice first.");
+    }
   }
 
   function recordAgain() {
     takeBlobRef.current = null;
+    setCapStatus("idle");
     setError("");
     setPhase("capture");
   }
@@ -145,7 +211,7 @@ export default function LokaWidgetRecorder({
     const blob = takeBlobRef.current;
     if (!blob) {
       setError("Your recording was lost. Please record your voice again.");
-      setPhase("capture");
+      recordAgain();
       return;
     }
     setSubmitting(true);
@@ -201,51 +267,82 @@ export default function LokaWidgetRecorder({
     );
   }
 
+  const busy = capStatus === "countdown" || capStatus === "recording";
+
   return (
     <Card>
       {phase === "capture" && (
         <div className="space-y-6">
           <div>
             <h2 className="font-serif mb-2" style={{ fontSize: "1.5rem", fontWeight: 600, color: "var(--ink-900)" }}>
-              Listen, then add your voice
+              Learn the song first
             </h2>
             <p style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg2)" }}>
-              {recording
-                ? "Sing along with the words as they pass the marker. The recording stops on its own at the end of the song."
-                : "Play the song to hear it and follow the words. When you are ready, begin recording and sing along — there is no wrong way to do this."}
+              Play the song and follow the words as they scroll past the marker. Listen a few times
+              to learn it, then record your voice singing along.
             </p>
           </div>
 
-          {/* The Lokah Choir singalong (subtitles + bouncing marker) mounts here */}
+          {/* Play the song — above the subtitles */}
+          <button
+            onClick={toggleSample}
+            disabled={busy}
+            className="w-full rounded-2xl font-semibold transition-colors disabled:opacity-50"
+            style={{
+              padding: "1rem 1.5rem",
+              fontSize: "1.2rem",
+              background: "var(--gold-600)",
+              color: "var(--fg-on-gold)",
+              boxShadow: "var(--shadow-sm)",
+            }}
+          >
+            {playing ? "Pause" : "▶  Play the song"}
+          </button>
+
+          {/* Subtitles */}
           <div ref={hostRef} />
 
-          {recording ? (
-            <div className="space-y-4">
-              <div
-                className="flex items-center justify-center gap-2.5"
-                style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--crimson-700)" }}
-              >
-                <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
-                Recording your prayer
+          {/* Record controls — below the subtitles */}
+          {capStatus === "idle" && (
+            <BigButton onClick={() => setShowHeadphones(true)} variant="record">
+              Click to record
+            </BigButton>
+          )}
+
+          {capStatus === "countdown" && (
+            <div className="text-center py-2">
+              <div className="font-serif" style={{ fontSize: "4.5rem", fontWeight: 600, color: "var(--gold-700)", lineHeight: 1 }}>
+                {countdownN}
               </div>
-              <button
-                onClick={stopNow}
-                className="w-full py-3 rounded-xl border font-semibold transition-colors"
-                style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.05rem" }}
-              >
-                Stop and finish now
-              </button>
+              <p style={{ fontSize: "1.2rem", color: "var(--fg2)", marginTop: "0.25rem" }}>Get ready to sing…</p>
             </div>
-          ) : (
-            <div className="space-y-3">
-              <BigButton onClick={() => setShowHeadphones(true)}>Begin recording</BigButton>
-              <button
-                onClick={toggleSample}
-                className="w-full py-3 rounded-xl border font-semibold transition-colors"
-                style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.05rem" }}
-              >
-                {playing ? "Pause" : "Play the song"}
-              </button>
+          )}
+
+          {(capStatus === "recording" || capStatus === "recorded") && (
+            <div className="space-y-4">
+              {capStatus === "recording" ? (
+                <div
+                  className="flex items-center justify-center gap-2.5"
+                  style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--crimson-700)" }}
+                >
+                  <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
+                  Recording — sing along
+                </div>
+              ) : (
+                <p className="text-center" style={{ fontSize: "1.1rem", color: "var(--ink-800)" }}>
+                  ✓ Your recording is ready. Reset to sing it again, or submit your voice.
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={reset}
+                  className="py-4 rounded-2xl border font-semibold transition-colors"
+                  style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.15rem" }}
+                >
+                  Reset
+                </button>
+                <BigButton onClick={submit}>Submit</BigButton>
+              </div>
             </div>
           )}
 
@@ -350,7 +447,7 @@ export default function LokaWidgetRecorder({
       </p>
 
       {showHeadphones && (
-        <HeadphonesPopup onCancel={() => setShowHeadphones(false)} onConfirm={beginRecording} />
+        <HeadphonesPopup onCancel={() => setShowHeadphones(false)} onConfirm={confirmHeadphones} />
       )}
     </Card>
   );
@@ -423,8 +520,7 @@ function HeadphonesPopup({ onCancel, onConfirm }: { onCancel: () => void; onConf
       </h3>
       <p className="mb-6" style={{ fontSize: "1.15rem", lineHeight: 1.7, color: "var(--fg2)" }}>
         Headphones keep the song from bleeding into your microphone, so your
-        voice records cleanly. Then sing along gently — there is no wrong way to
-        do this.
+        voice records cleanly. Then just relax and sing along.
       </p>
       <BigButton onClick={onConfirm}>I have my headphones on, begin</BigButton>
       <button onClick={onCancel} className="w-full py-3 mt-2 font-medium" style={{ color: "var(--fg3)", fontSize: "1.05rem" }}>
@@ -470,10 +566,12 @@ function BigButton({
   children,
   onClick,
   disabled,
+  variant = "primary",
 }: {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
+  variant?: "primary" | "record";
 }) {
   return (
     <button
@@ -483,8 +581,8 @@ function BigButton({
       style={{
         padding: "1.1rem 1.5rem",
         fontSize: "1.25rem",
-        background: "var(--gold-600)",
-        color: "var(--fg-on-gold)",
+        background: variant === "record" ? "var(--crimson-700)" : "var(--gold-600)",
+        color: variant === "record" ? "var(--fg-on-dark)" : "var(--fg-on-gold)",
         boxShadow: "var(--shadow-sm)",
       }}
     >
