@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
-import LokaListen from "./LokaListen";
 
-type Phase = "form" | "listen" | "record" | "done";
+type Phase = "capture" | "form" | "done";
 
 type WidgetHandle = {
+  play: () => void;
+  pause: () => void;
   record: () => Promise<boolean>;
   stopRecording: () => void;
   destroy: () => void;
@@ -36,38 +37,127 @@ async function blobDurationMs(blob: Blob): Promise<number> {
   }
 }
 
-export default function LokaWidgetRecorder({ goal }: { goal: number }) {
-  const [phase, setPhase] = useState<Phase>("form");
+export default function LokaWidgetRecorder({
+  count,
+  goal,
+  pct,
+}: {
+  count: number;
+  goal: number;
+  pct: number;
+}) {
+  const [phase, setPhase] = useState<Phase>("capture");
   const [form, setForm] = useState({ name: "", email: "", voiceType: "", consent: false });
   const [error, setError] = useState("");
   const [showHeadphones, setShowHeadphones] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const [recording, setRecording] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showNotify, setShowNotify] = useState(false);
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<WidgetHandle>(null);
-  const formRef = useRef(form);
-  useEffect(() => {
-    formRef.current = form;
-  }, [form]);
+  const takeBlobRef = useRef<Blob | null>(null);
+  const takeMetaRef = useRef<TakeMeta>({});
 
-  // Send a finished take (the widget hands it back on stop) to the API, using
-  // the details gathered in the form.
-  const uploadTake = useCallback(async (blob: Blob, meta: TakeMeta) => {
+  // Receive a finished take from the widget, then move on to collect details.
+  const onTake = useCallback((blob: Blob, meta: TakeMeta) => {
+    takeBlobRef.current = blob;
+    takeMetaRef.current = meta || {};
+    setPlaying(false);
     setRecording(false);
-    setSubmitting(true);
     setError("");
-    const f = formRef.current;
+    setPhase("form");
+  }, []);
+
+  // Mount the singalong widget while we're capturing (sampling + recording).
+  useEffect(() => {
+    if (phase !== "capture" || !hostRef.current) return;
+    let cancelled = false;
+    const host = hostRef.current;
+    import("./lokah-recorder.js")
+      .then(({ createLokahRecorder }) => {
+        if (cancelled) return;
+        handleRef.current = createLokahRecorder(host, {
+          loopUrl: "/lokah/loop.mp3",
+          ballUrl: "/lokah/ball.png",
+          showControls: false, // our own sample / record buttons drive it
+          collectName: false,
+          loopOnce: true, // one pass, then auto-stop
+          onComplete: (blob: Blob, meta: TakeMeta) => onTake(blob, meta),
+          onError: () => {
+            setRecording(false);
+            setError("We couldn't reach your microphone. Please allow it, then try again.");
+          },
+        });
+      })
+      .catch(() => setError("The singalong couldn't load. Please refresh and try again."));
+    return () => {
+      cancelled = true;
+      try {
+        handleRef.current?.destroy();
+      } catch {
+        /* noop */
+      }
+      handleRef.current = null;
+    };
+  }, [phase, onTake]);
+
+  function toggleSample() {
+    const h = handleRef.current;
+    if (!h) return;
+    if (playing) {
+      h.pause();
+      setPlaying(false);
+    } else {
+      h.play();
+      setPlaying(true);
+    }
+  }
+
+  async function beginRecording() {
+    setShowHeadphones(false);
+    setError("");
+    setPlaying(false);
+    const ok = await handleRef.current?.record();
+    if (ok) setRecording(true);
+    else setError("We couldn't start recording. Please allow your microphone and try again.");
+  }
+
+  function stopNow() {
+    handleRef.current?.stopRecording();
+  }
+
+  function recordAgain() {
+    takeBlobRef.current = null;
+    setError("");
+    setPhase("capture");
+  }
+
+  async function submitForm() {
+    setError("");
+    if (!form.name.trim()) return setError("Please tell us your name.");
+    if (!form.voiceType) return setError("Please choose lower or higher.");
+    if (!form.consent) return setError("Please tick the box to include your voice.");
+    if (form.email.trim() && !emailRe.test(form.email.trim())) {
+      return setError("That email doesn't look right. You can also leave it blank.");
+    }
+    const blob = takeBlobRef.current;
+    if (!blob) {
+      setError("Your recording was lost. Please record your voice again.");
+      setPhase("capture");
+      return;
+    }
+    setSubmitting(true);
     try {
-      const durationMs = (await blobDurationMs(blob)) || meta.loopMs || 0;
+      const durationMs = (await blobDurationMs(blob)) || takeMetaRef.current.loopMs || 0;
       const ext = mimeExt(blob.type);
       const file = new File([blob], `loka-${Date.now()}.${ext}`, { type: blob.type });
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("name", f.name.trim());
-      fd.append("email", f.email.trim());
-      fd.append("voiceType", f.voiceType);
+      fd.append("name", form.name.trim());
+      fd.append("email", form.email.trim());
+      fd.append("voiceType", form.voiceType);
       // The widget records from the top of the loop, so there is no run-in
       // offset or start position to capture.
       fd.append("offsetMs", "0");
@@ -87,63 +177,6 @@ export default function LokaWidgetRecorder({ goal }: { goal: number }) {
       setError("We couldn't send your prayer. Please check your connection and try again.");
       setSubmitting(false);
     }
-  }, []);
-
-  // Mount the singalong widget (subtitles only — we drive recording ourselves)
-  // once we're on the recording step.
-  useEffect(() => {
-    if (phase !== "record" || !hostRef.current) return;
-    let cancelled = false;
-    const host = hostRef.current;
-    import("./lokah-recorder.js")
-      .then(({ createLokahRecorder }) => {
-        if (cancelled) return;
-        handleRef.current = createLokahRecorder(host, {
-          loopUrl: "/lokah/loop.mp3",
-          ballUrl: "/lokah/ball.png",
-          showControls: false, // our own Begin / Stop buttons drive it
-          collectName: false,
-          loopOnce: true, // one pass, then auto-stop
-          onComplete: (blob: Blob, meta: TakeMeta) => uploadTake(blob, meta),
-          onError: () => {
-            setRecording(false);
-            setError("We couldn't reach your microphone. Please allow it, then try again.");
-          },
-        });
-      })
-      .catch(() => setError("The singalong couldn't load. Please refresh and try again."));
-    return () => {
-      cancelled = true;
-      try {
-        handleRef.current?.destroy();
-      } catch {
-        /* noop */
-      }
-      handleRef.current = null;
-    };
-  }, [phase, uploadTake]);
-
-  function toRecording() {
-    setError("");
-    if (!form.name.trim()) return setError("Please tell us your name.");
-    if (!form.voiceType) return setError("Please choose lower or higher.");
-    if (!form.consent) return setError("Please tick the box to include your voice.");
-    if (form.email.trim() && !emailRe.test(form.email.trim())) {
-      return setError("That email doesn't look right. You can also leave it blank.");
-    }
-    setPhase("listen");
-  }
-
-  async function beginRecording() {
-    setShowHeadphones(false);
-    setError("");
-    const ok = await handleRef.current?.record();
-    if (ok) setRecording(true);
-    else setError("We couldn't start recording. Please allow your microphone and try again.");
-  }
-
-  function stopNow() {
-    handleRef.current?.stopRecording();
   }
 
   /* UI */
@@ -170,8 +203,86 @@ export default function LokaWidgetRecorder({ goal }: { goal: number }) {
 
   return (
     <Card>
+      {phase === "capture" && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="font-serif mb-2" style={{ fontSize: "1.5rem", fontWeight: 600, color: "var(--ink-900)" }}>
+              Listen, then add your voice
+            </h2>
+            <p style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg2)" }}>
+              {recording
+                ? "Sing along with the words as they pass the marker. The recording stops on its own at the end of the song."
+                : "Play the song to hear it and follow the words. When you are ready, begin recording and sing along — there is no wrong way to do this."}
+            </p>
+          </div>
+
+          {/* The Lokah Choir singalong (subtitles + bouncing marker) mounts here */}
+          <div ref={hostRef} />
+
+          {recording ? (
+            <div className="space-y-4">
+              <div
+                className="flex items-center justify-center gap-2.5"
+                style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--crimson-700)" }}
+              >
+                <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
+                Recording your prayer
+              </div>
+              <button
+                onClick={stopNow}
+                className="w-full py-3 rounded-xl border font-semibold transition-colors"
+                style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.05rem" }}
+              >
+                Stop and finish now
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <BigButton onClick={() => setShowHeadphones(true)}>Begin recording</BigButton>
+              <button
+                onClick={toggleSample}
+                className="w-full py-3 rounded-xl border font-semibold transition-colors"
+                style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.05rem" }}
+              >
+                {playing ? "Pause" : "Play the song"}
+              </button>
+            </div>
+          )}
+
+          {error && <ErrorNote msg={error} />}
+
+          {/* Heart counter of gathered voices, below the sample */}
+          <div className="text-center pt-2">
+            <HeartThermometer count={count} goal={goal} pct={pct} />
+            <p className="mt-1" style={{ fontSize: "1.05rem", color: "var(--fg2)" }}>
+              <strong style={{ color: "var(--ink-900)", fontSize: "1.6rem" }}>{count}</strong>
+              <span style={{ margin: "0 0.35rem" }}>/</span>
+              {goal} voices gathered
+            </p>
+          </div>
+        </div>
+      )}
+
       {phase === "form" && (
         <div className="space-y-6">
+          <div
+            className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3"
+            style={{ background: "var(--gold-100)", color: "var(--ink-800)" }}
+          >
+            <span style={{ fontSize: "1.05rem" }}>✓ Your recording is ready.</span>
+            <button
+              onClick={recordAgain}
+              className="font-semibold shrink-0"
+              style={{ fontSize: "0.95rem", color: "var(--gold-700)", textDecoration: "underline" }}
+            >
+              Record again
+            </button>
+          </div>
+
+          <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "var(--fg2)" }}>
+            Just a few details, then we&apos;ll add your voice to the prayer.
+          </p>
+
           <BigField label="What is your name?">
             <Input
               value={form.name}
@@ -228,64 +339,9 @@ export default function LokaWidgetRecorder({ goal }: { goal: number }) {
           </label>
 
           {error && <ErrorNote msg={error} />}
-          <BigButton onClick={toRecording}>Continue</BigButton>
-        </div>
-      )}
-
-      {phase === "listen" && (
-        <div className="space-y-6">
-          <div>
-            <h2 className="font-serif mb-2" style={{ fontSize: "1.5rem", fontWeight: 600, color: "var(--ink-900)" }}>
-              Listen to the song
-            </h2>
-            <p style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg2)" }}>
-              Take a few minutes to listen all the way through. Follow the words as they scroll past
-              the marker, and hum along quietly until it feels familiar. When you are ready, record
-              your voice.
-            </p>
-          </div>
-
-          <LokaListen />
-
-          <BigButton onClick={() => setPhase("record")}>I&apos;m ready to record</BigButton>
-        </div>
-      )}
-
-      {phase === "record" && (
-        <div className="space-y-6">
-          <p style={{ fontSize: "1.15rem", lineHeight: 1.6, color: "var(--fg2)" }}>
-            {recording
-              ? "Sing along with the words as they pass the marker. The recording stops on its own at the end of the song."
-              : submitting
-                ? "Sending your voice…"
-                : "When you are ready, begin recording and sing along with the words as they scroll by."}
-          </p>
-
-          {/* The Lokah Choir singalong (subtitles + bouncing marker) mounts here */}
-          <div ref={hostRef} />
-
-          {recording ? (
-            <div className="space-y-4">
-              <div
-                className="flex items-center justify-center gap-2.5"
-                style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--crimson-700)" }}
-              >
-                <span className="inline-block w-3 h-3 rounded-full animate-pulse" style={{ background: "var(--crimson-700)" }} />
-                Recording your prayer
-              </div>
-              <button
-                onClick={stopNow}
-                className="w-full py-3 rounded-xl border font-semibold transition-colors"
-                style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.05rem" }}
-              >
-                Stop and send now
-              </button>
-            </div>
-          ) : (
-            !submitting && <BigButton onClick={() => setShowHeadphones(true)}>Begin recording</BigButton>
-          )}
-
-          {error && <ErrorNote msg={error} />}
+          <BigButton onClick={submitForm} disabled={submitting}>
+            {submitting ? "Sending" : "Send my voice"}
+          </BigButton>
         </div>
       )}
 
@@ -297,6 +353,39 @@ export default function LokaWidgetRecorder({ goal }: { goal: number }) {
         <HeadphonesPopup onCancel={() => setShowHeadphones(false)} onConfirm={beginRecording} />
       )}
     </Card>
+  );
+}
+
+/* ── Heart counter ─────────────────────────────────────────────────── */
+
+// A heart that fills from the bottom like a thermometer, showing how many of
+// the 108 voices have been gathered.
+const HEART_PATH =
+  "M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.4,9.5,11.9,16,21.2c6.1-8.8,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z";
+
+function HeartThermometer({ count, goal, pct }: { count: number; goal: number; pct: number }) {
+  const H = 29.6;
+  const fillH = (H * pct) / 100;
+  const fillY = H - fillH;
+  return (
+    <svg
+      viewBox="-2 -2 36 33.6"
+      width="140"
+      height="131"
+      className="mx-auto block"
+      role="img"
+      aria-label={`${count} of ${goal} voices gathered`}
+    >
+      <defs>
+        <clipPath id="loka-heart-clip">
+          <path d={HEART_PATH} />
+        </clipPath>
+      </defs>
+      {/* red vertical progress, filling from the bottom, clipped to the heart */}
+      <rect x="0" y={fillY} width="32" height={fillH} fill="#e0282e" clipPath="url(#loka-heart-clip)" />
+      {/* thin black outline */}
+      <path d={HEART_PATH} fill="none" stroke="#000" strokeWidth="1" strokeLinejoin="round" />
+    </svg>
   );
 }
 
