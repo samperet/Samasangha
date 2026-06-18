@@ -18,15 +18,15 @@ const lokaFonts: CSSProperties = {
 
 export default function LokaPage() {
   return (
-    <div className="max-w-2xl mx-auto px-5 py-12" style={lokaFonts}>
+    <div className="max-w-2xl mx-auto px-5 pt-6 pb-12" style={lokaFonts}>
       {/* Winged heart logo */}
-      <div className="text-center mb-6">
+      <div className="text-center mb-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/assets/SufiHeartwithWings.png"
+          src="/assets/heart_wings_ancient_transparent.png"
           alt="Winged heart"
           className="mx-auto"
-          style={{ width: "min(340px, 85%)", height: "auto" }}
+          style={{ width: "min(440px, 92%)", height: "auto" }}
         />
       </div>
 
