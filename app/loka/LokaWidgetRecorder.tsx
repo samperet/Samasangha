@@ -48,7 +48,6 @@ export default function LokaWidgetRecorder() {
   const [error, setError] = useState("");
   const [showHeadphones, setShowHeadphones] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [showNotify, setShowNotify] = useState(false);
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<WidgetHandle>(null);
@@ -231,7 +230,6 @@ export default function LokaWidgetRecorder() {
         return;
       }
       setSubmitting(false);
-      setShowNotify(true);
       setPhase("done");
     } catch {
       setError("We couldn't send your prayer. Please check your connection and try again.");
@@ -243,21 +241,18 @@ export default function LokaWidgetRecorder() {
 
   if (phase === "done") {
     return (
-      <>
-        <Card>
-          <div className="text-center py-6">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/loka-mandala.png" alt="" aria-hidden className="mx-auto mb-4" style={{ width: 120, height: 120 }} />
-            <h2 className="font-serif mb-3" style={{ fontSize: "2rem", fontWeight: 600, color: "var(--ink-900)" }}>
-              Thank you. Your prayer is received.
-            </h2>
-            <p style={{ fontSize: "1.2rem", lineHeight: 1.7, color: "var(--fg2)", maxWidth: "34ch", margin: "0 auto" }}>
-              Your voice has joined the others. Bless you for singing.
-            </p>
-          </div>
-        </Card>
-        {showNotify && <NotifyPopup hasEmail={!!form.email.trim()} onClose={() => setShowNotify(false)} />}
-      </>
+      <Card>
+        <div className="text-center py-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/assets/loka-mandala.png" alt="" aria-hidden className="mx-auto mb-4" style={{ width: 120, height: 120 }} />
+          <h2 className="font-serif mb-3" style={{ fontSize: "2rem", fontWeight: 600, color: "var(--ink-900)" }}>
+            Thank you for your submission.
+          </h2>
+          <p style={{ fontSize: "1.2rem", lineHeight: 1.7, color: "var(--fg2)", maxWidth: "34ch", margin: "0 auto" }}>
+            Look for an update in your inbox when the final is released.
+          </p>
+        </div>
+      </Card>
     );
   }
 
@@ -473,25 +468,6 @@ function HeadphonesPopup({ onCancel, onConfirm }: { onCancel: () => void; onConf
       <button onClick={onCancel} className="w-full py-3 mt-2 font-medium" style={{ color: "var(--fg3)", fontSize: "1.05rem" }}>
         Not yet
       </button>
-    </Modal>
-  );
-}
-
-function NotifyPopup({ hasEmail, onClose }: { hasEmail: boolean; onClose: () => void }) {
-  return (
-    <Modal onClose={onClose} labelledBy="loka-notify-title">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/assets/loka-mandala.png" alt="" aria-hidden className="mx-auto mb-4" style={{ width: 96, height: 96 }} />
-      <h3 id="loka-notify-title" className="font-serif mb-3" style={{ fontSize: "1.7rem", fontWeight: 600, color: "var(--ink-900)" }}>
-        Thank you for your voice
-      </h3>
-      <p className="mb-6" style={{ fontSize: "1.15rem", lineHeight: 1.7, color: "var(--fg2)" }}>
-        When all the voices are gathered and the prayer is complete,{" "}
-        {hasEmail
-          ? "you'll receive the final song by email."
-          : "the final song will be shared here — leave your email next time and we'll send it to you."}
-      </p>
-      <BigButton onClick={onClose}>Close</BigButton>
     </Modal>
   );
 }

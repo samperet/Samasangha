@@ -1,6 +1,6 @@
 /**
  * Analyze the Loka backing track to find where the vocals begin and how the
- * chant line is timed, then write app/(public)/loka/loka-timing.json so the
+ * chant line is timed, then write app/loka/loka-timing.json so the
  * studio can jump straight to the chanting and align the singalong subtitles
  * to the real audio.
  *
@@ -30,7 +30,7 @@ const CANDIDATE_INPUTS = [
   "public/assets/Elementsinging.mp3", // last resort: validates the pipeline only
 ];
 
-const OUT_PATH = "app/(public)/loka/loka-timing.json";
+const OUT_PATH = "app/loka/loka-timing.json";
 
 function pickInput(): string {
   const arg = process.argv.slice(2).find((a) => !a.startsWith("-"));
