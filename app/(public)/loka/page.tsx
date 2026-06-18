@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import { prisma } from "@/lib/prisma";
 import LokaWidgetRecorder from "./LokaWidgetRecorder";
-import { GOAL_VOICES } from "./loka-shared";
 
 export const metadata: Metadata = {
   title: "Loka Samastah",
   description:
     "Add your voice to a collective prayer, Lokah Samastah Sukhino Bhavantu, may all beings everywhere be happy and free. Together we are gathering 108 voices.",
 };
-
-export const dynamic = "force-dynamic";
 
 // Georgia + Helvetica, scoped to this page. Overriding the font CSS variables
 // on the wrapper cascades into the singalong widget and recorder below.
@@ -20,11 +16,7 @@ const lokaFonts: CSSProperties = {
   fontFamily: "var(--font-sans)",
 };
 
-export default async function LokaPage() {
-  const count = await prisma.lokaRecording.count({ where: { approved: true } }).catch(() => 0);
-  const goal = GOAL_VOICES;
-  const pct = Math.max(0, Math.min(100, Math.round((count / goal) * 100)));
-
+export default function LokaPage() {
   return (
     <div className="max-w-2xl mx-auto px-5 py-12" style={lokaFonts}>
       {/* Mission */}
@@ -46,7 +38,7 @@ export default async function LokaPage() {
         </p>
       </header>
 
-      <LokaWidgetRecorder count={count} goal={goal} pct={pct} />
+      <LokaWidgetRecorder />
     </div>
   );
 }
