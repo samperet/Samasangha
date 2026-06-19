@@ -70,6 +70,7 @@ export default function LokaWidgetRecorder() {
   const [reviewReady, setReviewReady] = useState(false);
   const [reviewPlaying, setReviewPlaying] = useState(false);
   const [takeVolume, setTakeVolume] = useState(1); // the singer's own volume, 0–1.5
+  const [takeUrl, setTakeUrl] = useState(""); // object URL for plain playback on the form
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<WidgetHandle>(null);
@@ -163,6 +164,18 @@ export default function LokaWidgetRecorder() {
   }, [phase, onTake]);
 
   useEffect(() => () => window.clearInterval(countdownTimerRef.current), []);
+
+  // A plain object-URL playback of the take, available on the form so the
+  // singer can hear their recording one more time before the final submit.
+  useEffect(() => {
+    if (phase !== "form" || !takeBlobRef.current) {
+      setTakeUrl("");
+      return;
+    }
+    const url = URL.createObjectURL(takeBlobRef.current);
+    setTakeUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [phase]);
 
   // Decode the take (and the loop) for review once a take has been captured.
   useEffect(() => {
@@ -550,6 +563,15 @@ export default function LokaWidgetRecorder() {
               Record again
             </button>
           </div>
+
+          {takeUrl && (
+            <div>
+              <p className="mb-2 font-semibold" style={{ fontSize: "1rem", color: "var(--ink-800)" }}>
+                Listen to your recording
+              </p>
+              <audio controls src={takeUrl} className="w-full" />
+            </div>
+          )}
 
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "var(--fg2)" }}>
             Just a few details, then we&apos;ll add your voice to the prayer.
