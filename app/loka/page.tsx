@@ -43,9 +43,10 @@ export default function LokaPage() {
         <p className="font-serif italic mx-auto mb-4" style={{ fontSize: "1.3rem", color: "var(--ink-800)", maxWidth: "30ch" }}>
           May all beings everywhere be happy and free.
         </p>
-        <p className="mx-auto" style={{ fontSize: "1.05rem", lineHeight: 1.6, color: "var(--fg2)", maxWidth: "40ch" }}>
-          We are gathering <strong>108 voices</strong>, one for each bead of a mala, to sing this
-          blessing together.
+        <p className="mx-auto" style={{ fontSize: "1.05rem", lineHeight: 1.6, color: "var(--fg2)", maxWidth: "46ch" }}>
+          This is a community project to collect <strong>108 voices</strong> to sing Loka Samastah,
+          in the rendition of Halima Sussman. The end result will be an interactive prayer wheel,
+          highlighting various groupings of voices. All voices welcome!
         </p>
       </header>
 
