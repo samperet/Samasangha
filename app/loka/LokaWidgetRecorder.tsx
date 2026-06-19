@@ -243,6 +243,7 @@ export default function LokaWidgetRecorder() {
     window.clearInterval(countdownTimerRef.current);
     setError("");
     setPlaying(false);
+    handleRef.current?.pause(); // keep the 3-2-1 count-in silent; the song starts at "go"
     stopReview();
     setReviewReady(false);
     takeBufRef.current = null;
