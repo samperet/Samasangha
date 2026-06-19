@@ -70,7 +70,6 @@ export default function LokaWidgetRecorder() {
   const [reviewReady, setReviewReady] = useState(false);
   const [reviewPlaying, setReviewPlaying] = useState(false);
   const [takeVolume, setTakeVolume] = useState(1); // the singer's own volume, 0–1.5
-  const [takeUrl, setTakeUrl] = useState(""); // object URL for plain playback on the form
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<WidgetHandle>(null);
@@ -164,18 +163,6 @@ export default function LokaWidgetRecorder() {
   }, [phase, onTake]);
 
   useEffect(() => () => window.clearInterval(countdownTimerRef.current), []);
-
-  // A plain object-URL playback of the take, available on the form so the
-  // singer can hear their recording one more time before the final submit.
-  useEffect(() => {
-    if (phase !== "form" || !takeBlobRef.current) {
-      setTakeUrl("");
-      return;
-    }
-    const url = URL.createObjectURL(takeBlobRef.current);
-    setTakeUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [phase]);
 
   // Decode the take (and the loop) for review once a take has been captured.
   useEffect(() => {
@@ -351,6 +338,7 @@ export default function LokaWidgetRecorder() {
 
   async function submitForm() {
     setError("");
+    stopReview();
     if (!form.name.trim()) return setError("Please tell us your name.");
     if (!form.voiceType) return setError("Please choose lower or higher.");
     if (!form.consent) return setError("Please tick the box to include your voice.");
@@ -485,42 +473,10 @@ export default function LokaWidgetRecorder() {
                   Recording — sing along
                 </div>
               ) : (
-                <>
-                  <p className="text-center" style={{ fontSize: "1.1rem", color: "var(--ink-800)" }}>
-                    ✓ Your recording is ready. Listen back, set your volume, then reset to sing it
-                    again, or submit your voice.
-                  </p>
-                  <div
-                    className="rounded-2xl p-4 space-y-3"
-                    style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
-                  >
-                    <button
-                      onClick={reviewPlaying ? stopReview : playReview}
-                      disabled={!reviewReady}
-                      className="w-full py-3 rounded-xl border font-semibold transition-colors disabled:opacity-50"
-                      style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "#fff", fontSize: "1.05rem" }}
-                    >
-                      {reviewPlaying ? "Pause" : reviewReady ? "▶  Play back with the song" : "Preparing playback…"}
-                    </button>
-                    <label className="flex items-center gap-3" style={{ fontSize: "0.95rem", color: "var(--fg2)" }}>
-                      <span style={{ width: "6em" }}>Your volume</span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={1.5}
-                        step={0.05}
-                        value={takeVolume}
-                        onChange={(e) => onVolumeChange(Number(e.target.value))}
-                        className="flex-1"
-                        style={{ accentColor: "var(--gold-600)" }}
-                        aria-label="Your volume"
-                      />
-                      <span className="tabular-nums" style={{ width: "3em", textAlign: "right" }}>
-                        {Math.round(takeVolume * 100)}%
-                      </span>
-                    </label>
-                  </div>
-                </>
+                <p className="text-center" style={{ fontSize: "1.1rem", color: "var(--ink-800)" }}>
+                  ✓ Your recording is ready. Reset to sing it again, cancel, or review and submit
+                  your voice.
+                </p>
               )}
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
@@ -539,7 +495,7 @@ export default function LokaWidgetRecorder() {
                     Cancel
                   </button>
                 </div>
-                <BigButton onClick={submit}>Submit</BigButton>
+                <BigButton onClick={submit}>Review</BigButton>
               </div>
             </div>
           )}
@@ -564,14 +520,41 @@ export default function LokaWidgetRecorder() {
             </button>
           </div>
 
-          {takeUrl && (
-            <div>
-              <p className="mb-2 font-semibold" style={{ fontSize: "1rem", color: "var(--ink-800)" }}>
-                Listen to your recording
-              </p>
-              <audio controls src={takeUrl} className="w-full" />
+          <div>
+            <p className="mb-2 font-semibold" style={{ fontSize: "1rem", color: "var(--ink-800)" }}>
+              Listen to your recording with the song
+            </p>
+            <div
+              className="rounded-2xl p-4 space-y-3"
+              style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
+            >
+              <button
+                onClick={reviewPlaying ? stopReview : playReview}
+                disabled={!reviewReady}
+                className="w-full py-3 rounded-xl border font-semibold transition-colors disabled:opacity-50"
+                style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "#fff", fontSize: "1.05rem" }}
+              >
+                {reviewPlaying ? "Pause" : reviewReady ? "▶  Play back with the song" : "Preparing playback…"}
+              </button>
+              <label className="flex items-center gap-3" style={{ fontSize: "0.95rem", color: "var(--fg2)" }}>
+                <span style={{ width: "6em" }}>Your volume</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={1.5}
+                  step={0.05}
+                  value={takeVolume}
+                  onChange={(e) => onVolumeChange(Number(e.target.value))}
+                  className="flex-1"
+                  style={{ accentColor: "var(--gold-600)" }}
+                  aria-label="Your volume"
+                />
+                <span className="tabular-nums" style={{ width: "3em", textAlign: "right" }}>
+                  {Math.round(takeVolume * 100)}%
+                </span>
+              </label>
             </div>
-          )}
+          </div>
 
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "var(--fg2)" }}>
             Just a few details, then we&apos;ll add your voice to the prayer.
