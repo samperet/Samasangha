@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Input from "@/components/ui/Input";
+import { audioBufferToWav, fetchAudioBuffer } from "./loka-shared";
 
 type Phase = "capture" | "form" | "done";
 type CapStatus = "idle" | "countdown" | "recording" | "recorded";
@@ -19,9 +20,24 @@ type TakeMeta = { name?: string; loopMs?: number; mime?: string; sizeBytes?: num
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 function mimeExt(mime: string): string {
+  if (/wav/.test(mime)) return "wav";
   if (/mp4|m4a|aac/.test(mime)) return "mp4";
   if (/ogg/.test(mime)) return "ogg";
   return "webm";
+}
+
+// Render an AudioBuffer at a fixed gain, so the singer's chosen volume is baked
+// into the file they submit.
+async function renderAtVolume(buf: AudioBuffer, vol: number): Promise<AudioBuffer> {
+  const oac = new OfflineAudioContext(buf.numberOfChannels, buf.length, buf.sampleRate);
+  const src = oac.createBufferSource();
+  src.buffer = buf;
+  const g = oac.createGain();
+  g.gain.value = vol;
+  src.connect(g);
+  g.connect(oac.destination);
+  src.start(0);
+  return oac.startRendering();
 }
 
 // Best-effort take length, used only for admin display.
@@ -49,6 +65,11 @@ export default function LokaWidgetRecorder() {
   const [showHeadphones, setShowHeadphones] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // Review of the captured take (played back together with the song).
+  const [reviewReady, setReviewReady] = useState(false);
+  const [reviewPlaying, setReviewPlaying] = useState(false);
+  const [takeVolume, setTakeVolume] = useState(1); // the singer's own volume, 0–1.5
+
   const hostRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<WidgetHandle>(null);
   const takeBlobRef = useRef<Blob | null>(null);
@@ -56,6 +77,39 @@ export default function LokaWidgetRecorder() {
   const countdownTimerRef = useRef(0);
   const resettingRef = useRef(false); // ignore the take from a reset-triggered stop
   const submitAfterStopRef = useRef(false); // jump to form after a submit-triggered stop
+
+  // Review playback engine (loop + take, with the singer's volume on the take).
+  const reviewCtxRef = useRef<AudioContext | null>(null);
+  const loopBufRef = useRef<AudioBuffer | null>(null);
+  const takeBufRef = useRef<AudioBuffer | null>(null);
+  const reviewSrcRef = useRef<AudioBufferSourceNode[]>([]);
+  const takeGainRef = useRef<GainNode | null>(null);
+  const takeVolumeRef = useRef(1);
+  useEffect(() => {
+    takeVolumeRef.current = takeVolume;
+  }, [takeVolume]);
+
+  const ensureReviewCtx = useCallback(() => {
+    if (!reviewCtxRef.current) {
+      const AC =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      reviewCtxRef.current = new AC();
+    }
+    return reviewCtxRef.current;
+  }, []);
+
+  const stopReview = useCallback(() => {
+    reviewSrcRef.current.forEach((s) => {
+      try {
+        s.stop();
+      } catch {
+        /* noop */
+      }
+    });
+    reviewSrcRef.current = [];
+    setReviewPlaying(false);
+  }, []);
 
   // Receive a finished take from the widget (auto-stop at loop end, or a manual
   // stop from Reset / Submit).
@@ -109,6 +163,69 @@ export default function LokaWidgetRecorder() {
 
   useEffect(() => () => window.clearInterval(countdownTimerRef.current), []);
 
+  // Decode the take (and the loop) for review once a take has been captured.
+  useEffect(() => {
+    if (capStatus !== "recorded" || !takeBlobRef.current) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const ctx = ensureReviewCtx();
+        if (!loopBufRef.current) loopBufRef.current = await fetchAudioBuffer(ctx, "/lokah/loop.mp3");
+        takeBufRef.current = await ctx.decodeAudioData(await takeBlobRef.current!.arrayBuffer());
+        if (!cancelled) setReviewReady(true);
+      } catch {
+        /* review playback just won't be available */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [capStatus, ensureReviewCtx]);
+
+  // Tidy up the review context on unmount.
+  useEffect(
+    () => () => {
+      stopReview();
+      reviewCtxRef.current?.close().catch(() => {});
+    },
+    [stopReview]
+  );
+
+  async function playReview() {
+    const ctx = ensureReviewCtx();
+    await ctx.resume();
+    const loop = loopBufRef.current;
+    const take = takeBufRef.current;
+    if (!loop || !take) return;
+    stopReview();
+    const t = ctx.currentTime + 0.06;
+
+    const loopSrc = ctx.createBufferSource();
+    loopSrc.buffer = loop;
+    loopSrc.connect(ctx.destination);
+    loopSrc.start(t);
+
+    const takeSrc = ctx.createBufferSource();
+    takeSrc.buffer = take;
+    const g = ctx.createGain();
+    g.gain.value = takeVolumeRef.current;
+    takeSrc.connect(g);
+    g.connect(ctx.destination);
+    takeSrc.start(t);
+    takeGainRef.current = g;
+
+    reviewSrcRef.current = [loopSrc, takeSrc];
+    loopSrc.onended = () => stopReview();
+    setReviewPlaying(true);
+  }
+
+  function onVolumeChange(v: number) {
+    setTakeVolume(v);
+    const g = takeGainRef.current;
+    const ctx = reviewCtxRef.current;
+    if (g && ctx) g.gain.setTargetAtTime(v, ctx.currentTime, 0.02);
+  }
+
   function toggleSample() {
     const h = handleRef.current;
     if (!h) return;
@@ -125,6 +242,9 @@ export default function LokaWidgetRecorder() {
     window.clearInterval(countdownTimerRef.current);
     setError("");
     setPlaying(false);
+    stopReview();
+    setReviewReady(false);
+    takeBufRef.current = null;
     setCapStatus("countdown");
     setCountdownN(3);
     let n = 3;
@@ -176,6 +296,7 @@ export default function LokaWidgetRecorder() {
 
   function submit() {
     setError("");
+    stopReview();
     if (capStatus === "recording") {
       submitAfterStopRef.current = true;
       handleRef.current?.stopRecording(); // onTake then advances to the form
@@ -187,7 +308,10 @@ export default function LokaWidgetRecorder() {
   }
 
   function recordAgain() {
+    stopReview();
+    setReviewReady(false);
     takeBlobRef.current = null;
+    takeBufRef.current = null;
     setCapStatus("idle");
     setError("");
     setPhase("capture");
@@ -209,9 +333,20 @@ export default function LokaWidgetRecorder() {
     }
     setSubmitting(true);
     try {
-      const durationMs = (await blobDurationMs(blob)) || takeMetaRef.current.loopMs || 0;
-      const ext = mimeExt(blob.type);
-      const file = new File([blob], `loka-${Date.now()}.${ext}`, { type: blob.type });
+      // Bake the singer's chosen volume into the track when they changed it.
+      let uploadBlob = blob;
+      if (Math.abs(takeVolume - 1) > 0.001) {
+        try {
+          const buf =
+            takeBufRef.current ?? (await ensureReviewCtx().decodeAudioData(await blob.arrayBuffer()));
+          uploadBlob = audioBufferToWav(await renderAtVolume(buf, takeVolume));
+        } catch {
+          /* fall back to the original take at full volume */
+        }
+      }
+      const durationMs = (await blobDurationMs(uploadBlob)) || takeMetaRef.current.loopMs || 0;
+      const ext = mimeExt(uploadBlob.type);
+      const file = new File([uploadBlob], `loka-${Date.now()}.${ext}`, { type: uploadBlob.type });
       const fd = new FormData();
       fd.append("file", file);
       fd.append("name", form.name.trim());
@@ -318,9 +453,42 @@ export default function LokaWidgetRecorder() {
                   Recording — sing along
                 </div>
               ) : (
-                <p className="text-center" style={{ fontSize: "1.1rem", color: "var(--ink-800)" }}>
-                  ✓ Your recording is ready. Reset to sing it again, or submit your voice.
-                </p>
+                <>
+                  <p className="text-center" style={{ fontSize: "1.1rem", color: "var(--ink-800)" }}>
+                    ✓ Your recording is ready. Listen back, set your volume, then reset to sing it
+                    again, or submit your voice.
+                  </p>
+                  <div
+                    className="rounded-2xl p-4 space-y-3"
+                    style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
+                  >
+                    <button
+                      onClick={reviewPlaying ? stopReview : playReview}
+                      disabled={!reviewReady}
+                      className="w-full py-3 rounded-xl border font-semibold transition-colors disabled:opacity-50"
+                      style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "#fff", fontSize: "1.05rem" }}
+                    >
+                      {reviewPlaying ? "Pause" : reviewReady ? "▶  Play back with the song" : "Preparing playback…"}
+                    </button>
+                    <label className="flex items-center gap-3" style={{ fontSize: "0.95rem", color: "var(--fg2)" }}>
+                      <span style={{ width: "6em" }}>Your volume</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1.5}
+                        step={0.05}
+                        value={takeVolume}
+                        onChange={(e) => onVolumeChange(Number(e.target.value))}
+                        className="flex-1"
+                        style={{ accentColor: "var(--gold-600)" }}
+                        aria-label="Your volume"
+                      />
+                      <span className="tabular-nums" style={{ width: "3em", textAlign: "right" }}>
+                        {Math.round(takeVolume * 100)}%
+                      </span>
+                    </label>
+                  </div>
+                </>
               )}
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -460,9 +628,16 @@ function HeadphonesPopup({ onCancel, onConfirm }: { onCancel: () => void; onConf
       <h3 id="loka-headphones-title" className="font-serif mb-3" style={{ fontSize: "1.7rem", fontWeight: 600, color: "var(--ink-900)" }}>
         Please put on headphones
       </h3>
-      <p className="mb-6" style={{ fontSize: "1.15rem", lineHeight: 1.7, color: "var(--fg2)" }}>
+      <p className="mb-4" style={{ fontSize: "1.15rem", lineHeight: 1.7, color: "var(--fg2)" }}>
         Headphones keep the song from bleeding into your microphone, so your
         voice records cleanly. Then just relax and sing along.
+      </p>
+      <p
+        className="mb-6 rounded-xl px-4 py-3"
+        style={{ background: "var(--gold-100)", color: "var(--ink-800)", fontSize: "1.05rem", lineHeight: 1.6 }}
+      >
+        Don&apos;t worry — after you sing you can <strong>listen back</strong>, adjust your volume,
+        and <strong>re-record as many times as you like</strong> before you submit.
       </p>
       <BigButton onClick={onConfirm}>I have my headphones on, begin</BigButton>
       <button onClick={onCancel} className="w-full py-3 mt-2 font-medium" style={{ color: "var(--fg3)", fontSize: "1.05rem" }}>
