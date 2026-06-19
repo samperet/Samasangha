@@ -11,6 +11,7 @@ type WidgetHandle = {
   play: () => void;
   pause: () => void;
   prepare: () => Promise<boolean>;
+  unlock: () => void;
   record: () => Promise<boolean>;
   stopRecording: () => void;
   destroy: () => void;
@@ -271,6 +272,9 @@ export default function LokaWidgetRecorder() {
   // Headphones confirmed: arm the mic now (so its prompt doesn't interrupt the
   // count-in), then start the 3-2-1 countdown.
   async function confirmHeadphones() {
+    // Unlock the loop audio within this click so the post-countdown play() (which
+    // fires from a timer) isn't blocked by browser autoplay rules.
+    handleRef.current?.unlock();
     setShowHeadphones(false);
     setError("");
     setPlaying(false);
@@ -292,6 +296,21 @@ export default function LokaWidgetRecorder() {
       handleRef.current?.stopRecording();
     }
     startCountdown();
+  }
+
+  function cancel() {
+    setError("");
+    stopReview();
+    setReviewReady(false);
+    if (capStatus === "recording") {
+      resettingRef.current = true; // discard the take from this stop
+      handleRef.current?.stopRecording();
+    }
+    handleRef.current?.pause();
+    setPlaying(false);
+    takeBlobRef.current = null;
+    takeBufRef.current = null;
+    setCapStatus("idle");
   }
 
   function submit() {
@@ -490,14 +509,23 @@ export default function LokaWidgetRecorder() {
                   </div>
                 </>
               )}
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={reset}
-                  className="py-4 rounded-2xl border font-semibold transition-colors"
-                  style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.15rem" }}
-                >
-                  Reset
-                </button>
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={reset}
+                    className="py-4 rounded-2xl border font-semibold transition-colors"
+                    style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.15rem" }}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    onClick={cancel}
+                    className="py-4 rounded-2xl border font-semibold transition-colors"
+                    style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "var(--parch-100)", fontSize: "1.15rem" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
                 <BigButton onClick={submit}>Submit</BigButton>
               </div>
             </div>

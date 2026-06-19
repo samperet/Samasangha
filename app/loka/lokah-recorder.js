@@ -145,6 +145,19 @@ export function createLokahRecorder(target, options){
     catch(e){ setStatus('Microphone blocked: '+(e.message||e.name), true); if(opt.onError) opt.onError(e); return false; }
   }
 
+  // "Bless" the audio element with a gesture-initiated (muted) play so a later
+  // timer-driven play() (e.g. after a count-in) isn't blocked by autoplay rules.
+  // Call this from within a click handler.
+  function unlock(){
+    try{
+      audio.muted=true;
+      const p=audio.play();
+      const done=()=>{ try{ audio.pause(); audio.currentTime=0; }catch(e){} audio.muted=false; };
+      if(p&&typeof p.then==='function') p.then(done).catch(()=>{ audio.muted=false; });
+      else done();
+    }catch(e){ audio.muted=false; }
+  }
+
   // Start a take. Can be driven by the built-in button or programmatically via
   // the returned handle's record(). With loopOnce, the loop plays a single pass
   // and recording auto-stops when it ends. Returns true if it started.
@@ -190,7 +203,7 @@ export function createLokahRecorder(target, options){
 
   return {
     play:()=>audio.play(), pause:()=>audio.pause(),
-    prepare:()=>prepareMic(),
+    prepare:()=>prepareMic(), unlock:()=>unlock(),
     record:()=>startRecording(), stopRecording:()=>stopRecording(),
     isRecording:()=>recording, getLastRecording:()=>lastBlob,
     destroy(){ cancelAnimationFrame(raf); window.removeEventListener('resize', size); audio.pause();
