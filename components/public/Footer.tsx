@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeartTicker from "./HeartTicker";
+import { getSiteDesign, sectionBackground } from "@/lib/design";
 
 function FacebookIcon({ size = 17 }: { size?: number }) {
   return (
@@ -20,13 +21,14 @@ function InstagramIcon({ size = 17 }: { size?: number }) {
   );
 }
 
-export default function Footer() {
+export default async function Footer() {
+  const design = await getSiteDesign();
+  const footerBg = sectionBackground(design.footerType, design.footerFrom, design.footerTo);
   return (
     <footer
       style={{
-        background:
-          "radial-gradient(120% 130% at 50% -10%, #0a7d12 0%, #036007 50%, #024c06 100%)",
-        backgroundColor: "#036007",
+        background: footerBg,
+        backgroundColor: design.footerFrom,
         color: "var(--fg-on-dark)",
       }}
       className="mt-auto"

@@ -283,5 +283,8 @@ model SiteDesign {
   greenType  String   @default("solid")
   greenFrom  String   @default("#fbf7ec")
   greenTo    String   @default("#e8efe0")
+  footerType String   @default("gradient")
+  footerFrom String   @default("#0a7d12")
+  footerTo   String   @default("#024c06")
   updatedAt  DateTime @updatedAt
 }

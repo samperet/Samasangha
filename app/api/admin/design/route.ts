@@ -27,8 +27,9 @@ export async function PUT(req: NextRequest) {
       update: data,
       create: { id: "default", ...data },
     });
-    // Refresh the homepage so the new colours show up right away.
-    revalidatePath("/");
+    // Refresh every page under the public layout so the homepage sections and
+    // the site-wide footer pick up the new colours right away.
+    revalidatePath("/", "layout");
     return NextResponse.json(row);
   } catch {
     return NextResponse.json({ error: "Could not save. Please try again." }, { status: 500 });

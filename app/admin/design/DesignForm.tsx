@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SiteDesign } from "@/lib/design";
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
-// Mirror of lib/design's sectionBackground, kept local so this client component
-// doesn't pull the server-only (Prisma) module into the browser bundle.
+// Mirror of lib/design's sectionBackground (the site's top-centred radial),
+// kept local so this client component doesn't pull the server-only Prisma
+// module into the browser bundle.
 function bg(type: string, from: string, to: string): string {
-  return type === "gradient" ? `linear-gradient(160deg, ${from} 0%, ${to} 100%)` : from;
+  return type === "gradient"
+    ? `radial-gradient(120% 130% at 50% -10%, ${from} 0%, ${to} 100%)`
+    : from;
 }
 
 export default function DesignForm({ initial }: { initial: SiteDesign }) {
@@ -57,13 +60,22 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
           onTo={(c) => set({ purpleTo: c })}
         />
         <SectionEditor
-          title="Retreats section (green)"
+          title="Retreats section"
           type={d.greenType}
           from={d.greenFrom}
           to={d.greenTo}
           onType={(t) => set({ greenType: t })}
           onFrom={(c) => set({ greenFrom: c })}
           onTo={(c) => set({ greenTo: c })}
+        />
+        <SectionEditor
+          title="Footer (green)"
+          type={d.footerType}
+          from={d.footerFrom}
+          to={d.footerTo}
+          onType={(t) => set({ footerType: t })}
+          onFrom={(c) => set({ footerFrom: c })}
+          onTo={(c) => set({ footerTo: c })}
         />
 
         <div className="flex items-center gap-3">
@@ -86,6 +98,7 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
         <MiniHome
           purpleBg={bg(d.purpleType, d.purpleFrom, d.purpleTo)}
           greenBg={bg(d.greenType, d.greenFrom, d.greenTo)}
+          footerBg={bg(d.footerType, d.footerFrom, d.footerTo)}
         />
       </div>
     </div>
@@ -127,84 +140,142 @@ function SectionEditor({
             type="button"
             onClick={() => onType(v)}
             className="px-4 py-1.5 text-sm font-medium transition-colors"
-            style={
-              type === v
-                ? { background: "#1a2744", color: "#fff" }
-                : { background: "#fff", color: "#475569" }
-            }
+            style={type === v ? { background: "#1a2744", color: "#fff" } : { background: "#fff", color: "#475569" }}
           >
             {label}
           </button>
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-5">
-        <ColorField label={gradient ? "From" : "Colour"} value={from} onChange={onFrom} />
-        {gradient && <ColorField label="To" value={to} onChange={onTo} />}
+      <div className="flex flex-wrap gap-6">
+        <ColorPicker label={gradient ? "From" : "Colour"} value={from} onChange={onFrom} />
+        {gradient && <ColorPicker label="To" value={to} onChange={onTo} />}
       </div>
 
-      {/* swatch */}
-      <div
-        className="mt-4 h-10 rounded-lg border"
-        style={{ background: bg(type, from, to) }}
-        aria-hidden
-      />
+      {/* result swatch */}
+      <div className="mt-4 h-10 rounded-lg border" style={{ background: bg(type, from, to) }} aria-hidden />
     </div>
   );
 }
 
-function ColorField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (c: string) => void;
-}) {
+/* ── Visual colour picker (saturation/value box + hue slider) ───────── */
+
+function ColorPicker({ label, value, onChange }: { label: string; value: string; onChange: (c: string) => void }) {
+  const [hsv, setHsv] = useState(() => hexToHsv(value));
   const [text, setText] = useState(value);
+  const lastHex = useRef(value);
+  const svRef = useRef<HTMLDivElement | null>(null);
+
+  // Re-derive HSV when the colour changes from outside this picker (not from
+  // our own drag/typing), so the handle stays put while dragging.
+  useEffect(() => {
+    if (value.toLowerCase() !== lastHex.current.toLowerCase()) {
+      setHsv(hexToHsv(value));
+      lastHex.current = value;
+      setText(value);
+    }
+  }, [value]);
+
+  const emit = (next: Hsv) => {
+    const hex = hsvToHex(next.h, next.s, next.v);
+    lastHex.current = hex;
+    setHsv(next);
+    setText(hex);
+    onChange(hex);
+  };
+
+  const pickSV = (clientX: number, clientY: number) => {
+    const el = svRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const s = clamp01((clientX - r.left) / r.width);
+    const v = clamp01(1 - (clientY - r.top) / r.height);
+    emit({ h: hsv.h, s, v });
+  };
 
   return (
-    <label className="block">
-      <span className="block text-xs text-gray-500 mb-1">{label}</span>
-      <div className="flex items-center gap-2">
-        <input
-          type="color"
-          value={HEX.test(value) ? value : "#000000"}
-          onChange={(e) => {
-            onChange(e.target.value);
-            setText(e.target.value);
+    <div style={{ width: 180 }}>
+      <span className="block text-xs text-gray-500 mb-1.5">{label}</span>
+
+      {/* Saturation / value box */}
+      <div
+        ref={svRef}
+        onPointerDown={(e) => {
+          (e.target as Element).setPointerCapture?.(e.pointerId);
+          pickSV(e.clientX, e.clientY);
+        }}
+        onPointerMove={(e) => {
+          if (e.buttons === 1) pickSV(e.clientX, e.clientY);
+        }}
+        className="relative rounded-lg border"
+        style={{
+          height: 140,
+          cursor: "crosshair",
+          touchAction: "none",
+          background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent), hsl(${hsv.h}, 100%, 50%)`,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: `${hsv.s * 100}%`,
+            top: `${(1 - hsv.v) * 100}%`,
+            width: 16,
+            height: 16,
+            marginLeft: -8,
+            marginTop: -8,
+            borderRadius: "50%",
+            border: "2px solid #fff",
+            boxShadow: "0 0 0 1px rgba(0,0,0,0.45)",
+            background: HEX.test(value) ? value : "#000",
+            pointerEvents: "none",
           }}
-          className="h-9 w-12 rounded border cursor-pointer bg-white p-0.5"
-          aria-label={`${label} colour picker`}
         />
+      </div>
+
+      {/* Hue slider */}
+      <input
+        type="range"
+        min={0}
+        max={360}
+        value={Math.round(hsv.h)}
+        onChange={(e) => emit({ h: Number(e.target.value), s: hsv.s, v: hsv.v })}
+        aria-label={`${label} hue`}
+        className="w-full mt-3 appearance-none rounded-full cursor-pointer"
+        style={{
+          height: 14,
+          background:
+            "linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)",
+        }}
+      />
+
+      {/* Swatch + hex */}
+      <div className="flex items-center gap-2 mt-3">
+        <span className="h-7 w-7 rounded-md border shrink-0" style={{ background: HEX.test(value) ? value : "#fff" }} />
         <input
           type="text"
           value={text}
+          spellCheck={false}
           onChange={(e) => {
             const v = e.target.value;
             setText(v);
             if (HEX.test(v)) onChange(v);
           }}
           placeholder="#000000"
-          spellCheck={false}
-          className="w-24 px-2 py-1.5 text-sm font-mono rounded border"
+          className="w-full px-2 py-1.5 text-sm font-mono rounded border"
         />
       </div>
-    </label>
+    </div>
   );
 }
 
 /* ── Mini homepage preview ─────────────────────────────────────────── */
 
-function MiniHome({ purpleBg, greenBg }: { purpleBg: string; greenBg: string }) {
+function MiniHome({ purpleBg, greenBg, footerBg }: { purpleBg: string; greenBg: string; footerBg: string }) {
   return (
     <div className="rounded-xl overflow-hidden border shadow-sm" style={{ borderColor: "var(--surface-border)" }}>
       {/* Masthead */}
-      <div
-        className="px-4 py-5 text-center"
-        style={{ background: "radial-gradient(120% 80% at 50% -10%, #f6eedc 0%, #fbf7ec 60%)" }}
-      >
+      <div className="px-4 py-5 text-center" style={{ background: "radial-gradient(120% 80% at 50% -10%, #f6eedc 0%, #fbf7ec 60%)" }}>
         <div className="mx-auto h-5 w-28 rounded" style={{ background: "var(--gold-300)", opacity: 0.7 }} />
         <div className="mx-auto mt-2 h-2 w-40 rounded" style={{ background: "var(--parch-300)" }} />
       </div>
@@ -223,12 +294,26 @@ function MiniHome({ purpleBg, greenBg }: { purpleBg: string; greenBg: string }) 
         </div>
       </div>
 
-      {/* Retreats (green) */}
+      {/* Retreats */}
       <div className="px-4 py-5" style={{ background: greenBg }}>
         <MiniHeading label="Retreats" />
         <div className="space-y-2 mt-3">
           <MiniCard short />
           <MiniCard short />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-4 py-5" style={{ background: footerBg }}>
+        <div className="flex justify-center gap-1.5 mb-3" aria-hidden>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} style={{ color: "var(--gold-300)", fontSize: "0.7rem" }}>♥</span>
+          ))}
+        </div>
+        <div className="flex justify-center gap-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <span key={i} className="h-2 w-12 rounded" style={{ background: "rgba(255,255,255,0.6)" }} />
+          ))}
         </div>
       </div>
     </div>
@@ -250,11 +335,68 @@ function MiniCard({ short }: { short?: boolean }) {
   return (
     <div
       className="rounded-lg"
-      style={{
-        background: "var(--parch-50)",
-        border: "1px solid var(--surface-border)",
-        height: short ? 28 : 64,
-      }}
+      style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", height: short ? 28 : 64 }}
     />
   );
+}
+
+/* ── colour maths ──────────────────────────────────────────────────── */
+
+type Hsv = { h: number; s: number; v: number };
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const f = (x: number) => Math.round(x).toString(16).padStart(2, "0");
+  return `#${f(r)}${f(g)}${f(b)}`;
+}
+
+function rgbToHsv(r: number, g: number, b: number): Hsv {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  return { h, s: max === 0 ? 0 : d / max, v: max };
+}
+
+function hsvToRgb(h: number, s: number, v: number): { r: number; g: number; b: number } {
+  const c = v * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = v - c;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  if (h < 60) [r, g] = [c, x];
+  else if (h < 120) [r, g] = [x, c];
+  else if (h < 180) [g, b] = [c, x];
+  else if (h < 240) [g, b] = [x, c];
+  else if (h < 300) [r, b] = [x, c];
+  else [r, b] = [c, x];
+  return { r: (r + m) * 255, g: (g + m) * 255, b: (b + m) * 255 };
+}
+
+function hexToHsv(hex: string): Hsv {
+  const { r, g, b } = hexToRgb(HEX.test(hex) ? hex : "#000000");
+  return rgbToHsv(r, g, b);
+}
+
+function hsvToHex(h: number, s: number, v: number): string {
+  const { r, g, b } = hsvToRgb(h, s, v);
+  return rgbToHex(r, g, b);
 }

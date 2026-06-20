@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-// Editable colors for the homepage's two coloured bands.
+// Editable colors for the homepage's coloured bands and the site footer.
 export type SiteDesign = {
   purpleType: string; // "solid" | "gradient"
   purpleFrom: string;
@@ -8,6 +8,9 @@ export type SiteDesign = {
   greenType: string;
   greenFrom: string;
   greenTo: string;
+  footerType: string;
+  footerFrom: string;
+  footerTo: string;
 };
 
 export const DESIGN_DEFAULTS: SiteDesign = {
@@ -17,6 +20,9 @@ export const DESIGN_DEFAULTS: SiteDesign = {
   greenType: "solid",
   greenFrom: "#fbf7ec",
   greenTo: "#e8efe0",
+  footerType: "gradient",
+  footerFrom: "#0a7d12",
+  footerTo: "#024c06",
 };
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -35,17 +41,23 @@ export async function getSiteDesign(): Promise<SiteDesign> {
       greenType: row.greenType,
       greenFrom: row.greenFrom,
       greenTo: row.greenTo,
+      footerType: row.footerType,
+      footerFrom: row.footerFrom,
+      footerTo: row.footerTo,
     };
   } catch {
     return DESIGN_DEFAULTS;
   }
 }
 
-// CSS `background` value for a section: a solid colour or a two-stop gradient.
+// CSS `background` value for a section: a solid colour, or the site's signature
+// top-centred radial gradient between two stops.
 export function sectionBackground(type: string, from: string, to: string): string {
   const f = isHex(from) ? from : "#000000";
   const t = isHex(to) ? to : "#000000";
-  return type === "gradient" ? `linear-gradient(160deg, ${f} 0%, ${t} 100%)` : f;
+  return type === "gradient"
+    ? `radial-gradient(120% 130% at 50% -10%, ${f} 0%, ${t} 100%)`
+    : f;
 }
 
 // Keep only valid, expected fields/values before writing to the DB.
@@ -59,5 +71,8 @@ export function sanitizeDesign(input: Record<string, unknown>): SiteDesign {
     greenType: type(input.greenType, DESIGN_DEFAULTS.greenType),
     greenFrom: color(input.greenFrom, DESIGN_DEFAULTS.greenFrom),
     greenTo: color(input.greenTo, DESIGN_DEFAULTS.greenTo),
+    footerType: type(input.footerType, DESIGN_DEFAULTS.footerType),
+    footerFrom: color(input.footerFrom, DESIGN_DEFAULTS.footerFrom),
+    footerTo: color(input.footerTo, DESIGN_DEFAULTS.footerTo),
   };
 }
