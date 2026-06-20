@@ -271,3 +271,17 @@ enum VoiceType {
   LOWER
   HIGHER
 }
+
+// Singleton (id = "default") holding editable colors for the homepage's two
+// coloured bands: the purple "Regular gatherings" section and the green
+// "Retreats" section. Each can be a solid colour or a two-stop gradient.
+model SiteDesign {
+  id         String   @id @default("default")
+  purpleType String   @default("gradient") // "solid" | "gradient"
+  purpleFrom String   @default("#6b4a76")
+  purpleTo   String   @default("#4d3155")
+  greenType  String   @default("solid")
+  greenFrom  String   @default("#fbf7ec")
+  greenTo    String   @default("#e8efe0")
+  updatedAt  DateTime @updatedAt
+}

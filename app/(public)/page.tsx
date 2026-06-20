@@ -3,6 +3,7 @@ import InvocationCarousel from "@/components/public/InvocationCarousel";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
+import { getSiteDesign, sectionBackground } from "@/lib/design";
 
 export const revalidate = 60;
 
@@ -29,6 +30,9 @@ function GoldRule() {
 
 export default async function HomePage() {
   const events = await getUpcomingEvents();
+  const design = await getSiteDesign();
+  const purpleBg = sectionBackground(design.purpleType, design.purpleFrom, design.purpleTo);
+  const greenBg = sectionBackground(design.greenType, design.greenFrom, design.greenTo);
 
   return (
     <>
@@ -109,9 +113,8 @@ export default async function HomePage() {
         aria-label="Regular gatherings"
         className="pt-28 pb-16 md:pt-32 md:pb-20 px-5"
         style={{
-          background:
-            "radial-gradient(120% 130% at 50% -10%, #6b4a76 0%, #5a3b63 55%, #4d3155 100%)",
-          backgroundColor: "#5a3b63",
+          background: purpleBg,
+          backgroundColor: design.purpleFrom,
           borderTop: "1px solid var(--surface-border)",
           borderBottom: "1px solid var(--surface-border)",
         }}
@@ -243,7 +246,7 @@ export default async function HomePage() {
         aria-label="Retreats"
         className="py-16 md:py-20 px-5"
         style={{
-          backgroundColor: "#fbf7ec",
+          background: greenBg,
           borderTop: "1px solid var(--surface-border)",
         }}
       >
