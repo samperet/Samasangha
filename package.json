@@ -15,6 +15,7 @@
     "seed:videos": "npx tsx prisma/seed-videos.ts",
     "fix:emdashes": "npx tsx scripts/replace-emdashes.ts",
     "analyze:loka": "npx tsx scripts/analyze-loka.ts",
+    "analyze:loka:pitch": "npx tsx scripts/analyze-loka-pitch.ts",
     "make:mandala": "node scripts/make-mandala.mjs",
     "gen:mandala": "node scripts/gen-mandala.mjs"
   },

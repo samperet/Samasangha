@@ -34,6 +34,12 @@ Shan-ti`;
 // per-syllable timings (seconds from loop start), one per syllable
 const TIMINGS = [1.908,3.237,4.741,6.024,7.405,8.769,11.086,11.469,12.125,12.775,14.168,15.434,16.763,18.104,19.393,21.685,22.045,22.725,23.375,24.652,26.074,27.427,28.686,29.969,32.239,32.645,33.365,34.015,35.321,36.674,37.998,39.234,40.569,42.949,43.286,43.942,46.014,49.991,50.844,51.297,52.62,56.475,60.544,61.496,61.85,63.22,66.982,72.2];
 
+// Per-syllable melody notes, one per syllable — the singalong "composition".
+// Auto-detected from the loop with YIN pitch tracking (the four "Lokah…"
+// repeats were averaged for a clean phrase). Regenerate with
+// `npm run analyze:loka:pitch`. The phrase melody is roughly C# minor.
+const NOTES = ["G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","D3","D3","D3","D3","D3","D3","D3","D3","D3","C#3","C#3","D3"];
+
 const CSS = `
 .lokah-rec{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#2c2616;max-width:640px}
 .lokah-rec .lk-stage{background:#f1e7cf;border:1px solid #e6d8b8;border-radius:14px;padding:6px;overflow:hidden}
@@ -57,7 +63,7 @@ function buildUnits(){
       word.split(/[-‐-―−－]/).filter(Boolean).map((s,i)=>({text:s, ws:i===0, t:null})) )
   }));
   const flat=[]; lines.forEach(l=>l.words.forEach(w=>flat.push(w)));
-  flat.forEach((w,i)=>{ w.t = i<TIMINGS.length ? TIMINGS[i] : null; });
+  flat.forEach((w,i)=>{ w.t = i<TIMINGS.length ? TIMINGS[i] : null; w.note = i<NOTES.length ? NOTES[i] : null; });
   return lines;
 }
 
@@ -115,8 +121,12 @@ export function createLokahRecorder(target, options){
     }
     const markerX=w*0.5, baseY=h*0.55, scrollX=markerX-lin;
     units.forEach(z=>{ const sx=z.x+scrollX; if(sx>w+60||sx+z.w<-60)return;
+      const lit=z.u.t!=null&&z.u.t<=lt;
       if(!z.u.ws){ g.fillStyle='rgba(120,108,75,0.45)'; g.fillText('-',sx,baseY); }
-      g.fillStyle=(z.u.t!=null&&z.u.t<=lt)?'#c0902a':'#5f5634'; g.fillText(z.u.text, sx+(z.u.ws?0:hyW), baseY); });
+      g.fillStyle=lit?'#c0902a':'#5f5634'; g.fillText(z.u.text, sx+(z.u.ws?0:hyW), baseY);
+      // melody note under each syllable, brightening as it's sung
+      if(z.u.note){ g.save(); g.textAlign='center'; g.font='700 '+Math.round(fs*0.4)+'px -apple-system,BlinkMacSystemFont,sans-serif';
+        g.fillStyle=lit?'#bf9b30':'rgba(120,108,75,0.5)'; g.fillText(z.u.note, z.cx+scrollX, baseY+fs*0.82); g.restore(); } });
     const fade=(a,b)=>{ const gr=g.createLinearGradient(a,0,b,0); gr.addColorStop(0,'rgba(241,231,207,1)'); gr.addColorStop(1,'rgba(241,231,207,0)'); g.fillStyle=gr; g.fillRect(Math.min(a,b),0,Math.abs(b-a),h); };
     fade(0,42); fade(w,w-42);
     const bw=Math.round(h*0.5), bh=ballReady?bw*ball.naturalHeight/ball.naturalWidth:bw*0.45;
