@@ -52,7 +52,7 @@ const NOTE_MIN=Math.min.apply(null,NOTE_MIDIS), NOTE_MAX=Math.max.apply(null,NOT
 const CSS = `
 .lokah-rec{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#2c2616;max-width:640px}
 .lokah-rec .lk-stage{background:#f1e7cf;border:1px solid #e6d8b8;border-radius:14px;padding:6px;overflow:hidden}
-.lokah-rec .lk-cv{display:block;width:100%;height:124px}
+.lokah-rec .lk-cv{display:block;width:100%;height:150px}
 .lokah-rec .lk-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
 .lokah-rec button{font:inherit;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid #e6d8b8;background:#f4ecd6;color:#2c2616;transition:.12s}
 .lokah-rec button:hover{background:#ecdfbf}
@@ -110,7 +110,7 @@ export function createLokahRecorder(target, options){
   function draw(){
     const w=cv.width/dpr(), h=cv.height/dpr(); g.clearRect(0,0,w,h);
     const lt=audio.currentTime;                 // loop=true makes this wrap 0..duration
-    const fs=Math.round(h*0.24), wordGap=fs*0.82, lineGap=fs*2.4;
+    const fs=Math.round(h*0.18), wordGap=fs*0.82, lineGap=fs*2.4;
     g.font='600 '+fs+'px -apple-system,BlinkMacSystemFont,sans-serif'; g.textBaseline='middle';
     const hyW=g.measureText('-').width;
     const units=[]; let x=0;
@@ -119,40 +119,56 @@ export function createLokahRecorder(target, options){
         const lead=u.ws?0:hyW, tw=g.measureText(u.text).width;
         units.push({u,x,cx:x+lead+tw/2,w:lead+tw}); x+=lead+tw; }); });
     const timed=units.filter(z=>z.u.t!=null);
-    let syll=units.length?units[0].cx:0, frac=0, lin=syll, pitchT=0.5;
+    let syll=units.length?units[0].cx:0, frac=0, lin=syll, mNow=null, curNote=null;
     if(timed.length){ let cur=null,next=null;
       for(let i=0;i<timed.length;i++){ if(timed[i].u.t<=lt){cur=timed[i];next=timed[i+1]||null;} else {if(!cur)next=timed[i];break;} }
       if(cur&&next){ frac=Math.max(0,Math.min(1,(lt-cur.u.t)/Math.max(0.001,next.u.t-cur.u.t))); syll=cur.cx+(next.cx-cur.cx)*frac; }
       else if(cur){ syll=cur.cx; } else if(next){ syll=next.cx; }
-      // interpolate the melody pitch (0..1) so the marker glides between notes
-      let mNow=null;
+      // interpolate the melody pitch so the marker glides between notes
       if(cur&&next&&cur.u.midi!=null&&next.u.midi!=null) mNow=cur.u.midi+(next.u.midi-cur.u.midi)*frac;
       else if(cur&&cur.u.midi!=null) mNow=cur.u.midi;
       else if(next&&next.u.midi!=null) mNow=next.u.midi;
-      if(mNow!=null&&NOTE_MAX>NOTE_MIN) pitchT=(mNow-NOTE_MIN)/(NOTE_MAX-NOTE_MIN);
+      if(cur) curNote=cur.u.note;
       let n=timed.length,st=0,sx=0; for(let i=0;i<n;i++){st+=timed[i].u.t;sx+=timed[i].cx;}
       const mt=st/n,mx=sx/n; let num=0,den=0; for(let i=0;i<n;i++){const dt=timed[i].u.t-mt;num+=dt*(timed[i].cx-mx);den+=dt*dt;}
       lin=mx+(den>1e-6?num/den:0)*(lt-mt);
     }
-    const markerX=w*0.5, baseY=h*0.55, scrollX=markerX-lin;
+    const markerX=w*0.5, scrollX=markerX-lin;
+    const staffTop=h*0.18, staffBot=h*0.48, baseY=h*0.80;
+    const pitchToY=(m)=> staffBot - ((m-NOTE_MIN)/Math.max(1,NOTE_MAX-NOTE_MIN))*(staffBot-staffTop);
+
+    // ── Staff bar: five lines, with a note-head for every syllable placed by
+    //    pitch and scrolling in step with the words. ──
+    g.strokeStyle='rgba(120,108,75,0.35)'; g.lineWidth=1;
+    for(let k=0;k<5;k++){ const y=Math.round(staffTop+k*(staffBot-staffTop)/4)+0.5;
+      g.beginPath(); g.moveTo(0,y); g.lineTo(w,y); g.stroke(); }
+    units.forEach(z=>{ if(z.u.midi==null) return; const cx=z.cx+scrollX; if(cx<-20||cx>w+20) return;
+      const lit=z.u.t!=null&&z.u.t<=lt;
+      g.beginPath(); g.arc(cx, pitchToY(z.u.midi), Math.max(3,h*0.028), 0, 7);
+      g.fillStyle=lit?'#bf9b30':'rgba(120,108,75,0.4)'; g.fill(); });
+    // playhead
+    g.strokeStyle='rgba(191,155,48,0.5)'; g.lineWidth=1.5;
+    g.beginPath(); g.moveTo(markerX,staffTop-5); g.lineTo(markerX,staffBot+5); g.stroke();
+    // current note name above the playhead
+    if(curNote){ g.save(); g.textAlign='center'; g.font='700 '+Math.round(h*0.08)+'px -apple-system,BlinkMacSystemFont,sans-serif';
+      g.fillStyle='#bf9b30'; g.fillText(curNote, markerX, staffTop-12); g.restore(); }
+
+    // ── Lyrics ──
     units.forEach(z=>{ const sx=z.x+scrollX; if(sx>w+60||sx+z.w<-60)return;
       const lit=z.u.t!=null&&z.u.t<=lt;
       if(!z.u.ws){ g.fillStyle='rgba(120,108,75,0.45)'; g.fillText('-',sx,baseY); }
-      g.fillStyle=lit?'#c0902a':'#5f5634'; g.fillText(z.u.text, sx+(z.u.ws?0:hyW), baseY);
-      // melody note under each syllable, brightening as it's sung
-      if(z.u.note){ g.save(); g.textAlign='center'; g.font='700 '+Math.round(fs*0.4)+'px -apple-system,BlinkMacSystemFont,sans-serif';
-        g.fillStyle=lit?'#bf9b30':'rgba(120,108,75,0.5)'; g.fillText(z.u.note, z.cx+scrollX, baseY+fs*0.82); g.restore(); } });
+      g.fillStyle=lit?'#c0902a':'#5f5634'; g.fillText(z.u.text, sx+(z.u.ws?0:hyW), baseY); });
+
     const fade=(a,b)=>{ const gr=g.createLinearGradient(a,0,b,0); gr.addColorStop(0,'rgba(241,231,207,1)'); gr.addColorStop(1,'rgba(241,231,207,0)'); g.fillStyle=gr; g.fillRect(Math.min(a,b),0,Math.abs(b-a),h); };
     fade(0,42); fade(w,w-42);
-    const bw=Math.round(h*0.34), bh=ballReady?bw*ball.naturalHeight/ball.naturalWidth:bw*0.45;
-    // The marker rides the melody: higher note -> higher marker, gliding
-    // between syllables, with a small per-syllable hop.
-    const pitchTop=h*0.10, pitchBot=baseY-fs*0.72;
-    let by=pitchBot-pitchT*(pitchBot-pitchTop)-Math.sin(Math.PI*frac)*(fs*0.22);
-    by=Math.max(bh/2, Math.min(pitchBot, by));
-    const bx=Math.max(bw/2,Math.min(w-bw/2, markerX+(syll-lin)));
+
+    // ── Marker rides the staff at the current pitch ──
+    const bw=Math.round(h*0.24), bh=ballReady?bw*ball.naturalHeight/ball.naturalWidth:bw*0.45;
+    let by=(mNow!=null?pitchToY(mNow):(staffTop+staffBot)/2)-Math.sin(Math.PI*frac)*(h*0.025);
+    by=Math.max(bh/2, Math.min(staffBot+bh*0.3, by));
+    const bx=markerX;
     if(ballReady) g.drawImage(ball, bx-bw/2, by-bh/2, bw, bh);
-    else { g.beginPath(); g.arc(bx,by,Math.max(5,h*0.06),0,7); g.fillStyle='#fff'; g.fill(); g.lineWidth=2; g.strokeStyle='#bf9b30'; g.stroke(); }
+    else { g.beginPath(); g.arc(bx,by,Math.max(5,h*0.05),0,7); g.fillStyle='#fff'; g.fill(); g.lineWidth=2; g.strokeStyle='#bf9b30'; g.stroke(); }
     g.textBaseline='alphabetic';
   }
 
