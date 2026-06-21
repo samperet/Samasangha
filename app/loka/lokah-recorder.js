@@ -40,10 +40,19 @@ const TIMINGS = [1.908,3.237,4.741,6.024,7.405,8.769,11.086,11.469,12.125,12.775
 // `npm run analyze:loka:pitch`. The phrase melody is roughly C# minor.
 const NOTES = ["G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","G#3","C#3","E3","F#3","E3","F#3","E3","E3","C#3","D3","D3","D3","D3","D3","D3","D3","D3","D3","C#3","C#3","D3"];
 
+// Note name -> MIDI number, so the bouncing marker can ride the melody.
+function noteToMidi(name){
+  const m=/^([A-G]#?)(-?\d)$/.exec(name); if(!m) return null;
+  const idx={C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11}[m[1]];
+  return idx==null?null:idx+(parseInt(m[2],10)+1)*12;
+}
+const NOTE_MIDIS=NOTES.map(noteToMidi).filter(m=>m!=null);
+const NOTE_MIN=Math.min.apply(null,NOTE_MIDIS), NOTE_MAX=Math.max.apply(null,NOTE_MIDIS);
+
 const CSS = `
 .lokah-rec{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#2c2616;max-width:640px}
 .lokah-rec .lk-stage{background:#f1e7cf;border:1px solid #e6d8b8;border-radius:14px;padding:6px;overflow:hidden}
-.lokah-rec .lk-cv{display:block;width:100%;height:96px}
+.lokah-rec .lk-cv{display:block;width:100%;height:124px}
 .lokah-rec .lk-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
 .lokah-rec button{font:inherit;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid #e6d8b8;background:#f4ecd6;color:#2c2616;transition:.12s}
 .lokah-rec button:hover{background:#ecdfbf}
@@ -63,7 +72,7 @@ function buildUnits(){
       word.split(/[-‐-―−－]/).filter(Boolean).map((s,i)=>({text:s, ws:i===0, t:null})) )
   }));
   const flat=[]; lines.forEach(l=>l.words.forEach(w=>flat.push(w)));
-  flat.forEach((w,i)=>{ w.t = i<TIMINGS.length ? TIMINGS[i] : null; w.note = i<NOTES.length ? NOTES[i] : null; });
+  flat.forEach((w,i)=>{ w.t = i<TIMINGS.length ? TIMINGS[i] : null; w.note = i<NOTES.length ? NOTES[i] : null; w.midi = w.note ? noteToMidi(w.note) : null; });
   return lines;
 }
 
@@ -101,7 +110,7 @@ export function createLokahRecorder(target, options){
   function draw(){
     const w=cv.width/dpr(), h=cv.height/dpr(); g.clearRect(0,0,w,h);
     const lt=audio.currentTime;                 // loop=true makes this wrap 0..duration
-    const fs=Math.round(h*0.30), wordGap=fs*0.82, lineGap=fs*2.4;
+    const fs=Math.round(h*0.24), wordGap=fs*0.82, lineGap=fs*2.4;
     g.font='600 '+fs+'px -apple-system,BlinkMacSystemFont,sans-serif'; g.textBaseline='middle';
     const hyW=g.measureText('-').width;
     const units=[]; let x=0;
@@ -110,11 +119,17 @@ export function createLokahRecorder(target, options){
         const lead=u.ws?0:hyW, tw=g.measureText(u.text).width;
         units.push({u,x,cx:x+lead+tw/2,w:lead+tw}); x+=lead+tw; }); });
     const timed=units.filter(z=>z.u.t!=null);
-    let syll=units.length?units[0].cx:0, frac=0, lin=syll;
+    let syll=units.length?units[0].cx:0, frac=0, lin=syll, pitchT=0.5;
     if(timed.length){ let cur=null,next=null;
       for(let i=0;i<timed.length;i++){ if(timed[i].u.t<=lt){cur=timed[i];next=timed[i+1]||null;} else {if(!cur)next=timed[i];break;} }
       if(cur&&next){ frac=Math.max(0,Math.min(1,(lt-cur.u.t)/Math.max(0.001,next.u.t-cur.u.t))); syll=cur.cx+(next.cx-cur.cx)*frac; }
       else if(cur){ syll=cur.cx; } else if(next){ syll=next.cx; }
+      // interpolate the melody pitch (0..1) so the marker glides between notes
+      let mNow=null;
+      if(cur&&next&&cur.u.midi!=null&&next.u.midi!=null) mNow=cur.u.midi+(next.u.midi-cur.u.midi)*frac;
+      else if(cur&&cur.u.midi!=null) mNow=cur.u.midi;
+      else if(next&&next.u.midi!=null) mNow=next.u.midi;
+      if(mNow!=null&&NOTE_MAX>NOTE_MIN) pitchT=(mNow-NOTE_MIN)/(NOTE_MAX-NOTE_MIN);
       let n=timed.length,st=0,sx=0; for(let i=0;i<n;i++){st+=timed[i].u.t;sx+=timed[i].cx;}
       const mt=st/n,mx=sx/n; let num=0,den=0; for(let i=0;i<n;i++){const dt=timed[i].u.t-mt;num+=dt*(timed[i].cx-mx);den+=dt*dt;}
       lin=mx+(den>1e-6?num/den:0)*(lt-mt);
@@ -129,8 +144,13 @@ export function createLokahRecorder(target, options){
         g.fillStyle=lit?'#bf9b30':'rgba(120,108,75,0.5)'; g.fillText(z.u.note, z.cx+scrollX, baseY+fs*0.82); g.restore(); } });
     const fade=(a,b)=>{ const gr=g.createLinearGradient(a,0,b,0); gr.addColorStop(0,'rgba(241,231,207,1)'); gr.addColorStop(1,'rgba(241,231,207,0)'); g.fillStyle=gr; g.fillRect(Math.min(a,b),0,Math.abs(b-a),h); };
     fade(0,42); fade(w,w-42);
-    const bw=Math.round(h*0.5), bh=ballReady?bw*ball.naturalHeight/ball.naturalWidth:bw*0.45;
-    const bx=Math.max(bw/2,Math.min(w-bw/2, markerX+(syll-lin))), by=baseY-fs*1.0-Math.sin(Math.PI*frac)*(fs*0.7);
+    const bw=Math.round(h*0.34), bh=ballReady?bw*ball.naturalHeight/ball.naturalWidth:bw*0.45;
+    // The marker rides the melody: higher note -> higher marker, gliding
+    // between syllables, with a small per-syllable hop.
+    const pitchTop=h*0.10, pitchBot=baseY-fs*0.72;
+    let by=pitchBot-pitchT*(pitchBot-pitchTop)-Math.sin(Math.PI*frac)*(fs*0.22);
+    by=Math.max(bh/2, Math.min(pitchBot, by));
+    const bx=Math.max(bw/2,Math.min(w-bw/2, markerX+(syll-lin)));
     if(ballReady) g.drawImage(ball, bx-bw/2, by-bh/2, bw, bh);
     else { g.beginPath(); g.arc(bx,by,Math.max(5,h*0.06),0,7); g.fillStyle='#fff'; g.fill(); g.lineWidth=2; g.strokeStyle='#bf9b30'; g.stroke(); }
     g.textBaseline='alphabetic';
