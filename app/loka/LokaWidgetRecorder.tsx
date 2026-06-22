@@ -418,16 +418,6 @@ export default function LokaWidgetRecorder() {
     <Card>
       {phase === "capture" && (
         <div className="space-y-6">
-          <div>
-            <h2 className="font-serif mb-2" style={{ fontSize: "1.5rem", fontWeight: 600, color: "var(--ink-900)" }}>
-              Learn the song first
-            </h2>
-            <p style={{ fontSize: "1.1rem", lineHeight: 1.7, color: "var(--fg2)" }}>
-              Play the song and follow the words as they scroll past the marker. Listen a few times
-              to learn it, then record your voice singing along.
-            </p>
-          </div>
-
           {/* Play the song — above the subtitles */}
           <button
             onClick={toggleSample}
@@ -610,7 +600,7 @@ export default function LokaWidgetRecorder() {
               type="checkbox"
               checked={form.consent}
               onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-              className="accent-[#c4922b] mt-1"
+              className="accent-[#2f6fc0] mt-1"
               style={{ width: 22, height: 22 }}
             />
             Yes, please include my voice in this shared prayer.
@@ -636,7 +626,7 @@ function Modal({ children, onClose, labelledBy }: { children: React.ReactNode; o
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-5"
-      style={{ background: "rgba(28,23,16,0.55)" }}
+      style={{ background: "rgba(15,30,55,0.55)" }}
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelledBy}
