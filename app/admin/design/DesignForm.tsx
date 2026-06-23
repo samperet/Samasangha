@@ -15,9 +15,34 @@ function bg(type: string, from: string, to: string): string {
     : from;
 }
 
+// Every editable colour, keyed by its field name on SiteDesign.
+type ColorKey =
+  | "purpleFrom"
+  | "purpleTo"
+  | "greenFrom"
+  | "greenTo"
+  | "footerFrom"
+  | "footerTo";
+
+const SECTIONS = [
+  { title: "Gatherings section (purple)", prefix: "purple" },
+  { title: "Retreats section", prefix: "green" },
+  { title: "Footer (green)", prefix: "footer" },
+] as const;
+
+const KEY_LABELS: Record<ColorKey, string> = {
+  purpleFrom: "Gatherings — main colour",
+  purpleTo: "Gatherings — gradient end",
+  greenFrom: "Retreats — main colour",
+  greenTo: "Retreats — gradient end",
+  footerFrom: "Footer — main colour",
+  footerTo: "Footer — gradient end",
+};
+
 export default function DesignForm({ initial }: { initial: SiteDesign }) {
   const router = useRouter();
   const [d, setD] = useState<SiteDesign>(initial);
+  const [activeKey, setActiveKey] = useState<ColorKey>("purpleFrom");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -46,37 +71,36 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
     }
   }
 
+  const activeValue = (d[activeKey] as string) || "#000000";
+
   return (
     <div className="grid lg:grid-cols-2 gap-8 items-start">
-      {/* Controls */}
+      {/* Controls: choose a section + which swatch to edit */}
       <div className="space-y-6">
-        <SectionEditor
-          title="Gatherings section (purple)"
-          type={d.purpleType}
-          from={d.purpleFrom}
-          to={d.purpleTo}
-          onType={(t) => set({ purpleType: t })}
-          onFrom={(c) => set({ purpleFrom: c })}
-          onTo={(c) => set({ purpleTo: c })}
-        />
-        <SectionEditor
-          title="Retreats section"
-          type={d.greenType}
-          from={d.greenFrom}
-          to={d.greenTo}
-          onType={(t) => set({ greenType: t })}
-          onFrom={(c) => set({ greenFrom: c })}
-          onTo={(c) => set({ greenTo: c })}
-        />
-        <SectionEditor
-          title="Footer (green)"
-          type={d.footerType}
-          from={d.footerFrom}
-          to={d.footerTo}
-          onType={(t) => set({ footerType: t })}
-          onFrom={(c) => set({ footerFrom: c })}
-          onTo={(c) => set({ footerTo: c })}
-        />
+        {SECTIONS.map(({ title, prefix }) => {
+          const typeKey = `${prefix}Type` as keyof SiteDesign;
+          const fromKey = `${prefix}From` as ColorKey;
+          const toKey = `${prefix}To` as ColorKey;
+          return (
+            <SectionEditor
+              key={prefix}
+              title={title}
+              type={d[typeKey] as string}
+              from={d[fromKey] as string}
+              to={d[toKey] as string}
+              fromKey={fromKey}
+              toKey={toKey}
+              activeKey={activeKey}
+              onSelect={setActiveKey}
+              onType={(t) => {
+                set({ [typeKey]: t });
+                // If we just hid the "To" swatch while it was selected,
+                // fall back to this section's main colour.
+                if (t === "solid" && activeKey === toKey) setActiveKey(fromKey);
+              }}
+            />
+          );
+        })}
 
         <div className="flex items-center gap-3">
           <button
@@ -92,37 +116,49 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
         </div>
       </div>
 
-      {/* Live preview */}
-      <div className="lg:sticky lg:top-6">
-        <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Live preview</p>
-        <MiniHome
-          purpleBg={bg(d.purpleType, d.purpleFrom, d.purpleTo)}
-          greenBg={bg(d.greenType, d.greenFrom, d.greenTo)}
-          footerBg={bg(d.footerType, d.footerFrom, d.footerTo)}
+      {/* The single large colour wheel + live preview */}
+      <div className="lg:sticky lg:top-6 space-y-6">
+        <ColorWheel
+          label={KEY_LABELS[activeKey]}
+          value={activeValue}
+          onChange={(c) => set({ [activeKey]: c })}
         />
+
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Live preview</p>
+          <MiniHome
+            purpleBg={bg(d.purpleType, d.purpleFrom, d.purpleTo)}
+            greenBg={bg(d.greenType, d.greenFrom, d.greenTo)}
+            footerBg={bg(d.footerType, d.footerFrom, d.footerTo)}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-/* ── Section editor ────────────────────────────────────────────────── */
+/* ── Section editor: solid/gradient toggle + swatch selectors ───────── */
 
 function SectionEditor({
   title,
   type,
   from,
   to,
+  fromKey,
+  toKey,
+  activeKey,
+  onSelect,
   onType,
-  onFrom,
-  onTo,
 }: {
   title: string;
   type: string;
   from: string;
   to: string;
+  fromKey: ColorKey;
+  toKey: ColorKey;
+  activeKey: ColorKey;
+  onSelect: (k: ColorKey) => void;
   onType: (t: string) => void;
-  onFrom: (c: string) => void;
-  onTo: (c: string) => void;
 }) {
   const gradient = type === "gradient";
   return (
@@ -147,27 +183,68 @@ function SectionEditor({
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-6">
-        <ColorPicker label={gradient ? "From" : "Colour"} value={from} onChange={onFrom} />
-        {gradient && <ColorPicker label="To" value={to} onChange={onTo} />}
+      {/* Pick which colour the wheel edits */}
+      <div className="flex flex-wrap gap-4">
+        <SwatchButton
+          label={gradient ? "From" : "Colour"}
+          color={from}
+          active={activeKey === fromKey}
+          onClick={() => onSelect(fromKey)}
+        />
+        {gradient && (
+          <SwatchButton label="To" color={to} active={activeKey === toKey} onClick={() => onSelect(toKey)} />
+        )}
       </div>
 
-      {/* result swatch */}
+      {/* Result swatch */}
       <div className="mt-4 h-10 rounded-lg border" style={{ background: bg(type, from, to) }} aria-hidden />
     </div>
   );
 }
 
-/* ── Visual colour picker (saturation/value box + hue slider) ───────── */
+function SwatchButton({
+  label,
+  color,
+  active,
+  onClick,
+}: {
+  label: string;
+  color: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" onClick={onClick} className="text-left group" aria-pressed={active}>
+      <span className="block text-xs text-gray-500 mb-1.5">{label}</span>
+      <span
+        className="block h-14 w-20 rounded-lg transition-shadow"
+        style={{
+          background: HEX.test(color) ? color : "#fff",
+          border: active ? "3px solid #1a2744" : "2px solid rgba(0,0,0,0.12)",
+          boxShadow: active ? "0 0 0 4px rgba(26,39,68,0.18)" : "none",
+        }}
+      />
+      <span className="block text-[11px] font-mono text-gray-500 mt-1">{color}</span>
+    </button>
+  );
+}
 
-function ColorPicker({ label, value, onChange }: { label: string; value: string; onChange: (c: string) => void }) {
+/* ── One big multifunctional colour wheel ──────────────────────────── */
+
+// Quick presets drawn from the site palette (purples, greens, golds, neutrals).
+const PRESETS = [
+  "#6b4a76", "#4d3155", "#2d1b4e", "#0a7d12", "#024c06", "#3a7d44",
+  "#b8860b", "#d4af37", "#f6eedc", "#fbf7ec", "#1a2744", "#ffffff",
+];
+
+function ColorWheel({ label, value, onChange }: { label: string; value: string; onChange: (c: string) => void }) {
   const [hsv, setHsv] = useState(() => hexToHsv(value));
   const [text, setText] = useState(value);
   const lastHex = useRef(value);
-  const svRef = useRef<HTMLDivElement | null>(null);
+  const wheelRef = useRef<HTMLDivElement | null>(null);
 
-  // Re-derive HSV when the colour changes from outside this picker (not from
-  // our own drag/typing), so the handle stays put while dragging.
+  // Re-derive HSV when the colour changes from outside this wheel (e.g. the
+  // admin selects a different swatch), but not from our own drag/typing.
   useEffect(() => {
     if (value.toLowerCase() !== lastHex.current.toLowerCase()) {
       setHsv(hexToHsv(value));
@@ -184,74 +261,123 @@ function ColorPicker({ label, value, onChange }: { label: string; value: string;
     onChange(hex);
   };
 
-  const pickSV = (clientX: number, clientY: number) => {
-    const el = svRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const s = clamp01((clientX - r.left) / r.width);
-    const v = clamp01(1 - (clientY - r.top) / r.height);
-    emit({ h: hsv.h, s, v });
+  const applyHex = (hex: string) => {
+    lastHex.current = hex;
+    setHsv(hexToHsv(hex));
+    setText(hex);
+    onChange(hex);
   };
 
-  return (
-    <div style={{ width: 180 }}>
-      <span className="block text-xs text-gray-500 mb-1.5">{label}</span>
+  // Map a pointer position onto hue (angle from top, clockwise) + saturation
+  // (distance from centre).
+  const pickWheel = (clientX: number, clientY: number) => {
+    const el = wheelRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    const radius = r.width / 2;
+    const s = clamp01(Math.sqrt(dx * dx + dy * dy) / radius);
+    let h = Math.atan2(dx, -dy) * (180 / Math.PI);
+    if (h < 0) h += 360;
+    emit({ h, s, v: hsv.v });
+  };
 
-      {/* Saturation / value box */}
+  // Handle position, in % of the wheel (centre = 50%, edge = full saturation).
+  const rad = (hsv.h * Math.PI) / 180;
+  const handleX = 50 + Math.sin(rad) * hsv.s * 50;
+  const handleY = 50 - Math.cos(rad) * hsv.s * 50;
+  const fullColor = hsvToHex(hsv.h, hsv.s, 1); // colour at full brightness
+
+  return (
+    <div className="bg-white rounded-xl border p-5">
+      <style>{`
+        .cw-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 3px solid #1a2744; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+        .cw-range::-moz-range-thumb { width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 3px solid #1a2744; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+      `}</style>
+
+      <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Editing</p>
+      <h2 className="font-semibold text-[#1a2744] mb-4">{label}</h2>
+
+      {/* The wheel: hue around, saturation outward */}
       <div
-        ref={svRef}
+        ref={wheelRef}
+        role="slider"
+        aria-label={`${label} hue and saturation`}
         onPointerDown={(e) => {
           (e.target as Element).setPointerCapture?.(e.pointerId);
-          pickSV(e.clientX, e.clientY);
+          pickWheel(e.clientX, e.clientY);
         }}
         onPointerMove={(e) => {
-          if (e.buttons === 1) pickSV(e.clientX, e.clientY);
+          if (e.buttons === 1) pickWheel(e.clientX, e.clientY);
         }}
-        className="relative rounded-lg border"
+        className="relative mx-auto"
         style={{
-          height: 140,
+          width: "100%",
+          maxWidth: 320,
+          aspectRatio: "1 / 1",
+          borderRadius: "50%",
           cursor: "crosshair",
           touchAction: "none",
-          background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent), hsl(${hsv.h}, 100%, 50%)`,
+          background:
+            "radial-gradient(circle at center, #fff 0%, rgba(255,255,255,0) 70%), conic-gradient(from 0deg, hsl(0 100% 50%), hsl(60 100% 50%), hsl(120 100% 50%), hsl(180 100% 50%), hsl(240 100% 50%), hsl(300 100% 50%), hsl(360 100% 50%))",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
         }}
       >
+        {/* Brightness shade: darkens the whole wheel as value drops */}
         <div
           style={{
             position: "absolute",
-            left: `${hsv.s * 100}%`,
-            top: `${(1 - hsv.v) * 100}%`,
-            width: 16,
-            height: 16,
-            marginLeft: -8,
-            marginTop: -8,
+            inset: 0,
             borderRadius: "50%",
-            border: "2px solid #fff",
-            boxShadow: "0 0 0 1px rgba(0,0,0,0.45)",
+            background: "#000",
+            opacity: 1 - hsv.v,
+            pointerEvents: "none",
+          }}
+        />
+        {/* Handle */}
+        <div
+          style={{
+            position: "absolute",
+            left: `${handleX}%`,
+            top: `${handleY}%`,
+            width: 30,
+            height: 30,
+            marginLeft: -15,
+            marginTop: -15,
+            borderRadius: "50%",
+            border: "3px solid #fff",
+            boxShadow: "0 0 0 1.5px rgba(0,0,0,0.55), 0 1px 5px rgba(0,0,0,0.45)",
             background: HEX.test(value) ? value : "#000",
             pointerEvents: "none",
           }}
         />
       </div>
 
-      {/* Hue slider */}
-      <input
-        type="range"
-        min={0}
-        max={360}
-        value={Math.round(hsv.h)}
-        onChange={(e) => emit({ h: Number(e.target.value), s: hsv.s, v: hsv.v })}
-        aria-label={`${label} hue`}
-        className="w-full mt-3 appearance-none rounded-full cursor-pointer"
-        style={{
-          height: 14,
-          background:
-            "linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)",
-        }}
-      />
+      {/* Brightness slider */}
+      <div className="mt-6">
+        <label className="block text-sm font-medium text-gray-600 mb-2">Brightness</label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={Math.round(hsv.v * 100)}
+          onChange={(e) => emit({ h: hsv.h, s: hsv.s, v: Number(e.target.value) / 100 })}
+          aria-label={`${label} brightness`}
+          className="cw-range w-full appearance-none rounded-full cursor-pointer"
+          style={{ height: 22, background: `linear-gradient(to right, #000, ${fullColor})` }}
+        />
+      </div>
 
-      {/* Swatch + hex */}
-      <div className="flex items-center gap-2 mt-3">
-        <span className="h-7 w-7 rounded-md border shrink-0" style={{ background: HEX.test(value) ? value : "#fff" }} />
+      {/* Big swatch + hex entry */}
+      <div className="flex items-center gap-3 mt-5">
+        <span
+          className="h-12 w-12 rounded-lg border shrink-0"
+          style={{ background: HEX.test(value) ? value : "#fff" }}
+          aria-hidden
+        />
         <input
           type="text"
           value={text}
@@ -259,11 +385,32 @@ function ColorPicker({ label, value, onChange }: { label: string; value: string;
           onChange={(e) => {
             const v = e.target.value;
             setText(v);
-            if (HEX.test(v)) onChange(v);
+            if (HEX.test(v)) applyHex(v);
           }}
           placeholder="#000000"
-          className="w-full px-2 py-1.5 text-sm font-mono rounded border"
+          aria-label={`${label} hex code`}
+          className="flex-1 px-3 py-2.5 text-base font-mono rounded-lg border"
         />
+      </div>
+
+      {/* Quick presets */}
+      <div className="mt-5">
+        <p className="text-sm font-medium text-gray-600 mb-2">Quick colours</p>
+        <div className="flex flex-wrap gap-2">
+          {PRESETS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => applyHex(c)}
+              aria-label={`Use ${c}`}
+              className="h-9 w-9 rounded-lg border-2"
+              style={{
+                background: c,
+                borderColor: value.toLowerCase() === c.toLowerCase() ? "#1a2744" : "rgba(0,0,0,0.15)",
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
