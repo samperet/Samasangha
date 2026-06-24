@@ -61,7 +61,8 @@ const CSS = `
 .lokah-rec .lk-rec.lk-recording{animation:lk-pulse 1.1s infinite}
 @keyframes lk-pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,82,79,.5)}50%{box-shadow:0 0 0 8px rgba(224,82,79,0)}}
 .lokah-rec .lk-name{font:inherit;border:1px solid #e6d8b8;border-radius:10px;padding:8px 10px;background:#fffdf6;color:#2c2616;min-width:150px}
-.lokah-rec .lk-status{color:#94865f;font-size:13px}`;
+.lokah-rec .lk-status{color:#94865f;font-size:13px}
+.lokah-rec .lk-selfview{display:none;width:100%;max-height:240px;margin-top:10px;border-radius:14px;background:#000;object-fit:cover;transform:scaleX(-1)}`;
 
 function injectCSS(){ if(document.getElementById('lokah-rec-css'))return;
   const s=document.createElement('style'); s.id='lokah-rec-css'; s.textContent=CSS; document.head.appendChild(s); }
@@ -81,7 +82,7 @@ export function createLokahRecorder(target, options){
   if(!host) throw new Error('lokah-recorder: target element not found');
   const opt = Object.assign({ loopUrl:'loop.mp3', ballUrl:'ball.png', uploadUrl:null,
     fieldName:'voice', onComplete:null, onError:null, collectName:true,
-    showControls:true, loopOnce:false, onRecordStart:null }, options||{});
+    showControls:true, loopOnce:false, onRecordStart:null, withVideo:false }, options||{});
   injectCSS();
 
   const lines = buildUnits();
@@ -89,6 +90,7 @@ export function createLokahRecorder(target, options){
   host.classList.add('lokah-rec');
   host.innerHTML =
     '<div class="lk-stage"><canvas class="lk-cv"></canvas></div>'+
+    (opt.withVideo ? '<video class="lk-selfview" autoplay muted playsinline></video>' : '')+
     (opt.showControls ?
     '<div class="lk-controls">'+
       (opt.collectName?'<input class="lk-name" placeholder="Your name (optional)" maxlength="40">':'')+
@@ -100,6 +102,7 @@ export function createLokahRecorder(target, options){
   const cv=host.querySelector('.lk-cv'), g=cv.getContext('2d');
   const playBtn=host.querySelector('.lk-play'), recBtn=host.querySelector('.lk-rec');
   const statusEl=host.querySelector('.lk-status'), nameEl=host.querySelector('.lk-name');
+  const selfView=host.querySelector('.lk-selfview');
 
   const audio=new Audio(); audio.src=opt.loopUrl; audio.loop=true; audio.preload='auto';
   const ball=new Image(); let ballReady=false; ball.onload=()=>{ballReady=true;}; if(opt.ballUrl) ball.src=opt.ballUrl;
@@ -182,14 +185,39 @@ export function createLokahRecorder(target, options){
 
   // ---- recording ----
   let mediaRec=null, chunks=[], stream=null, recording=false, lastBlob=null;
+  let videoActive=!!opt.withVideo;   // may drop to audio-only if no camera is available
   function ext(m){ return /mp4|m4a|aac/.test(m)?'mp4':/ogg/.test(m)?'ogg':'webm'; }
 
-  // Acquire the mic ahead of time so the permission prompt doesn't interrupt a
-  // count-in. record() reuses the cached stream. Returns true if granted.
-  async function prepareMic(){
-    try{ if(!stream) stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false}}); return true; }
+  // Show the live camera in the self-view once we have a stream with video.
+  function attachSelf(){
+    if(!selfView || !stream) return;
+    try{ selfView.srcObject=stream; selfView.style.display='block'; const p=selfView.play&&selfView.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){}
+  }
+
+  // Best MediaRecorder mime for the active capture mode.
+  function pickMime(){
+    if(typeof MediaRecorder==='undefined' || !MediaRecorder.isTypeSupported) return '';
+    const vids=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
+    const auds=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'];
+    return (videoActive?vids:auds).find(t=>MediaRecorder.isTypeSupported(t))||'';
+  }
+
+  // Acquire the mic (and the camera, when withVideo) ahead of time so the
+  // permission prompt doesn't interrupt a count-in. If the camera can't be
+  // opened we fall back to audio-only. record() reuses the cached stream.
+  async function getStream(){
+    if(stream) return true;
+    const aud={echoCancellation:true,noiseSuppression:true,autoGainControl:false};
+    if(videoActive){
+      try{ stream=await navigator.mediaDevices.getUserMedia({audio:aud,video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}}}); attachSelf(); return true; }
+      catch(e){ videoActive=false; }   // no camera / denied — carry on with audio only
+    }
+    try{ stream=await navigator.mediaDevices.getUserMedia({audio:aud}); return true; }
     catch(e){ setStatus('Microphone blocked: '+(e.message||e.name), true); if(opt.onError) opt.onError(e); return false; }
   }
+
+  // Returns true once the mic (and camera, when asked) is granted.
+  async function prepareMic(){ return getStream(); }
 
   // "Bless" the audio element with a gesture-initiated (muted) play so a later
   // timer-driven play() (e.g. after a count-in) isn't blocked by autoplay rules.
@@ -209,9 +237,12 @@ export function createLokahRecorder(target, options){
   // and recording auto-stops when it ends. Returns true if it started.
   async function startRecording(){
     if(recording) return false;
-    try{ if(!stream) stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false}}); }
-    catch(e){ setStatus('Microphone blocked: '+(e.message||e.name), true); if(opt.onError) opt.onError(e); return false; }
-    try{ mediaRec=new MediaRecorder(stream); }catch(e){ setStatus('Recording not supported here', true); if(opt.onError) opt.onError(e); return false; }
+    if(!await getStream()) return false;
+    const mime=pickMime();
+    const recOpts=mime?{mimeType:mime}:undefined;
+    if(recOpts && videoActive) recOpts.videoBitsPerSecond=2500000;   // keep video takes a sane size
+    try{ mediaRec=new MediaRecorder(stream, recOpts); }
+    catch(e){ try{ mediaRec=new MediaRecorder(stream); }catch(e2){ setStatus('Recording not supported here', true); if(opt.onError) opt.onError(e2); return false; } }
     chunks=[]; mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
     mediaRec.onstop=onRecStop;
     if(opt.loopOnce) audio.loop=false;                    // record a single pass
@@ -232,8 +263,9 @@ export function createLokahRecorder(target, options){
     recording=false; audio.onended=null;
     if(recBtn){ recBtn.textContent='Record'; recBtn.classList.remove('lk-recording'); }
     if(!chunks.length){ setStatus('Nothing recorded — try again', true); if(opt.onError) opt.onError(new Error('Nothing recorded')); return; }
-    const blob=new Blob(chunks,{type:(mediaRec&&mediaRec.mimeType)||'audio/webm'}); lastBlob=blob;
-    const meta={ name: nameEl?nameEl.value.trim():'', loopMs: Math.round((audio.duration||0)*1000), mime: blob.type, sizeBytes: blob.size };
+    const blob=new Blob(chunks,{type:(mediaRec&&mediaRec.mimeType)||(videoActive?'video/webm':'audio/webm')}); lastBlob=blob;
+    const meta={ name: nameEl?nameEl.value.trim():'', loopMs: Math.round((audio.duration||0)*1000), mime: blob.type, sizeBytes: blob.size,
+      hasVideo: !!(videoActive && stream && stream.getVideoTracks && stream.getVideoTracks().length>0) };
     if(opt.onComplete){ try{ opt.onComplete(blob, meta); }catch(e){} }
     if(opt.uploadUrl){
       setStatus('Uploading…');
@@ -253,6 +285,7 @@ export function createLokahRecorder(target, options){
     record:()=>startRecording(), stopRecording:()=>stopRecording(),
     isRecording:()=>recording, getLastRecording:()=>lastBlob,
     destroy(){ cancelAnimationFrame(raf); window.removeEventListener('resize', size); audio.pause();
+      if(selfView){ try{ selfView.srcObject=null; }catch(e){} }
       if(stream) stream.getTracks().forEach(t=>t.stop()); host.innerHTML=''; host.classList.remove('lokah-rec'); }
   };
 }

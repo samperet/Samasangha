@@ -29,7 +29,8 @@ export async function GET() {
   );
 }
 
-const MAX_BYTES = 30 * 1024 * 1024; // 30 MB
+const MAX_AUDIO_BYTES = 30 * 1024 * 1024; // 30 MB
+const MAX_VIDEO_BYTES = 100 * 1024 * 1024; // 100 MB — video takes run larger
 const VOICES = ["LOWER", "HIGHER"] as const;
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -57,9 +58,18 @@ export async function POST(req: NextRequest) {
   if (!VOICES.includes(voiceType as (typeof VOICES)[number])) {
     return NextResponse.json({ error: "Choose a voice range" }, { status: 400 });
   }
-  if (!file.type.startsWith("audio/")) return NextResponse.json({ error: "File must be audio" }, { status: 400 });
+  const isVideo = file.type.startsWith("video/");
+  if (!file.type.startsWith("audio/") && !isVideo) {
+    return NextResponse.json({ error: "File must be audio or video" }, { status: 400 });
+  }
   if (file.size === 0) return NextResponse.json({ error: "Recording is empty" }, { status: 400 });
-  if (file.size > MAX_BYTES) return NextResponse.json({ error: "Recording is too large (max 30 MB)" }, { status: 400 });
+  const maxBytes = isVideo ? MAX_VIDEO_BYTES : MAX_AUDIO_BYTES;
+  if (file.size > maxBytes) {
+    return NextResponse.json(
+      { error: `Recording is too large (max ${isVideo ? 100 : 30} MB)` },
+      { status: 400 }
+    );
+  }
 
   let audioUrl: string;
   try {
