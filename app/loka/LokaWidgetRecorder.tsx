@@ -16,7 +16,7 @@ type WidgetHandle = {
   stopRecording: () => void;
   destroy: () => void;
 } | null;
-type TakeMeta = { name?: string; loopMs?: number; mime?: string; sizeBytes?: number };
+type TakeMeta = { name?: string; loopMs?: number; mime?: string; sizeBytes?: number; hasVideo?: boolean };
 
 const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -65,6 +65,9 @@ export default function LokaWidgetRecorder() {
   const [error, setError] = useState("");
   const [showHeadphones, setShowHeadphones] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [withVideo, setWithVideo] = useState(true); // capture camera too, unless turned off
+  const [takeIsVideo, setTakeIsVideo] = useState(false); // the captured take has picture
+  const [takeUrl, setTakeUrl] = useState(""); // object URL for a video take's playback
 
   // Review of the captured take (played back together with the song).
   const [reviewReady, setReviewReady] = useState(false);
@@ -78,6 +81,8 @@ export default function LokaWidgetRecorder() {
   const countdownTimerRef = useRef(0);
   const resettingRef = useRef(false); // ignore the take from a reset-triggered stop
   const submitAfterStopRef = useRef(false); // jump to form after a submit-triggered stop
+  const takeVideoRef = useRef<HTMLVideoElement | null>(null); // the recorded video, for review
+  const mediaElSrcRef = useRef<MediaElementAudioSourceNode | null>(null); // routes that video's sound
 
   // Review playback engine (loop + take, with the singer's volume on the take).
   const reviewCtxRef = useRef<AudioContext | null>(null);
@@ -109,6 +114,14 @@ export default function LokaWidgetRecorder() {
       }
     });
     reviewSrcRef.current = [];
+    const v = takeVideoRef.current;
+    if (v) {
+      try {
+        v.pause();
+      } catch {
+        /* noop */
+      }
+    }
     setReviewPlaying(false);
   }, []);
 
@@ -121,6 +134,14 @@ export default function LokaWidgetRecorder() {
     }
     takeBlobRef.current = blob;
     takeMetaRef.current = meta || {};
+    const isVid = !!meta?.hasVideo || (blob.type || "").startsWith("video");
+    setTakeIsVideo(isVid);
+    // A fresh take means any MediaElementSource bound to the old <video> is stale.
+    mediaElSrcRef.current = null;
+    setTakeUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return isVid ? URL.createObjectURL(blob) : "";
+    });
     setCapStatus("recorded");
     if (submitAfterStopRef.current) {
       submitAfterStopRef.current = false;
@@ -142,6 +163,7 @@ export default function LokaWidgetRecorder() {
           showControls: false, // our own play / record / reset / submit buttons drive it
           collectName: false,
           loopOnce: true, // one pass, then auto-stop
+          withVideo, // capture the camera too, unless the singer turned it off
           onComplete: (blob: Blob, meta: TakeMeta) => onTake(blob, meta),
           onError: () => {
             setCapStatus("idle");
@@ -160,7 +182,7 @@ export default function LokaWidgetRecorder() {
       }
       handleRef.current = null;
     };
-  }, [phase, onTake]);
+  }, [phase, onTake, withVideo]);
 
   useEffect(() => () => window.clearInterval(countdownTimerRef.current), []);
 
@@ -172,8 +194,14 @@ export default function LokaWidgetRecorder() {
       try {
         const ctx = ensureReviewCtx();
         if (!loopBufRef.current) loopBufRef.current = await fetchAudioBuffer(ctx, "/lokah/loop.mp3");
-        takeBufRef.current = await ctx.decodeAudioData(await takeBlobRef.current!.arrayBuffer());
-        if (!cancelled) setReviewReady(true);
+        if (takeIsVideo) {
+          // The <video> element carries the take's picture and sound; we only
+          // needed the loop buffer above to play underneath it.
+          if (!cancelled) setReviewReady(true);
+        } else {
+          takeBufRef.current = await ctx.decodeAudioData(await takeBlobRef.current!.arrayBuffer());
+          if (!cancelled) setReviewReady(true);
+        }
       } catch {
         /* review playback just won't be available */
       }
@@ -181,7 +209,7 @@ export default function LokaWidgetRecorder() {
     return () => {
       cancelled = true;
     };
-  }, [capStatus, ensureReviewCtx]);
+  }, [capStatus, takeIsVideo, ensureReviewCtx]);
 
   // Tidy up the review context on unmount.
   useEffect(
@@ -196,8 +224,7 @@ export default function LokaWidgetRecorder() {
     const ctx = ensureReviewCtx();
     await ctx.resume();
     const loop = loopBufRef.current;
-    const take = takeBufRef.current;
-    if (!loop || !take) return;
+    if (!loop) return;
     stopReview();
     const t = ctx.currentTime + 0.06;
 
@@ -205,18 +232,52 @@ export default function LokaWidgetRecorder() {
     loopSrc.buffer = loop;
     loopSrc.connect(ctx.destination);
     loopSrc.start(t);
-
-    const takeSrc = ctx.createBufferSource();
-    takeSrc.buffer = take;
-    const g = ctx.createGain();
-    g.gain.value = takeVolumeRef.current;
-    takeSrc.connect(g);
-    g.connect(ctx.destination);
-    takeSrc.start(t);
-    takeGainRef.current = g;
-
-    reviewSrcRef.current = [loopSrc, takeSrc];
     loopSrc.onended = () => stopReview();
+    reviewSrcRef.current = [loopSrc];
+
+    if (takeIsVideo) {
+      // Play the recorded video (its own picture + sound) over the loop, routing
+      // its audio through a gain node so "Your volume" still applies.
+      const v = takeVideoRef.current;
+      if (v) {
+        if (!mediaElSrcRef.current) {
+          try {
+            mediaElSrcRef.current = ctx.createMediaElementSource(v);
+          } catch {
+            /* already bound to this element — reuse below */
+          }
+        }
+        const g = ctx.createGain();
+        g.gain.value = takeVolumeRef.current;
+        try {
+          mediaElSrcRef.current?.disconnect();
+        } catch {
+          /* noop */
+        }
+        mediaElSrcRef.current?.connect(g);
+        g.connect(ctx.destination);
+        takeGainRef.current = g;
+        try {
+          v.currentTime = 0;
+          await v.play();
+        } catch {
+          /* noop */
+        }
+      }
+    } else {
+      const take = takeBufRef.current;
+      if (take) {
+        const takeSrc = ctx.createBufferSource();
+        takeSrc.buffer = take;
+        const g = ctx.createGain();
+        g.gain.value = takeVolumeRef.current;
+        takeSrc.connect(g);
+        g.connect(ctx.destination);
+        takeSrc.start(t);
+        takeGainRef.current = g;
+        reviewSrcRef.current = [loopSrc, takeSrc];
+      }
+    }
     setReviewPlaying(true);
   }
 
@@ -311,6 +372,12 @@ export default function LokaWidgetRecorder() {
     setPlaying(false);
     takeBlobRef.current = null;
     takeBufRef.current = null;
+    setTakeIsVideo(false);
+    mediaElSrcRef.current = null;
+    setTakeUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return "";
+    });
     setCapStatus("idle");
   }
 
@@ -332,6 +399,12 @@ export default function LokaWidgetRecorder() {
     setReviewReady(false);
     takeBlobRef.current = null;
     takeBufRef.current = null;
+    setTakeIsVideo(false);
+    mediaElSrcRef.current = null;
+    setTakeUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return "";
+    });
     setCapStatus("idle");
     setError("");
     setPhase("capture");
@@ -355,8 +428,9 @@ export default function LokaWidgetRecorder() {
     setSubmitting(true);
     try {
       // Bake the singer's chosen volume into the track when they changed it.
+      // (Audio takes only — a video take is uploaded as captured.)
       let uploadBlob = blob;
-      if (Math.abs(takeVolume - 1) > 0.001) {
+      if (!takeIsVideo && Math.abs(takeVolume - 1) > 0.001) {
         try {
           const buf =
             takeBufRef.current ?? (await ensureReviewCtx().decodeAudioData(await blob.arrayBuffer()));
@@ -439,9 +513,12 @@ export default function LokaWidgetRecorder() {
 
           {/* Record controls — below the subtitles */}
           {capStatus === "idle" && (
-            <BigButton onClick={() => setShowHeadphones(true)} variant="record">
-              Click to record
-            </BigButton>
+            <div className="space-y-4">
+              <VideoToggle on={withVideo} onChange={setWithVideo} />
+              <BigButton onClick={() => setShowHeadphones(true)} variant="record">
+                {withVideo ? "Click to record video" : "Click to record"}
+              </BigButton>
+            </div>
           )}
 
           {capStatus === "countdown" && (
@@ -513,19 +590,29 @@ export default function LokaWidgetRecorder() {
 
           <div>
             <p className="mb-2 font-semibold" style={{ fontSize: "1rem", color: "var(--ink-800)" }}>
-              Listen to your recording with the song
+              {takeIsVideo ? "Watch your recording with the song" : "Listen to your recording with the song"}
             </p>
             <div
               className="rounded-2xl p-4 space-y-3"
               style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
             >
+              {takeIsVideo && (
+                <video
+                  ref={takeVideoRef}
+                  src={takeUrl}
+                  playsInline
+                  className="w-full rounded-xl"
+                  style={{ maxHeight: 280, background: "#000", transform: "scaleX(-1)" }}
+                  onEnded={stopReview}
+                />
+              )}
               <button
                 onClick={reviewPlaying ? stopReview : playReview}
                 disabled={!reviewReady}
                 className="w-full py-3 rounded-xl border font-semibold transition-colors disabled:opacity-50"
                 style={{ borderColor: "var(--surface-border)", color: "var(--ink-700)", background: "#fff", fontSize: "1.05rem" }}
               >
-                {reviewPlaying ? "Pause" : reviewReady ? "▶  Play back with the song" : "Preparing playback…"}
+                {reviewPlaying ? "Pause" : reviewReady ? `▶  Play ${takeIsVideo ? "it" : "back"} with the song` : "Preparing playback…"}
               </button>
               <label className="flex items-center gap-3" style={{ fontSize: "0.95rem", color: "var(--fg2)" }}>
                 <span style={{ width: "6em" }}>Your volume</span>
@@ -614,7 +701,7 @@ export default function LokaWidgetRecorder() {
       )}
 
       {showHeadphones && (
-        <HeadphonesPopup onCancel={() => setShowHeadphones(false)} onConfirm={confirmHeadphones} />
+        <HeadphonesPopup withVideo={withVideo} onCancel={() => setShowHeadphones(false)} onConfirm={confirmHeadphones} />
       )}
     </Card>
   );
@@ -643,11 +730,11 @@ function Modal({ children, onClose, labelledBy }: { children: React.ReactNode; o
   );
 }
 
-function HeadphonesPopup({ onCancel, onConfirm }: { onCancel: () => void; onConfirm: () => void }) {
+function HeadphonesPopup({ withVideo, onCancel, onConfirm }: { withVideo: boolean; onCancel: () => void; onConfirm: () => void }) {
   return (
     <Modal onClose={onCancel} labelledBy="loka-headphones-title">
       <div aria-hidden style={{ fontSize: "3rem", lineHeight: 1, marginBottom: "0.5rem" }}>
-        🎧
+        {withVideo ? "🎧🎥" : "🎧"}
       </div>
       <h3 id="loka-headphones-title" className="font-serif mb-3" style={{ fontSize: "1.7rem", fontWeight: 600, color: "var(--ink-900)" }}>
         Please put on headphones
@@ -655,6 +742,7 @@ function HeadphonesPopup({ onCancel, onConfirm }: { onCancel: () => void; onConf
       <p className="mb-4" style={{ fontSize: "1.15rem", lineHeight: 1.7, color: "var(--fg2)" }}>
         Headphones keep the song from bleeding into your microphone, so your
         voice records cleanly. Then just relax and sing along.
+        {withVideo ? " Your camera will record you too — you'll see yourself on screen." : ""}
       </p>
       <p
         className="mb-6 rounded-xl px-4 py-3"
@@ -710,6 +798,46 @@ function BigButton({
     >
       {children}
     </button>
+  );
+}
+
+function VideoToggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div
+      className="flex items-center justify-between gap-4 rounded-2xl px-4 py-3"
+      style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }}
+    >
+      <div>
+        <p className="font-semibold" style={{ fontSize: "1.1rem", color: "var(--ink-800)" }}>
+          {on ? "Record video too" : "Audio only"}
+        </p>
+        <p style={{ fontSize: "0.95rem", color: "var(--fg2)", lineHeight: 1.4 }}>
+          {on ? "Your camera and microphone are used." : "Just your voice — the camera stays off."}
+        </p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={on}
+        aria-label="Record video too"
+        onClick={() => onChange(!on)}
+        className="shrink-0 rounded-full transition-colors"
+        style={{
+          width: 64,
+          height: 36,
+          padding: 4,
+          background: on ? "var(--gold-600)" : "var(--parch-300)",
+          display: "flex",
+          justifyContent: on ? "flex-end" : "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <span
+          className="block rounded-full"
+          style={{ width: 28, height: 28, background: "#fff", boxShadow: "var(--shadow-sm)" }}
+        />
+      </button>
+    </div>
   );
 }
 

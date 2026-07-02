@@ -68,13 +68,22 @@ export default async function AdminLokaPage() {
                   >
                     {r.approved ? "Approved" : "Pending"}
                   </span>
+                  {(r.mimeType ?? "").startsWith("video/") && (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-700">
+                      🎥 Video
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-gray-400 mt-0.5">
                   <a href={`mailto:${r.email}`} className="hover:underline">{r.email}</a>
                   {" · "}
                   {formatDate(r.createdAt)}
                 </p>
-                <audio controls preload="none" src={r.audioUrl} className="mt-2 w-full max-w-md h-9" />
+                {(r.mimeType ?? "").startsWith("video/") ? (
+                  <video controls preload="metadata" src={r.audioUrl} className="mt-2 w-full max-w-md rounded-lg bg-black" />
+                ) : (
+                  <audio controls preload="none" src={r.audioUrl} className="mt-2 w-full max-w-md h-9" />
+                )}
               </div>
               <LokaRowActions id={r.id} approved={r.approved} />
             </div>
