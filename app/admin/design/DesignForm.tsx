@@ -116,9 +116,9 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
         </div>
       </div>
 
-      {/* The single large colour wheel + live preview */}
+      {/* The single, large colour studio + live preview */}
       <div className="lg:sticky lg:top-6 space-y-6">
-        <ColorWheel
+        <ColorStudio
           label={KEY_LABELS[activeKey]}
           value={activeValue}
           onChange={(c) => set({ [activeKey]: c })}
@@ -229,7 +229,7 @@ function SwatchButton({
   );
 }
 
-/* ── One big multifunctional colour wheel ──────────────────────────── */
+/* ── World-class colour studio (one large picker at a time) ────────── */
 
 // Quick presets drawn from the site palette (purples, greens, golds, neutrals).
 const PRESETS = [
@@ -237,13 +237,23 @@ const PRESETS = [
   "#b8860b", "#d4af37", "#f6eedc", "#fbf7ec", "#1a2744", "#ffffff",
 ];
 
-function ColorWheel({ label, value, onChange }: { label: string; value: string; onChange: (c: string) => void }) {
+type EyeDropperResult = { sRGBHex: string };
+type EyeDropperCtor = new () => { open: () => Promise<EyeDropperResult> };
+
+function ColorStudio({ label, value, onChange }: { label: string; value: string; onChange: (c: string) => void }) {
   const [hsv, setHsv] = useState(() => hexToHsv(value));
   const [text, setText] = useState(value);
+  const [ready, setReady] = useState(false); // gates client-only bits (eyedropper)
   const lastHex = useRef(value);
-  const wheelRef = useRef<HTMLDivElement | null>(null);
+  const svRef = useRef<HTMLDivElement | null>(null);
 
-  // Re-derive HSV when the colour changes from outside this wheel (e.g. the
+  // Flip after the first client paint so the server/client markup matches.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // Re-derive HSV when the colour changes from outside this picker (e.g. the
   // admin selects a different swatch), but not from our own drag/typing.
   useEffect(() => {
     if (value.toLowerCase() !== lastHex.current.toLowerCase()) {
@@ -268,148 +278,193 @@ function ColorWheel({ label, value, onChange }: { label: string; value: string; 
     onChange(hex);
   };
 
-  // Map a pointer position onto hue (angle from top, clockwise) + saturation
-  // (distance from centre).
-  const pickWheel = (clientX: number, clientY: number) => {
-    const el = wheelRef.current;
+  // Pointer → saturation (x) and brightness/value (y) on the SV plane.
+  const pickSV = (clientX: number, clientY: number) => {
+    const el = svRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-    const dx = clientX - cx;
-    const dy = clientY - cy;
-    const radius = r.width / 2;
-    const s = clamp01(Math.sqrt(dx * dx + dy * dy) / radius);
-    let h = Math.atan2(dx, -dy) * (180 / Math.PI);
-    if (h < 0) h += 360;
-    emit({ h, s, v: hsv.v });
+    const s = clamp01((clientX - r.left) / r.width);
+    const v = clamp01(1 - (clientY - r.top) / r.height);
+    emit({ h: hsv.h, s, v });
   };
 
-  // Handle position, in % of the wheel (centre = 50%, edge = full saturation).
-  const rad = (hsv.h * Math.PI) / 180;
-  const handleX = 50 + Math.sin(rad) * hsv.s * 50;
-  const handleY = 50 - Math.cos(rad) * hsv.s * 50;
-  const fullColor = hsvToHex(hsv.h, hsv.s, 1); // colour at full brightness
+  const rgb = hexToRgb(HEX.test(value) ? value : "#000000");
+  const setChannel = (k: "r" | "g" | "b", n: number) => {
+    const c = Math.max(0, Math.min(255, Math.round(n) || 0));
+    const next = { ...rgb, [k]: c };
+    applyHex(rgbToHex(next.r, next.g, next.b));
+  };
+
+  const swatch = HEX.test(value) ? value : "#000000";
+  const hueColor = `hsl(${hsv.h} 100% 50%)`;
+  const canEyedrop = ready && typeof window !== "undefined" && "EyeDropper" in window;
+  const eyedrop = async () => {
+    const Ctor = (window as unknown as { EyeDropper?: EyeDropperCtor }).EyeDropper;
+    if (!Ctor) return;
+    try {
+      const { sRGBHex } = await new Ctor().open();
+      if (HEX.test(sRGBHex)) applyHex(sRGBHex);
+    } catch {
+      /* the picker was dismissed */
+    }
+  };
 
   return (
-    <div className="bg-white rounded-xl border p-5">
+    <div className="bg-white rounded-2xl border shadow-sm p-5 sm:p-6" style={{ borderColor: "var(--surface-border)" }}>
       <style>{`
-        .cw-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 3px solid #1a2744; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
-        .cw-range::-moz-range-thumb { width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 3px solid #1a2744; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+        .cs-hue::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2px solid rgba(0,0,0,0.18); box-shadow: 0 1px 4px rgba(0,0,0,.3); cursor: pointer; }
+        .cs-hue::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2px solid rgba(0,0,0,0.18); box-shadow: 0 1px 4px rgba(0,0,0,.3); cursor: pointer; }
       `}</style>
 
-      <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Editing</p>
-      <h2 className="font-semibold text-[#1a2744] mb-4">{label}</h2>
+      {/* Header with a live preview chip */}
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="min-w-0">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Editing</p>
+          <h2 className="font-semibold text-[#1a2744] text-lg leading-tight truncate">{label}</h2>
+        </div>
+        <div
+          className="h-12 w-12 shrink-0 rounded-xl"
+          style={{ background: swatch, boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.15)" }}
+          aria-hidden
+        />
+      </div>
 
-      {/* The wheel: hue around, saturation outward */}
+      {/* Saturation / brightness plane */}
       <div
-        ref={wheelRef}
-        role="slider"
-        aria-label={`${label} hue and saturation`}
+        ref={svRef}
+        aria-label={`${label} saturation and brightness — use the R, G, B or hex fields for exact values`}
         onPointerDown={(e) => {
           (e.target as Element).setPointerCapture?.(e.pointerId);
-          pickWheel(e.clientX, e.clientY);
+          pickSV(e.clientX, e.clientY);
         }}
         onPointerMove={(e) => {
-          if (e.buttons === 1) pickWheel(e.clientX, e.clientY);
+          if (e.buttons === 1) pickSV(e.clientX, e.clientY);
         }}
-        className="relative mx-auto"
+        className="relative w-full rounded-2xl overflow-hidden"
         style={{
-          width: "100%",
-          maxWidth: 320,
-          aspectRatio: "1 / 1",
-          borderRadius: "50%",
+          height: 232,
           cursor: "crosshair",
           touchAction: "none",
-          background:
-            "radial-gradient(circle at center, #fff 0%, rgba(255,255,255,0) 70%), conic-gradient(from 0deg, hsl(0 100% 50%), hsl(60 100% 50%), hsl(120 100% 50%), hsl(180 100% 50%), hsl(240 100% 50%), hsl(300 100% 50%), hsl(360 100% 50%))",
+          background: `linear-gradient(to top, #000, rgba(0,0,0,0)), linear-gradient(to right, #fff, rgba(255,255,255,0)), ${hueColor}`,
           boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
         }}
       >
-        {/* Brightness shade: darkens the whole wheel as value drops */}
         <div
           style={{
             position: "absolute",
-            inset: 0,
-            borderRadius: "50%",
-            background: "#000",
-            opacity: 1 - hsv.v,
-            pointerEvents: "none",
-          }}
-        />
-        {/* Handle */}
-        <div
-          style={{
-            position: "absolute",
-            left: `${handleX}%`,
-            top: `${handleY}%`,
-            width: 30,
-            height: 30,
-            marginLeft: -15,
-            marginTop: -15,
+            left: `${hsv.s * 100}%`,
+            top: `${(1 - hsv.v) * 100}%`,
+            width: 24,
+            height: 24,
+            marginLeft: -12,
+            marginTop: -12,
             borderRadius: "50%",
             border: "3px solid #fff",
-            boxShadow: "0 0 0 1.5px rgba(0,0,0,0.55), 0 1px 5px rgba(0,0,0,0.45)",
-            background: HEX.test(value) ? value : "#000",
+            boxShadow: "0 0 0 1.5px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.4)",
+            background: swatch,
             pointerEvents: "none",
           }}
         />
       </div>
 
-      {/* Brightness slider */}
-      <div className="mt-6">
-        <label className="block text-sm font-medium text-gray-600 mb-2">Brightness</label>
+      {/* Hue rail */}
+      <div className="mt-5">
         <input
           type="range"
           min={0}
-          max={100}
-          value={Math.round(hsv.v * 100)}
-          onChange={(e) => emit({ h: hsv.h, s: hsv.s, v: Number(e.target.value) / 100 })}
-          aria-label={`${label} brightness`}
-          className="cw-range w-full appearance-none rounded-full cursor-pointer"
-          style={{ height: 22, background: `linear-gradient(to right, #000, ${fullColor})` }}
-        />
-      </div>
-
-      {/* Big swatch + hex entry */}
-      <div className="flex items-center gap-3 mt-5">
-        <span
-          className="h-12 w-12 rounded-lg border shrink-0"
-          style={{ background: HEX.test(value) ? value : "#fff" }}
-          aria-hidden
-        />
-        <input
-          type="text"
-          value={text}
-          spellCheck={false}
-          onChange={(e) => {
-            const v = e.target.value;
-            setText(v);
-            if (HEX.test(v)) applyHex(v);
+          max={360}
+          value={Math.round(hsv.h)}
+          onChange={(e) => emit({ h: Number(e.target.value), s: hsv.s, v: hsv.v })}
+          aria-label={`${label} hue`}
+          className="cs-hue w-full appearance-none rounded-full cursor-pointer"
+          style={{
+            height: 18,
+            background:
+              "linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)",
           }}
-          placeholder="#000000"
-          aria-label={`${label} hex code`}
-          className="flex-1 px-3 py-2.5 text-base font-mono rounded-lg border"
         />
       </div>
 
-      {/* Quick presets */}
-      <div className="mt-5">
-        <p className="text-sm font-medium text-gray-600 mb-2">Quick colours</p>
-        <div className="flex flex-wrap gap-2">
-          {PRESETS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => applyHex(c)}
-              aria-label={`Use ${c}`}
-              className="h-9 w-9 rounded-lg border-2"
-              style={{
-                background: c,
-                borderColor: value.toLowerCase() === c.toLowerCase() ? "#1a2744" : "rgba(0,0,0,0.15)",
-              }}
+      {/* Eyedropper + hex */}
+      <div className="mt-5 flex items-center gap-2">
+        {canEyedrop && (
+          <button
+            type="button"
+            onClick={eyedrop}
+            title="Pick a colour from anywhere on screen"
+            aria-label="Pick a colour from anywhere on screen"
+            className="shrink-0 h-11 w-11 rounded-xl border flex items-center justify-center text-[#1a2744] transition-colors hover:bg-gray-50"
+            style={{ borderColor: "var(--surface-border)" }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="m2 22 1-1h3l9-9" />
+              <path d="M3 21v-3l9-9" />
+              <path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z" />
+            </svg>
+          </button>
+        )}
+        <div className="relative flex-1">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-gray-400 text-base">#</span>
+          <input
+            type="text"
+            value={text.replace(/^#/, "")}
+            spellCheck={false}
+            onChange={(e) => {
+              const raw = e.target.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6);
+              setText("#" + raw);
+              const hx = "#" + raw;
+              if (HEX.test(hx)) applyHex(hx);
+            }}
+            placeholder="6b4a76"
+            aria-label={`${label} hex code`}
+            className="w-full pl-7 pr-3 py-2.5 text-base font-mono uppercase tracking-wide rounded-xl border"
+            style={{ borderColor: "var(--surface-border)" }}
+          />
+        </div>
+      </div>
+
+      {/* RGB */}
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        {(["r", "g", "b"] as const).map((k) => (
+          <label key={k} className="block">
+            <span className="block text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-1">{k}</span>
+            <input
+              type="number"
+              min={0}
+              max={255}
+              value={rgb[k]}
+              onChange={(e) => setChannel(k, Number(e.target.value))}
+              aria-label={`${label} ${k.toUpperCase()} channel`}
+              className="w-full px-2.5 py-2 text-sm font-mono rounded-lg border"
+              style={{ borderColor: "var(--surface-border)" }}
             />
-          ))}
+          </label>
+        ))}
+      </div>
+
+      {/* Palette */}
+      <div className="mt-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Palette</p>
+        <div className="grid grid-cols-6 gap-2">
+          {PRESETS.map((c) => {
+            const active = value.toLowerCase() === c.toLowerCase();
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => applyHex(c)}
+                aria-label={`Use ${c}`}
+                aria-pressed={active}
+                className="aspect-square rounded-lg transition-transform hover:scale-[1.08]"
+                style={{
+                  background: c,
+                  boxShadow: active
+                    ? "0 0 0 2px #fff, 0 0 0 4px #1a2744"
+                    : "inset 0 0 0 1px rgba(0,0,0,0.12)",
+                }}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
