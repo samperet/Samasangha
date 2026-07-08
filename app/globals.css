@@ -96,6 +96,20 @@
 }
 
 /* ── Base element styles ────────────────────────────────────────── */
+/* Larger type across the whole site, biggest on mobile. Everything sized in
+   rem (body copy, headings, Tailwind text-* utilities) scales from here, so a
+   single root bump enlarges the site uniformly. Expressed as a % of the
+   browser's default so user zoom / accessibility settings are still honoured. */
+html {
+  font-size: 118.75%; /* ~19px on a 16px default — mobile */
+}
+@media (min-width: 768px) {
+  html { font-size: 112.5%; } /* ~18px — tablet */
+}
+@media (min-width: 1280px) {
+  html { font-size: 109.375%; } /* ~17.5px — large screens, still larger than before */
+}
+
 body {
   background: var(--bg);
   color: var(--fg1);
@@ -130,6 +144,29 @@ blockquote {
 }
 
 /* ── Reusable classes ────────────────────────────────────────────── */
+/* Collapsible disclosure built on native <details>. The summary is a tap
+   target; its default marker is hidden in favour of a rotating chevron, and a
+   "Show details / Hide details" label swaps via CSS so it works with no JS. */
+.disclosure > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.disclosure .disc-chevron {
+  transition: transform 0.2s ease;
+}
+.disclosure[open] .disc-chevron {
+  transform: rotate(180deg);
+}
+.disclosure .disc-label::after {
+  content: "Show details";
+}
+.disclosure[open] .disc-label::after {
+  content: "Hide details";
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;   /* IE/Edge */
   scrollbar-width: none;      /* Firefox */

@@ -128,7 +128,7 @@ export default async function HomePage() {
             <div className="flex justify-center">
               <Image
                 src="/assets/TuesdayPractice.png"
-                alt="Weekly Practice, people in a circle"
+                alt="Weekly Zoom Practice, people in a circle"
                 width={200}
                 height={200}
                 className="rounded-2xl"
@@ -136,46 +136,58 @@ export default async function HomePage() {
               />
             </div>
             <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
-              <h2 className="font-serif mb-4 text-center" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
-                Weekly Practice
-              </h2>
-              <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
-                Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
-                Sufi practice and meditation, zikr, breath, and heart awakening. All are welcome.
-              </p>
-              <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
-                Our intentions are toward 7 generations, toward Peace on Earth. Practice is free,
-                supported by dana.
-              </p>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5 mt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>When</dt>
-                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Every Tuesday, 9 AM EST</dd>
+              <details className="disclosure">
+                <summary className="list-none select-none">
+                  <h2 className="font-serif text-center" style={{ fontSize: "clamp(1.5rem, 3.4vw, 2.05rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
+                    Weekly Zoom Practice
+                  </h2>
+                  <span className="mt-2 flex items-center justify-center gap-1.5" style={{ color: "var(--gold-700)" }}>
+                    <span className="disc-label eyebrow" style={{ fontSize: "0.72rem" }} />
+                    <svg className="disc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </span>
+                </summary>
+                <div className="pt-5">
+                  <p className="leading-relaxed mb-3" style={{ color: "var(--fg2)" }}>
+                    Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
+                    Sufi practice and meditation, zikr, breath, and heart awakening. All are welcome.
+                  </p>
+                  <p className="leading-relaxed" style={{ color: "var(--fg2)" }}>
+                    Our intentions are toward 7 generations, toward Peace on Earth. Practice is free,
+                    supported by dana.
+                  </p>
+                  <dl className="grid grid-cols-2 gap-x-6 gap-y-3 pt-5 mt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>When</dt>
+                      <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Every Tuesday, 9 AM EST</dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>Where</dt>
+                      <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Online via Zoom, link sent via newsletter</dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>Cost</dt>
+                      <dd style={{ color: "var(--fg2)" }}>Free, dana welcome</dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>Open to</dt>
+                      <dd style={{ color: "var(--fg2)" }}>All, no experience needed</dd>
+                    </div>
+                  </dl>
+                  <div className="mt-5 flex justify-center">
+                    <a
+                      href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block font-semibold px-6 py-2.5 rounded-lg"
+                      style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
+                    >
+                      Join our Newsletter →
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Where</dt>
-                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Online via Zoom, link sent via newsletter</dd>
-                </div>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Cost</dt>
-                  <dd style={{ color: "var(--fg2)" }}>Free, dana welcome</dd>
-                </div>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Open to</dt>
-                  <dd style={{ color: "var(--fg2)" }}>All, no experience needed</dd>
-                </div>
-              </dl>
-              <div className="mt-5 flex justify-center">
-                <a
-                  href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
-                  style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
-                >
-                  Join our Newsletter →
-                </a>
-              </div>
+              </details>
             </div>
           </div>
 
@@ -196,45 +208,57 @@ export default async function HomePage() {
               />
             </div>
             <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
-              <h2 className="font-serif mb-4 text-center" style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
-                Dances of Universal Peace
-              </h2>
-              <p className="leading-relaxed mb-3 text-sm" style={{ color: "var(--fg2)" }}>
-                Sacred circle dances drawing from the spiritual traditions of the world, Hindu,
-                Buddhist, Sufi, Christian, Jewish, and Indigenous. Singing and moving together,
-                we embrace the unity at the heart of all paths.
-              </p>
-              <p className="leading-relaxed text-sm" style={{ color: "var(--fg2)" }}>
-                The Dances of Universal Peace are held in trust by the Sufi Ruhaniat International
-                for the benefit of all people. No experience required, only your presence.
-              </p>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-5 mt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>When</dt>
-                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Third Saturday · 7:30–9:45 PM</dd>
+              <details className="disclosure">
+                <summary className="list-none select-none">
+                  <h2 className="font-serif text-center" style={{ fontSize: "clamp(1.5rem, 3.4vw, 2.05rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.15 }}>
+                    Dances of Universal Peace
+                  </h2>
+                  <span className="mt-2 flex items-center justify-center gap-1.5" style={{ color: "var(--gold-700)" }}>
+                    <span className="disc-label eyebrow" style={{ fontSize: "0.72rem" }} />
+                    <svg className="disc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </span>
+                </summary>
+                <div className="pt-5">
+                  <p className="leading-relaxed mb-3" style={{ color: "var(--fg2)" }}>
+                    Sacred circle dances drawing from the spiritual traditions of the world, Hindu,
+                    Buddhist, Sufi, Christian, Jewish, and Indigenous. Singing and moving together,
+                    we embrace the unity at the heart of all paths.
+                  </p>
+                  <p className="leading-relaxed" style={{ color: "var(--fg2)" }}>
+                    The Dances of Universal Peace are held in trust by the Sufi Ruhaniat International
+                    for the benefit of all people. No experience required, only your presence.
+                  </p>
+                  <dl className="grid grid-cols-2 gap-x-6 gap-y-3 pt-5 mt-5" style={{ borderTop: "1px solid var(--surface-border)" }}>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>When</dt>
+                      <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Third Saturday · 7:30–9:45 PM</dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>Where</dt>
+                      <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Friends Meeting House, Cambridge</dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>Contribution</dt>
+                      <dd style={{ color: "var(--fg2)" }}>$10–15 suggested</dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow mb-0.5" style={{ fontSize: "0.68rem", color: "var(--gold-600)" }}>Led by</dt>
+                      <dd style={{ color: "var(--fg2)" }}>Abraham, Halima & Friends</dd>
+                    </div>
+                  </dl>
+                  <div className="mt-5 flex justify-center">
+                    <Link
+                      href="/dances"
+                      className="inline-block font-semibold px-6 py-2.5 rounded-lg"
+                      style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
+                    >
+                      About the Dances →
+                    </Link>
+                  </div>
                 </div>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Where</dt>
-                  <dd className="font-medium" style={{ color: "var(--ink-900)" }}>Friends Meeting House, Cambridge</dd>
-                </div>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Contribution</dt>
-                  <dd style={{ color: "var(--fg2)" }}>$10–15 suggested</dd>
-                </div>
-                <div>
-                  <dt className="eyebrow mb-0.5" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>Led by</dt>
-                  <dd style={{ color: "var(--fg2)" }}>Abraham, Halima & Friends</dd>
-                </div>
-              </dl>
-              <div className="mt-5 flex justify-center">
-                <Link
-                  href="/dances"
-                  className="inline-block font-semibold px-6 py-2.5 rounded-lg text-sm"
-                  style={{ background: "#3a8db7", color: "#ffffff", boxShadow: "var(--shadow-sm)" }}
-                >
-                  About the Dances →
-                </Link>
-              </div>
+              </details>
             </div>
           </div>
         </div>
