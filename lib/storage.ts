@@ -14,11 +14,24 @@ const MIME_EXT: Record<string, string> = {
   "application/pdf": ".pdf",
 };
 
+// Images (photos, flyers, artwork) plus PDF (printable flyers/programmes).
+export const ALLOWED_UPLOAD_TYPES = new Set(Object.keys(MIME_EXT));
+export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024; // 25 MB
+
 // Prefer the uploaded filename's extension; fall back to the MIME type.
 function extFor(file: File): string {
-  const fromName = path.extname(file.name || "").toLowerCase();
+  return extFrom(file.name, file.type);
+}
+
+function extFrom(name: string, type: string): string {
+  const fromName = path.extname(name || "").toLowerCase();
   if (fromName && /^\.[a-z0-9]{1,5}$/.test(fromName)) return fromName;
-  return MIME_EXT[file.type] ?? "";
+  return MIME_EXT[type] ?? "";
+}
+
+/** Object key for a stored file, shared by the server and presigned uploads. */
+export function storageKey(name: string, type: string, folder = "uploads"): string {
+  return `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}${extFrom(name, type)}`;
 }
 
 export async function uploadFile(

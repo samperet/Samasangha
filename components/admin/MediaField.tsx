@@ -33,21 +33,82 @@ export default function MediaField({
   const accept = allowPdf ? "image/*,application/pdf" : "image/*";
   const noun = allowPdf ? "image or PDF" : "image";
 
+  // Post the file through our own API. Serverless platforms cap a function's
+  // request body (4.5 MB on Vercel), so this is the small-file / local-dev path.
+  async function uploadViaApi(file: File): Promise<string | null> {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      if (res.status === 413) {
+        throw new Error(
+          `That file is ${(file.size / 1024 / 1024).toFixed(1)} MB, over the 4.5 MB the server accepts directly. Please use a smaller file.`
+        );
+      }
+      throw new Error(
+        (body && typeof body.error === "string" && body.error) ||
+          `Upload failed (${res.status}). Please try again.`
+      );
+    }
+    return (await res.json()).url as string;
+  }
+
+  // Ask for a presigned URL and send the file straight to storage, so its size
+  // is never limited by the serverless function. Returns null when the server
+  // has no direct-upload storage configured.
+  async function uploadDirect(file: File): Promise<string | null> {
+    const sign = await fetch("/api/upload/presign", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+        size: file.size,
+      }),
+    });
+    if (sign.status === 501) return null; // not configured — caller falls back
+    const info = await sign.json().catch(() => ({}));
+    if (!sign.ok) throw new Error(info.error || "Upload failed. Please try again.");
+
+    const put = await fetch(info.uploadUrl, {
+      method: "PUT",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
+    if (!put.ok) throw new Error(`Storage rejected the file (${put.status}).`);
+
+    // Record it in the media library (a small JSON post, no size concerns).
+    await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        url: info.publicUrl,
+        filename: file.name,
+        mimeType: file.type,
+        size: file.size,
+      }),
+    });
+    return info.publicUrl as string;
+  }
+
   async function upload(file: File) {
     setError("");
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(typeof data.error === "string" ? data.error : "Upload failed. Please try again.");
-        return;
+      let url: string | null = null;
+      try {
+        url = await uploadDirect(file);
+      } catch (e) {
+        // Direct upload exists but failed (e.g. the bucket's CORS rules): fall
+        // back for files the function can still accept, otherwise report it.
+        if (file.size > 4.4 * 1024 * 1024) throw e;
+        url = null;
       }
-      onChange(data.url);
-    } catch {
-      setError("Upload failed. Please check your connection and try again.");
+      if (url === null) url = await uploadViaApi(file);
+      if (url) onChange(url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }

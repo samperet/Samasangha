@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { uploadFile } from "@/lib/storage";
+import { ALLOWED_UPLOAD_TYPES, MAX_UPLOAD_BYTES, uploadFile } from "@/lib/storage";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -10,22 +10,40 @@ export async function GET() {
   return NextResponse.json(media);
 }
 
-// Images (for photos, flyers, artwork) plus PDF (printable flyers/programmes).
-const ALLOWED = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "image/avif",
-  "image/svg+xml",
-  "image/heic",
-  "application/pdf",
-]);
-const MAX_BYTES = 25 * 1024 * 1024; // 25 MB
+const ALLOWED = ALLOWED_UPLOAD_TYPES;
+const MAX_BYTES = MAX_UPLOAD_BYTES;
 
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // A JSON body means the browser already PUT the file straight to R2 via a
+  // presigned URL; we only need to record it in the media library.
+  if (req.headers.get("content-type")?.includes("application/json")) {
+    const { url, filename, mimeType, size } = (await req.json().catch(() => ({}))) as {
+      url?: string;
+      filename?: string;
+      mimeType?: string;
+      size?: number;
+    };
+    const base = process.env.R2_PUBLIC_URL;
+    // Only accept URLs in our own bucket, so this can't record arbitrary links.
+    if (!url || !base || !url.startsWith(`${base}/`)) {
+      return NextResponse.json({ error: "Invalid upload" }, { status: 400 });
+    }
+    if (!mimeType || !ALLOWED.has(mimeType)) {
+      return NextResponse.json({ error: "Please choose an image or a PDF." }, { status: 400 });
+    }
+    const media = await prisma.media.create({
+      data: {
+        filename: filename || `pasted-${Date.now()}`,
+        url,
+        mimeType,
+        size: typeof size === "number" ? size : 0,
+      },
+    });
+    return NextResponse.json(media);
+  }
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
