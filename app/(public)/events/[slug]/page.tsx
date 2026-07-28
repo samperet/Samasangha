@@ -135,10 +135,26 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           )}
         </dl>
 
-        {/* Flyer */}
-        {event.flyerUrl && (
-          <img src={event.flyerUrl} alt={event.title} className="w-full rounded-xl mb-6 object-cover max-h-80" />
-        )}
+        {/* Flyer — an image renders inline; a PDF gets a link to open it. */}
+        {event.flyerUrl &&
+          (/\.pdf(\?|#|$)/i.test(event.flyerUrl) ? (
+            <a
+              href={event.flyerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg mb-6"
+              style={{
+                background: "var(--lapis-700)",
+                color: "var(--fg-on-dark)",
+                boxShadow: "var(--shadow-sm)",
+              }}
+            >
+              <span aria-hidden>📄</span>
+              View the flyer (PDF)
+            </a>
+          ) : (
+            <img src={event.flyerUrl} alt={event.title} className="w-full rounded-xl mb-6 object-cover max-h-80" />
+          ))}
       </div>
 
       {/* Description */}

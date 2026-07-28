@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
+import MediaField from "@/components/admin/MediaField";
 import type { Event } from "@prisma/client";
 
 const cardStyle: React.CSSProperties = {
@@ -16,10 +17,6 @@ const cardStyle: React.CSSProperties = {
 export default function EventForm({ event }: { event?: Event }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [flyerUploading, setFlyerUploading] = useState(false);
-  const [featuredUploading, setFeaturedUploading] = useState(false);
-  const flyerInputRef = useRef<HTMLInputElement>(null);
-  const featuredInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     title: event?.title ?? "",
     description: event?.description ?? "",
@@ -58,28 +55,6 @@ export default function EventForm({ event }: { event?: Event }) {
   function set(key: string, value: string | boolean) {
     setForm((f) => ({ ...f, [key]: value }));
   }
-
-  async function uploadImage(
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: "flyerUrl" | "featuredImageUrl",
-    setUploading: (v: boolean) => void
-  ) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    if (res.ok) {
-      const data = await res.json();
-      set(field, data.url);
-    }
-    setUploading(false);
-  }
-  const handleFlyerUpload = (e: React.ChangeEvent<HTMLInputElement>) =>
-    uploadImage(e, "flyerUrl", setFlyerUploading);
-  const handleFeaturedUpload = (e: React.ChangeEvent<HTMLInputElement>) =>
-    uploadImage(e, "featuredImageUrl", setFeaturedUploading);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -136,104 +111,20 @@ export default function EventForm({ event }: { event?: Event }) {
         <div>
           <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Featured image</label>
           <p className="text-xs text-gray-400 mb-1.5">Shown on the homepage and event listings. A square image works best.</p>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <input
-                ref={featuredInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFeaturedUpload}
-              />
-              <button
-                type="button"
-                onClick={() => featuredInputRef.current?.click()}
-                disabled={featuredUploading}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 border disabled:opacity-50"
-                style={{ background: "var(--parch-100)", color: "var(--ink-700)", borderColor: "var(--surface-border)" }}
-              >
-                {featuredUploading ? "Uploading…" : "Upload image"}
-              </button>
-              <span className="text-xs" style={{ color: "var(--fg3)" }}>or paste a URL below</span>
-            </div>
-            <Input
-              type="text"
-              value={form.featuredImageUrl}
-              onChange={(e) => set("featuredImageUrl", e.target.value)}
-              placeholder="/uploads/… or https://…"
-            />
-            {form.featuredImageUrl && (
-              <div className="relative w-56">
-                <img
-                  src={form.featuredImageUrl}
-                  alt="Featured preview"
-                  className="w-56 rounded-lg object-cover"
-                  style={{ border: "1px solid var(--surface-border)", maxHeight: 120 }}
-                />
-                <button
-                  type="button"
-                  onClick={() => set("featuredImageUrl", "")}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-xs flex items-center justify-center"
-                  style={{ background: "var(--crimson-700)", color: "#fff" }}
-                >
-                  ×
-                </button>
-              </div>
-            )}
-          </div>
+          <MediaField
+            value={form.featuredImageUrl}
+            onChange={(url) => set("featuredImageUrl", url)}
+          />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Flyer image</label>
-          <p className="text-xs text-gray-400 mb-1.5">The printable flyer, linked from the event page, not shown inline.</p>
-          <div className="space-y-2">
-            {/* Upload button */}
-            <div className="flex items-center gap-2">
-              <input
-                ref={flyerInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFlyerUpload}
-              />
-              <button
-                type="button"
-                onClick={() => flyerInputRef.current?.click()}
-                disabled={flyerUploading}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 border disabled:opacity-50"
-                style={{ background: "var(--parch-100)", color: "var(--ink-700)", borderColor: "var(--surface-border)" }}
-              >
-                {flyerUploading ? "Uploading…" : "Upload image"}
-              </button>
-              <span className="text-xs" style={{ color: "var(--fg3)" }}>or paste a URL below</span>
-            </div>
-            {/* Accepts an uploaded path (/uploads/…) or a full URL, so this is
-                type=text, type=url would reject relative upload paths. */}
-            <Input
-              type="text"
-              value={form.flyerUrl}
-              onChange={(e) => set("flyerUrl", e.target.value)}
-              placeholder="/uploads/… or https://…"
-            />
-            {/* Preview */}
-            {form.flyerUrl && (
-              <div className="relative w-40">
-                <img
-                  src={form.flyerUrl}
-                  alt="Flyer preview"
-                  className="w-40 rounded-lg object-cover"
-                  style={{ border: "1px solid var(--surface-border)", maxHeight: 120 }}
-                />
-                <button
-                  type="button"
-                  onClick={() => set("flyerUrl", "")}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-xs flex items-center justify-center"
-                  style={{ background: "var(--crimson-700)", color: "#fff" }}
-                >
-                  ×
-                </button>
-              </div>
-            )}
-          </div>
+          <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Flyer (image or PDF)</label>
+          <p className="text-xs text-gray-400 mb-1.5">The printable flyer, linked from the event page. A PDF works well here.</p>
+          <MediaField
+            value={form.flyerUrl}
+            onChange={(url) => set("flyerUrl", url)}
+            allowPdf
+            previewWidth={160}
+          />
         </div>
         <div className="flex flex-wrap gap-5 pt-1">
           {([
