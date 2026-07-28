@@ -140,7 +140,11 @@ export default function EventForm({ event }: { event?: Event }) {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1" style={{ color: "var(--ink-700)" }}>Flyer (image or PDF)</label>
-          <p className="text-xs text-gray-400 mb-1.5">The printable flyer, linked from the event page. A PDF works well here.</p>
+          <p className="text-xs text-gray-400 mb-1.5">
+            The printable flyer, linked from the event page. A PDF works well here. For a large
+            file, it can also be committed to <code>/public/flyers/</code> and referenced below as{" "}
+            <code>/flyers/name.pdf</code>.
+          </p>
           <MediaField
             value={form.flyerUrl}
             onChange={(url) => set("flyerUrl", url)}
