@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { parseEventData } from "@/lib/parse-event";
+import { EventDataError, parseEventData } from "@/lib/parse-event";
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -14,9 +14,20 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
-  const data = await req.json();
-  const event = await prisma.event.update({ where: { id }, data: parseEventData(data) });
-  return NextResponse.json(event);
+  try {
+    const data = await req.json();
+    const event = await prisma.event.update({ where: { id }, data: parseEventData(data) });
+    return NextResponse.json(event);
+  } catch (e) {
+    if (e instanceof EventDataError) {
+      return NextResponse.json({ error: e.message }, { status: 400 });
+    }
+    console.error("Event update failed:", e);
+    return NextResponse.json(
+      { error: "The event couldn't be saved. Please try again." },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {

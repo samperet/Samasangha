@@ -17,6 +17,7 @@ const cardStyle: React.CSSProperties = {
 export default function EventForm({ event }: { event?: Event }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     title: event?.title ?? "",
     description: event?.description ?? "",
@@ -59,9 +60,12 @@ export default function EventForm({ event }: { event?: Event }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setError("");
     const method = event ? "PUT" : "POST";
     const url = event ? `/api/admin/events/${event.id}` : "/api/admin/events";
-    await fetch(url, {
+    let res: Response;
+    try {
+      res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -76,8 +80,26 @@ export default function EventForm({ event }: { event?: Event }) {
         earlyBirdDeadline: form.earlyBirdDeadline || null,
         kidsDiscountPercent: form.kidsDiscountPercent ? parseInt(form.kidsDiscountPercent) : null,
         registrationDeadline: form.registrationDeadline || null,
-      }),
-    });
+        }),
+      });
+    } catch {
+      setSaving(false);
+      setError("Couldn't reach the server. Please check your connection and try again.");
+      return;
+    }
+
+    // Stay on the form when the save fails, so nothing typed is lost.
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setSaving(false);
+      setError(
+        typeof body.error === "string"
+          ? body.error
+          : "The event couldn't be saved. Please try again."
+      );
+      return;
+    }
+
     router.push("/admin/events");
     router.refresh();
   }
@@ -270,6 +292,16 @@ export default function EventForm({ event }: { event?: Event }) {
           </div>
         )}
       </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="rounded-lg px-4 py-3 text-sm"
+          style={{ background: "var(--terra-100)", color: "var(--terra-700)" }}
+        >
+          {error}
+        </p>
+      )}
 
       <div className="flex flex-wrap gap-3 pt-1">
         <Button type="submit" disabled={saving}>
