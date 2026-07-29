@@ -62,8 +62,16 @@ export default async function TeachersPage() {
 
         <div
           className="rounded-2xl overflow-hidden"
-          style={{ border: "1px solid var(--surface-border)" }}
+          style={{ border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
         >
+          {/* Landscape photo, with the about text sitting underneath it */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/AHHA-in-the-yurt.png"
+            alt="Abraham and Halima in the yurt"
+            className="w-full object-cover block"
+            style={{ maxHeight: 320, objectPosition: "center 20%" }}
+          />
           <div
             className="p-7 space-y-5 leading-relaxed"
             style={{ background: "#fff", color: "var(--fg2)", fontSize: "1.0625rem" }}
@@ -101,16 +109,6 @@ export default async function TeachersPage() {
           <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
             Our teachers
           </p>
-
-          {/* Yurt photo */}
-          <div className="mb-6 rounded-2xl overflow-hidden" style={{ boxShadow: "var(--shadow-md)" }}>
-            <img
-              src="/assets/AHHA-in-the-yurt.png"
-              alt="Abraham and Halima in the yurt"
-              className="w-full object-cover"
-              style={{ maxHeight: 320, objectPosition: "center 20%" }}
-            />
-          </div>
 
           <div className="grid sm:grid-cols-2 gap-5">
             {ourTeachers.map((t) => {
