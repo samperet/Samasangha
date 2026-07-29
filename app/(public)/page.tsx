@@ -32,7 +32,6 @@ function GoldRule() {
 export default async function HomePage() {
   const events = await getUpcomingEvents();
   const design = await getSiteDesign();
-  const purpleBg = sectionBackground(design.purpleType, design.purpleFrom, design.purpleTo);
   const greenBg = sectionBackground(design.greenType, design.greenFrom, design.greenTo);
 
   return (
@@ -59,15 +58,21 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* ── About us ───────────────────────────────────────────── */}
+      {/* ── About us + the regular gatherings, together on the blue temple
+            tilework used behind the header. The design "gatherings" colour
+            sits underneath as the base tint while the texture loads. ── */}
       <section
         role="region"
-        aria-label="About SamaSangha"
-        className="relative py-14 px-5 text-center overflow-hidden"
+        aria-label="About SamaSangha and regular gatherings"
+        className="relative pt-14 pb-16 md:pb-20 px-5 text-center overflow-hidden"
         style={{
-          backgroundImage: "url('/assets/lotus-background-sama3.png')",
+          backgroundColor: design.purpleFrom,
+          backgroundImage:
+            "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          borderTop: "1px solid var(--surface-border)",
+          borderBottom: "1px solid var(--surface-border)",
         }}
       >
 
@@ -106,21 +111,12 @@ export default async function HomePage() {
             </p>
           </div>
         </div>
-      </section>
 
-      {/* ── Tuesday Practice & Dances, side by side when they fit ── */}
-      <section
-        role="region"
-        aria-label="Regular gatherings"
-        className="pt-28 pb-16 md:pt-32 md:pb-20 px-5"
-        style={{
-          background: purpleBg,
-          backgroundColor: design.purpleFrom,
-          borderTop: "1px solid var(--surface-border)",
-          borderBottom: "1px solid var(--surface-border)",
-        }}
-      >
-        <GatheringCards />
+        {/* Regular gatherings. The generous top margin leaves room for the
+            card images, which protrude above their cards. */}
+        <div className="relative z-10 mt-32 md:mt-36">
+          <GatheringCards />
+        </div>
       </section>
 
       {/* ── Retreats ────────────────────────────────────────────── */}
