@@ -15,26 +15,13 @@ function bg(type: string, from: string, to: string): string {
     : from;
 }
 
-// Every editable colour, keyed by its field name on SiteDesign.
-type ColorKey =
-  | "purpleFrom"
-  | "purpleTo"
-  | "greenFrom"
-  | "greenTo"
-  | "footerFrom"
-  | "footerTo";
+// The footer is the only editable colour. The other SiteDesign columns are
+// left untouched on save, so nothing needs migrating.
+type ColorKey = "footerFrom" | "footerTo";
 
-const SECTIONS = [
-  { title: "Gatherings section (purple)", prefix: "purple" },
-  { title: "Retreats section", prefix: "green" },
-  { title: "Footer (green)", prefix: "footer" },
-] as const;
+const SECTIONS = [{ title: "Footer", prefix: "footer" }] as const;
 
 const KEY_LABELS: Record<ColorKey, string> = {
-  purpleFrom: "Gatherings — main colour",
-  purpleTo: "Gatherings — gradient end",
-  greenFrom: "Retreats — main colour",
-  greenTo: "Retreats — gradient end",
   footerFrom: "Footer — main colour",
   footerTo: "Footer — gradient end",
 };
@@ -42,7 +29,7 @@ const KEY_LABELS: Record<ColorKey, string> = {
 export default function DesignForm({ initial }: { initial: SiteDesign }) {
   const router = useRouter();
   const [d, setD] = useState<SiteDesign>(initial);
-  const [activeKey, setActiveKey] = useState<ColorKey>("purpleFrom");
+  const [activeKey, setActiveKey] = useState<ColorKey>("footerFrom");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -126,11 +113,7 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
 
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Live preview</p>
-          <MiniHome
-            purpleBg={bg(d.purpleType, d.purpleFrom, d.purpleTo)}
-            greenBg={bg(d.greenType, d.greenFrom, d.greenTo)}
-            footerBg={bg(d.footerType, d.footerFrom, d.footerTo)}
-          />
+          <MiniFooter footerBg={bg(d.footerType, d.footerFrom, d.footerTo)} />
         </div>
       </div>
     </div>
@@ -471,74 +454,37 @@ function ColorStudio({ label, value, onChange }: { label: string; value: string;
   );
 }
 
-/* ── Mini homepage preview ─────────────────────────────────────────── */
+/* ── Mini footer preview ───────────────────────────────────────────── */
 
-function MiniHome({ purpleBg, greenBg, footerBg }: { purpleBg: string; greenBg: string; footerBg: string }) {
+function MiniFooter({ footerBg }: { footerBg: string }) {
   return (
     <div className="rounded-xl overflow-hidden border shadow-sm" style={{ borderColor: "var(--surface-border)" }}>
-      {/* Masthead */}
-      <div className="px-4 py-5 text-center" style={{ background: "radial-gradient(120% 80% at 50% -10%, #f6eedc 0%, #fbf7ec 60%)" }}>
-        <div className="mx-auto h-5 w-28 rounded" style={{ background: "var(--gold-300)", opacity: 0.7 }} />
-        <div className="mx-auto mt-2 h-2 w-40 rounded" style={{ background: "var(--parch-300)" }} />
-      </div>
-
-      {/* About strip */}
-      <div className="px-4 py-3" style={{ background: "#fff" }}>
-        <div className="mx-auto h-10 rounded-lg" style={{ background: "var(--parch-100)", border: "1px solid var(--surface-border)" }} />
-      </div>
-
-      {/* Gatherings (purple) */}
-      <div className="px-4 py-5" style={{ background: purpleBg }}>
-        <MiniHeading label="Regular gatherings" light />
-        <div className="grid grid-cols-2 gap-3 mt-3">
-          <MiniCard />
-          <MiniCard />
-        </div>
-      </div>
-
-      {/* Retreats */}
-      <div className="px-4 py-5" style={{ background: greenBg }}>
-        <MiniHeading label="Retreats" />
-        <div className="space-y-2 mt-3">
-          <MiniCard short />
-          <MiniCard short />
-        </div>
+      {/* A sliver of the page above, for context */}
+      <div className="px-4 py-6" style={{ background: "var(--parch-50)" }}>
+        <div className="mx-auto h-2.5 w-28 rounded" style={{ background: "var(--parch-300)" }} />
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-5" style={{ background: footerBg }}>
-        <div className="flex justify-center gap-1.5 mb-3" aria-hidden>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} style={{ color: "var(--gold-300)", fontSize: "0.7rem" }}>♥</span>
-          ))}
+      <div style={{ background: footerBg }}>
+        <div
+          className="px-4 py-2.5 text-center font-serif"
+          style={{ fontSize: "0.6rem", letterSpacing: "0.18em", color: "var(--gold-900)", opacity: 0.55, borderBottom: "1px solid rgba(110,77,18,.18)" }}
+        >
+          {"HEART".repeat(6)}
         </div>
-        <div className="flex justify-center gap-2">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <span key={i} className="h-2 w-12 rounded" style={{ background: "rgba(255,255,255,0.6)" }} />
-          ))}
+        <div className="px-4 py-5 grid grid-cols-2 gap-4 items-center">
+          <div className="flex justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/golden-footprints.png" alt="" aria-hidden className="h-16 w-auto opacity-70" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-6 rounded" style={{ background: "var(--parch-50)", border: "1px solid var(--gold-400)" }} />
+            <div className="h-6 rounded" style={{ background: "var(--ink-900)" }} />
+            <div className="h-6 rounded" style={{ border: "1px solid rgba(42,33,24,.35)" }} />
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function MiniHeading({ label, light }: { label: string; light?: boolean }) {
-  return (
-    <p
-      className="text-center font-serif uppercase tracking-widest"
-      style={{ fontSize: "0.7rem", color: light ? "rgba(255,255,255,0.92)" : "var(--ink-900)" }}
-    >
-      {label}
-    </p>
-  );
-}
-
-function MiniCard({ short }: { short?: boolean }) {
-  return (
-    <div
-      className="rounded-lg"
-      style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)", height: short ? 28 : 64 }}
-    />
   );
 }
 

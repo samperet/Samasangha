@@ -4,7 +4,6 @@ import GatheringCards from "@/components/public/GatheringCards";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
-import { getSiteDesign, sectionBackground } from "@/lib/design";
 
 export const revalidate = 60;
 
@@ -31,8 +30,6 @@ function GoldRule() {
 
 export default async function HomePage() {
   const events = await getUpcomingEvents();
-  const design = await getSiteDesign();
-  const greenBg = sectionBackground(design.greenType, design.greenFrom, design.greenTo);
 
   return (
     <>
@@ -53,7 +50,8 @@ export default async function HomePage() {
             pointerEvents: "none",
           }}
         />
-        <div className="relative w-full" style={{ maxWidth: "min(94vw, 1280px)" }}>
+        {/* Same max width as the About card below, so the two line up. */}
+        <div className="relative w-full max-w-4xl">
           <InvocationCarousel />
         </div>
       </div>
@@ -124,7 +122,7 @@ export default async function HomePage() {
         aria-label="Retreats"
         className="py-16 md:py-20 px-5"
         style={{
-          background: greenBg,
+          background: "var(--parch-50)",
           borderTop: "1px solid var(--surface-border)",
         }}
       >
