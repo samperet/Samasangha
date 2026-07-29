@@ -20,9 +20,9 @@ export const DESIGN_DEFAULTS: SiteDesign = {
   greenType: "solid",
   greenFrom: "#fbf7ec",
   greenTo: "#e8efe0",
-  footerType: "gradient",
-  footerFrom: "#0a7d12",
-  footerTo: "#024c06",
+  footerType: "solid",
+  footerFrom: "#eacb6c",
+  footerTo: "#d9b04a",
 };
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;

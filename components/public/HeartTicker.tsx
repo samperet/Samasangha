@@ -1,18 +1,18 @@
-// A static line of repeating "HEART" that clips to its container. Wider than
-// the viewport so it reads as a continuous ribbon edge to edge.
-const REPEAT = 200;
+// A single centred line of "HEART", repeated six times, as a quiet ribbon
+// above the footer content.
+const REPEAT = 6;
 
 export default function HeartTicker() {
   return (
     <div className="overflow-hidden">
       <p
         aria-label="HEART"
-        className="font-serif"
+        className="font-serif text-center"
         style={{
-          color: "var(--gold-400)",
-          opacity: 0.75,
+          color: "var(--gold-900)",
+          opacity: 0.55,
           fontSize: "0.95rem",
-          letterSpacing: "0.06em",
+          letterSpacing: "0.18em",
           whiteSpace: "nowrap",
         }}
       >

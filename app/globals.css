@@ -59,7 +59,7 @@
 
 /* ── Tailwind theme tokens ───────────────────────────────────────── */
 @theme {
-  --font-sans:  var(--font-sans, 'Mulish', -apple-system, sans-serif);
+  --font-sans:  var(--font-sans, 'Open Sans', -apple-system, sans-serif);
   --font-serif: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
 
   --color-gold-900: #6e4d12;
@@ -315,8 +315,8 @@ header.header-paper {
   opacity: 0.62;
 }
 .footer-link {
-  color: var(--fg-on-dark);
-  opacity: 0.65;
+  color: var(--ink-900);
+  opacity: 0.75;
   transition: color 0.2s ease, opacity 0.2s ease;
 }
 
@@ -328,30 +328,30 @@ details[open] > .calendar-options {
   display: flex !important;
 }
 .footer-link:hover {
-  color: var(--gold-300) !important;
+  color: var(--gold-900) !important;
   opacity: 1;
 }
 .footer-cta {
-  background: var(--gold-600);
-  color: var(--fg-on-gold);
+  background: var(--ink-900);
+  color: var(--parch-50);
   box-shadow: var(--shadow-sm);
   transition: background 0.2s ease;
 }
 .footer-cta:hover {
-  background: var(--gold-700);
-  color: var(--fg-on-gold) !important;
+  background: var(--ink-800);
+  color: var(--parch-50) !important;
 }
 
 .footer-donate {
   background: transparent;
-  border: 1px solid rgba(201,162,44,.35);
-  color: var(--gold-400);
+  border: 1px solid rgba(42,33,24,.35);
+  color: var(--ink-900);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 .footer-donate:hover {
-  background: rgba(201,162,44,.1);
-  border-color: rgba(201,162,44,.6);
-  color: var(--gold-300) !important;
+  background: rgba(42,33,24,.08);
+  border-color: rgba(42,33,24,.6);
+  color: var(--ink-900) !important;
 }
 
 /* Teacher/lineage card hover */

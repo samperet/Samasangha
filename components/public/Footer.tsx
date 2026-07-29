@@ -29,12 +29,12 @@ export default async function Footer() {
       style={{
         background: footerBg,
         backgroundColor: design.footerFrom,
-        color: "var(--fg-on-dark)",
+        color: "var(--ink-900)",
       }}
       className="mt-auto"
     >
       {/* Hearts */}
-      <div className="py-4 px-4" style={{ borderBottom: "1px solid rgba(201,162,44,.10)" }}>
+      <div className="py-4 px-4" style={{ borderBottom: "1px solid rgba(110,77,18,.18)" }}>
         <HeartTicker />
       </div>
 
@@ -109,10 +109,6 @@ export default async function Footer() {
         </div>
       </div>
 
-      {/* Hearts */}
-      <div className="py-4 px-4" style={{ borderTop: "1px solid rgba(201,162,44,.10)" }}>
-        <HeartTicker />
-      </div>
     </footer>
   );
 }

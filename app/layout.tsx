@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Mulish } from "next/font/google";
+import { Cormorant_Garamond, Open_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -18,7 +18,7 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const mulish = Mulish({
+const openSans = Open_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`h-full ${cormorant.variable} ${mulish.variable} ${samaFont.variable}`}>
+    <html lang="en" className={`h-full ${cormorant.variable} ${openSans.variable} ${samaFont.variable}`}>
       <body className="min-h-full flex flex-col antialiased">{children}</body>
     </html>
   );
