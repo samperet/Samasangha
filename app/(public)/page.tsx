@@ -320,18 +320,47 @@ export default async function HomePage() {
                           {event.title}
                         </Link>
                       </h3>
-                      <p className="text-sm font-semibold mb-2" style={{ color: "var(--gold-700)" }}>
+                      <p className="text-sm font-semibold mb-1" style={{ color: "var(--gold-700)" }}>
                         {formatDateRange(event.startDate, event.endDate)}
-                        {(event.location || event.isOnline) && (
-                          <span className="font-normal" style={{ color: "var(--fg2)" }}>
-                            {"  ·  "}{event.isOnline ? "Online" : event.location}
-                          </span>
-                        )}
                       </p>
+                      {(event.location || event.isOnline) && (
+                        <p
+                          className="flex items-center gap-1.5 mb-2.5 font-semibold"
+                          style={{ fontSize: "1.05rem", color: "var(--ink-900)" }}
+                        >
+                          <svg
+                            width="17"
+                            height="17"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="var(--gold-700)"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="shrink-0"
+                            aria-hidden
+                          >
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </svg>
+                          {event.isOnline ? "Online" : event.location}
+                        </p>
+                      )}
                       <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: "var(--fg2)" }}>
                         {event.description}
                       </p>
-                      <div className="flex flex-wrap gap-3 justify-end">
+                      <div className="flex flex-wrap gap-3 justify-end items-center">
+                        {event.flyerUrl && (
+                          <a
+                            href={event.flyerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm font-semibold underline underline-offset-2 whitespace-nowrap mr-auto"
+                            style={{ color: "var(--link)" }}
+                          >
+                            {/\.pdf(\?|#|$)/i.test(event.flyerUrl) ? "View flyer (PDF)" : "View flyer"}
+                          </a>
+                        )}
                         {event.registrationEnabled ? (
                           <Link
                             href={`/events/${event.slug}/register`}
