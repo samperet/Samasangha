@@ -58,17 +58,16 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* ── About us + the regular gatherings, together on the blue temple
-            tilework used behind the header. The design "gatherings" colour
-            sits underneath as the base tint while the texture loads. ── */}
+      {/* ── About us + the regular gatherings, together on the blue lotus
+            wallpaper. The flat blue underneath is sampled from the image, so
+            there's no colour flash before it loads. ── */}
       <section
         role="region"
         aria-label="About SamaSangha and regular gatherings"
         className="relative pt-14 pb-16 md:pb-20 px-5 text-center overflow-hidden"
         style={{
-          backgroundColor: design.purpleFrom,
-          backgroundImage:
-            "linear-gradient(rgba(13,43,58,0.10), rgba(13,43,58,0.10)), url('/assets/BlueTemple.webp')",
+          backgroundColor: "#3a90bb",
+          backgroundImage: "url('/assets/lotus-background-sama3.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           borderTop: "1px solid var(--surface-border)",
