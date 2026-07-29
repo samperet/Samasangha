@@ -10,7 +10,7 @@ export default function InvocationCarousel() {
   return (
     <div
       className="flex flex-col items-center text-center"
-      style={{ width: "100%", paddingTop: "clamp(12px, 4vh, 56px)", paddingBottom: "clamp(12px, 4vh, 56px)", gap: "clamp(16px, 3vh, 36px)" }}
+      style={{ width: "100%", paddingTop: "clamp(8px, 2vh, 24px)", paddingBottom: "clamp(8px, 2vh, 24px)", gap: "clamp(12px, 2vh, 22px)" }}
     >
       {/* Heading kept for SEO/structure, visually hidden and out of flow so
           it doesn't add space above the heart. */}
@@ -27,7 +27,7 @@ export default function InvocationCarousel() {
         alt=""
         aria-hidden
         style={{
-          width: "min(520px, 80%)",
+          width: "min(430px, 72%)",
           maxWidth: "none",
           pointerEvents: "none",
           userSelect: "none",
@@ -39,8 +39,8 @@ export default function InvocationCarousel() {
           fontFamily: "var(--font-serif)",
           fontStyle: "italic",
           fontWeight: 500,
-          fontSize: "clamp(1.65rem, 3.7vw, 2.85rem)",
-          lineHeight: 1.5,
+          fontSize: "clamp(1.3rem, 2.9vw, 2.2rem)",
+          lineHeight: 1.45,
           maxWidth: "100%",
           color: TEXT_BLUE,
           margin: 0,

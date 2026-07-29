@@ -35,7 +35,7 @@ export default async function HomePage() {
     <>
       {/* ── Masthead, homepage only — sized to content with vertical margin ── */}
       <div
-        className="relative flex items-center justify-center overflow-hidden px-5 pt-16 pb-20 sm:pt-20 sm:pb-24"
+        className="relative flex items-center justify-center overflow-hidden px-5 pt-8 pb-12 sm:pt-10 sm:pb-14"
         style={{
           background: "radial-gradient(120% 80% at 50% -10%, var(--parch-100) 0%, var(--parch-50) 60%)",
         }}
@@ -66,8 +66,11 @@ export default async function HomePage() {
         style={{
           backgroundColor: "#3a90bb",
           backgroundImage: "url('/assets/lotus-background-sama3.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          // Fixed to the section's width and tiled downwards, so a taller
+          // section shows more of the pattern rather than scaling it up.
+          backgroundSize: "100% auto",
+          backgroundRepeat: "repeat-y",
+          backgroundPosition: "top center",
           borderTop: "1px solid var(--surface-border)",
           borderBottom: "1px solid var(--surface-border)",
         }}
@@ -172,32 +175,14 @@ export default async function HomePage() {
                           {event.title}
                         </Link>
                       </h3>
-                      <p className="text-sm font-semibold mb-1" style={{ color: "var(--gold-700)" }}>
+                      <p className="text-sm font-semibold mb-2" style={{ color: "var(--gold-700)" }}>
                         {formatDateRange(event.startDate, event.endDate)}
+                        {(event.location || event.isOnline) && (
+                          <span className="font-normal" style={{ color: "var(--fg2)" }}>
+                            {"  ·  "}{event.isOnline ? "Online" : event.location}
+                          </span>
+                        )}
                       </p>
-                      {(event.location || event.isOnline) && (
-                        <p
-                          className="flex items-center gap-1.5 mb-2.5 font-semibold"
-                          style={{ fontSize: "1.05rem", color: "var(--ink-900)" }}
-                        >
-                          <svg
-                            width="17"
-                            height="17"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="var(--gold-700)"
-                            strokeWidth="2.2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="shrink-0"
-                            aria-hidden
-                          >
-                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          {event.isOnline ? "Online" : event.location}
-                        </p>
-                      )}
                       <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: "var(--fg2)" }}>
                         {event.description}
                       </p>

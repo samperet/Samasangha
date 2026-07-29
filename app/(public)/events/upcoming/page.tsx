@@ -57,7 +57,25 @@ export default async function UpcomingEventsPage() {
                   {formatDateRange(event.startDate, event.endDate)}
                 </p>
                 {(event.location || event.isOnline) && (
-                  <p className="text-sm text-stone-400 mt-1">
+                  <p
+                    className="flex items-start gap-1.5 mt-1.5 font-semibold leading-snug"
+                    style={{ fontSize: "1.02rem", color: "var(--ink-900)" }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="var(--gold-700)"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="shrink-0 mt-0.5"
+                      aria-hidden
+                    >
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
                     {event.isOnline ? "Online" : event.location}
                   </p>
                 )}

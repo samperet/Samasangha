@@ -39,7 +39,7 @@ export default function GatheringCards() {
             ["Open to", "All, no experience needed", false],
           ]}
         />
-        <div className="mt-5 flex justify-center">
+        <div className="mt-auto pt-5 flex justify-center">
           <a
             href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
             target="_blank"
@@ -77,7 +77,7 @@ export default function GatheringCards() {
             ["Led by", "Abraham, Halima & Friends", false],
           ]}
         />
-        <div className="mt-5 flex justify-center">
+        <div className="mt-auto pt-5 flex justify-center">
           <Link
             href="/dances"
             className="inline-block font-semibold px-6 py-2.5 rounded-lg"
@@ -110,7 +110,7 @@ function Card({
 }) {
   return (
     <div
-      className="gold-shadow rounded-2xl relative"
+      className="gold-shadow rounded-2xl relative h-full flex flex-col"
       style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)" }}
     >
       {/* Highlight image, protruding above the top of the card */}
@@ -124,7 +124,7 @@ function Card({
           style={{ marginTop: "-6rem" }}
         />
       </div>
-      <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5">
+      <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-5 flex-1 flex flex-col">
         <button
           type="button"
           onClick={onToggle}
@@ -166,7 +166,9 @@ function Card({
             </svg>
           </span>
         </button>
-        <div id={bodyId} hidden={!open} className="pt-5">
+        {/* Only carry the flex classes while open — a `display:flex` utility
+            would otherwise beat the `hidden` attribute and never collapse. */}
+        <div id={bodyId} hidden={!open} className={open ? "pt-5 flex-1 flex flex-col" : "pt-5"}>
           {children}
         </div>
       </div>
