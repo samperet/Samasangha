@@ -1,17 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+type CardId = "practice" | "dances";
+const ALL: CardId[] = ["practice", "dances"];
+
 /**
- * The two regular-gathering cards. They expand together: the pair sits side by
- * side on wide screens, so opening one alone left the other stranded at a
- * different height. One piece of shared state drives both.
+ * The two regular-gathering cards.
+ *
+ * Side by side (lg and up) they expand together, so neither is left stranded at
+ * a different height. Stacked on a phone that behaviour is unhelpful — opening
+ * one would push a wall of text between you and the other — so there each card
+ * opens on its own.
  */
 export default function GatheringCards() {
-  const [open, setOpen] = useState(false);
-  const toggle = () => setOpen((o) => !o);
+  const [openIds, setOpenIds] = useState<CardId[]>([]);
+  const [sideBySide, setSideBySide] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)"); // matches lg:grid-cols-2
+    const sync = () => {
+      setSideBySide(mq.matches);
+      // Growing into the side-by-side layout with one open: open both, so the
+      // pair stays level.
+      if (mq.matches) setOpenIds((prev) => (prev.length ? ALL : prev));
+    };
+    const raf = requestAnimationFrame(sync);
+    mq.addEventListener("change", sync);
+    return () => {
+      cancelAnimationFrame(raf);
+      mq.removeEventListener("change", sync);
+    };
+  }, []);
+
+  const toggle = (id: CardId) =>
+    setOpenIds((prev) => {
+      const isOpen = prev.includes(id);
+      if (sideBySide) return isOpen ? [] : ALL;
+      return isOpen ? prev.filter((x) => x !== id) : [...prev, id];
+    });
 
   return (
     <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-x-6 gap-y-28 lg:gap-y-6 items-stretch">
@@ -20,8 +49,8 @@ export default function GatheringCards() {
         imageAlt="Weekly Zoom Practice, people in a circle"
         title="Weekly Zoom Practice"
         bodyId="gathering-practice"
-        open={open}
-        onToggle={toggle}
+        open={openIds.includes("practice")}
+        onToggle={() => toggle("practice")}
       >
         <p className="leading-relaxed mb-3" style={{ color: "var(--fg2)" }}>
           Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for
@@ -57,8 +86,8 @@ export default function GatheringCards() {
         imageAlt="Dances of Universal Peace circle"
         title="Dances of Universal Peace"
         bodyId="gathering-dances"
-        open={open}
-        onToggle={toggle}
+        open={openIds.includes("dances")}
+        onToggle={() => toggle("dances")}
       >
         <p className="leading-relaxed mb-3" style={{ color: "var(--fg2)" }}>
           Sacred circle dances drawing from the spiritual traditions of the world, Hindu,

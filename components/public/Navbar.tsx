@@ -139,24 +139,21 @@ export default function Navbar() {
       {/* ── Winged heart + wordmark, in a see-through white panel (no blur) so
             the temple texture shows through it and around its edges ── */}
       <div
-        className="flex justify-center items-center w-full"
-        style={{
-          background: "rgba(255,255,255,0.55)",
-          padding: "1rem 2rem 1.6rem",
-        }}
+        className="flex justify-center items-center w-full px-2 sm:px-8 pt-4 pb-6"
+        style={{ background: "rgba(255,255,255,0.55)" }}
       >
         <Link
           href="/"
           aria-label="SamaSangha home"
-          className="relative inline-flex items-center justify-center gap-2 sm:gap-4 lg:gap-5"
+          className="relative inline-flex items-center justify-center gap-1.5 sm:gap-4 lg:gap-5 max-w-full"
           onClick={onHeartClick}
         >
           {/* "Sama", left of the heart. The left padding equals the width
               difference vs. "Sangha" (in em, so it scales with the font), which
               balances the two sides and centers the heart on the page. */}
           <span
-            className="leading-none select-none text-2xl sm:text-4xl lg:text-6xl"
-            style={{ fontFamily: "var(--font-sama)", color: "#2c4264", paddingLeft: "1.115em", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
+            className="leading-none select-none whitespace-nowrap"
+            style={{ fontFamily: "var(--font-sama)", fontSize: "clamp(0.9rem, 5.2vw, 3.75rem)", color: "#2c4264", paddingLeft: "1.115em", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
           >
             Sama
           </span>
@@ -171,7 +168,7 @@ export default function Navbar() {
               aria-hidden
               width={1254}
               height={1254}
-              className="absolute z-[70] w-auto h-24 sm:h-28 lg:h-36 max-w-none"
+              className="absolute z-[70] w-auto h-16 sm:h-28 lg:h-36 max-w-none"
               style={{ top: "74%", left: "50%", transform: "translate(-50%, -50%)" }}
             />
             {/* Only the heart grows on hover, wrapped so the halo stays put.
@@ -184,7 +181,7 @@ export default function Navbar() {
                 width={600}
                 height={272}
                 priority
-                className="w-auto h-12 sm:h-20 lg:h-24"
+                className="w-auto h-9 sm:h-20 lg:h-24"
                 style={{ transformOrigin: "center top", willChange: "transform" }}
               />
             </span>
@@ -192,8 +189,8 @@ export default function Navbar() {
 
           {/* "Sangha", right of the heart */}
           <span
-            className="leading-none select-none text-2xl sm:text-4xl lg:text-6xl"
-            style={{ fontFamily: "var(--font-sama)", color: "#2c4264", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
+            className="leading-none select-none whitespace-nowrap"
+            style={{ fontFamily: "var(--font-sama)", fontSize: "clamp(0.9rem, 5.2vw, 3.75rem)", color: "#2c4264", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
           >
             Sangha
           </span>
