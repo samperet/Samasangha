@@ -72,21 +72,26 @@ export default async function HomePage() {
         }}
       >
 
-        {/* Section 2: community intro — image on the left, text on the right
-            (stacked on mobile), with a link to the Welcome page. */}
+        {/* Community intro: the photo across the top, the welcome line and a
+            link to the Welcome page beneath it. */}
         <div
-          className="relative z-10 mx-auto flex flex-col md:flex-row items-center max-w-4xl rounded-2xl overflow-hidden"
+          className="relative z-10 mx-auto max-w-4xl rounded-2xl overflow-hidden"
           style={{ background: "var(--bg-raised)", border: "1px solid var(--surface-border)" }}
         >
+          {/* Full width, with the text beneath. Beside the text the photo left a
+              band of cream under itself: it is a 2.48:1 letterbox, so at half the
+              card it stood shorter than the text column, and it can't be stretched
+              to match without cropping off the hand and the Quan Yin painting.
+              The -1px closes the sub-pixel seam above the text panel. */}
           <Image
             src="/assets/AHHA.png"
             alt="Abraham and Halima"
             width={640}
             height={258}
-            className="block w-full md:w-1/2 shrink-0 self-start object-contain"
+            className="block w-full"
             style={{ marginBottom: -1 }}
           />
-          <div className="text-center md:text-left px-6 pb-8 pt-6 md:p-9">
+          <div className="text-center px-6 pb-8 pt-6 md:p-9">
             <blockquote
               className="font-serif not-italic"
               style={{
@@ -100,7 +105,7 @@ export default async function HomePage() {
             >
               We are rooted in the universal Sufi heart stream.
             </blockquote>
-            <p className="mt-4 text-sm text-right">
+            <p className="mt-4 text-sm">
               <Link href="/about/teachers" className="underline" style={{ color: "var(--link)" }}>
                 Learn more on our Welcome page →
               </Link>
