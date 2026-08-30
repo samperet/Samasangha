@@ -63,7 +63,16 @@ export default function GatheringCards() {
         <Facts
           items={[
             ["When", "Every Tuesday, 9 AM EST", true],
-            ["Where", "Online via Zoom, link sent via newsletter", true],
+            [
+              "Where",
+              <>
+                Online via Zoom —{" "}
+                <Link href="/contact" className="underline underline-offset-2" style={{ color: "var(--link)" }}>
+                  email us for the link
+                </Link>
+              </>,
+              true,
+            ],
             ["Cost", "Free, dana welcome", false],
             ["Open to", "All, no experience needed", false],
           ]}
@@ -101,9 +110,9 @@ export default function GatheringCards() {
         <Facts
           items={[
             ["When", "Third Saturday · 7:30–9:45 PM", true],
-            ["Where", "Friends Meeting House, Cambridge", true],
-            ["Contribution", "$10–15 suggested", false],
-            ["Led by", "Abraham, Halima & Friends", false],
+            ["Where", "Friends Meeting House, 5 Longfellow Park, Cambridge (near Harvard Square)", true],
+            ["Contribution", "$10–15 kindly requested", false],
+            ["Led by", "SamaSangha with Halima, Abraham & Friends", false],
           ]}
         />
         <div className="mt-auto pt-5 flex justify-center">
@@ -205,7 +214,7 @@ function Card({
   );
 }
 
-function Facts({ items }: { items: [string, string, boolean][] }) {
+function Facts({ items }: { items: [string, React.ReactNode, boolean][] }) {
   return (
     <dl
       className="grid grid-cols-2 gap-x-6 gap-y-3 pt-5 mt-5"

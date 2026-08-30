@@ -11,9 +11,18 @@ export const metadata: Metadata = {
 const PRACTICE = [
   { dt: "When", dd: "Third Saturday of the month" },
   { dt: "Time", dd: "Doors 7:15 PM · Dances 7:30–9:45 PM" },
-  { dt: "Where", dd: "Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138" },
+  { dt: "Where", dd: "Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138 (near Harvard Square)" },
   { dt: "Contribution", dd: "$10–15 kindly requested" },
   { dt: "Led by", dd: "SamaSangha with Halima, Abraham & Friends" },
+];
+
+// The next few gatherings. Third Saturdays, listed explicitly so visitors can
+// see actual dates; December is our annual Rumi Night.
+const UPCOMING_DATES: { date: string; note?: string }[] = [
+  { date: "September 19, 2026" },
+  { date: "October 17, 2026" },
+  { date: "November 21, 2026" },
+  { date: "December 19, 2026", note: "Rumi Night" },
 ];
 
 // Venue map — keyless Google Maps embed + a directions link
@@ -26,10 +35,10 @@ const CALENDAR_EVENT = {
   location: "Friends Meeting House (Friends room), 5 Longfellow Park, Cambridge, MA 02138",
   details:
     "Monthly Dances of Universal Peace with SamaSangha. Doors open at 7:15 PM. Dances begin at 7:30 PM.",
-  startLocal: "20260620T193000",
-  endLocal: "20260620T214500",
-  startUtc: "20260620T233000Z",
-  endUtc: "20260621T014500Z",
+  startLocal: "20260919T193000",
+  endLocal: "20260919T214500",
+  startUtc: "20260919T233000Z",
+  endUtc: "20260920T014500Z",
   recurrence: "RRULE:FREQ=MONTHLY;BYDAY=3SA",
 };
 
@@ -64,7 +73,7 @@ const calendarLinks = [
   },
   {
     label: "Outlook.com",
-    href: `https://outlook.live.com/calendar/0/action/compose?path=/calendar/action/compose&rru=addevent&subject=${encodeURIComponent(CALENDAR_EVENT.title)}&startdt=2026-06-20T19:30:00&enddt=2026-06-20T21:45:00&body=${encodeURIComponent(`${CALENDAR_EVENT.details} Recurs on the third Saturday of each month.`)}&location=${encodeURIComponent(CALENDAR_EVENT.location)}`,
+    href: `https://outlook.live.com/calendar/0/action/compose?path=/calendar/action/compose&rru=addevent&subject=${encodeURIComponent(CALENDAR_EVENT.title)}&startdt=2026-09-19T19:30:00&enddt=2026-09-19T21:45:00&body=${encodeURIComponent(`${CALENDAR_EVENT.details} Recurs on the third Saturday of each month.`)}&location=${encodeURIComponent(CALENDAR_EVENT.location)}`,
   },
   {
     label: "Yahoo",
@@ -123,6 +132,23 @@ export default function DancesPage() {
             </div>
           ))}
         </dl>
+        <div className="px-7 pb-6">
+          <p className="eyebrow mb-2" style={{ fontSize: "0.62rem", color: "var(--gold-600)" }}>
+            Upcoming dates
+          </p>
+          <ul className="flex flex-wrap gap-x-6 gap-y-1.5">
+            {UPCOMING_DATES.map(({ date, note }) => (
+              <li key={date} className="font-medium" style={{ color: "var(--ink-900)" }}>
+                {date}
+                {note && (
+                  <span className="ml-1.5 font-semibold" style={{ color: "var(--gold-700)" }}>
+                    · {note}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
         <p className="px-7 pb-6 text-sm" style={{ color: "var(--fg2)" }}>
           Please arrive a few minutes early to allow for a smooth start. No experience
           required, only your presence.
