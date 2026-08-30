@@ -84,6 +84,7 @@ export default async function HomePage() {
             width={640}
             height={258}
             className="block w-full md:w-1/2 shrink-0 self-start object-contain"
+            style={{ marginBottom: -1 }}
           />
           <div className="text-center md:text-left px-6 pb-8 pt-6 md:p-9">
             <blockquote

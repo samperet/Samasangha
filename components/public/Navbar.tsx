@@ -256,7 +256,7 @@ export default function Navbar() {
 
           <NavHeart />
 
-          {/* Music */}
+          {/* Albums */}
           <Link
             href="/teachings/music/albums"
             className="font-serif transition-colors duration-200"
@@ -264,7 +264,7 @@ export default function Navbar() {
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--ink-800)")}
           >
-            Music
+            Albums
           </Link>
 
           <NavHeart />
@@ -294,7 +294,7 @@ export default function Navbar() {
           <NavHeart />
           <Link href="/teachings" className="font-serif" style={MOBILE_ITEM}>Teachings</Link>
           <NavHeart />
-          <Link href="/teachings/music/albums" className="font-serif" style={MOBILE_ITEM}>Music</Link>
+          <Link href="/teachings/music/albums" className="font-serif" style={MOBILE_ITEM}>Albums</Link>
           <NavHeart />
           <Link href="/events/upcoming" className="font-serif" style={MOBILE_ITEM}>Retreats</Link>
         </nav>

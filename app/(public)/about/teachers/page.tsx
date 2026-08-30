@@ -64,13 +64,15 @@ export default async function TeachersPage() {
           className="rounded-2xl overflow-hidden"
           style={{ border: "1px solid var(--surface-border)", boxShadow: "var(--shadow-md)" }}
         >
-          {/* Landscape photo, with the about text sitting underneath it */}
+          {/* Landscape photo, with the about text sitting underneath it. The -1px
+              closes a hairline seam: the image's scaled height lands on a fractional
+              pixel, so rounding otherwise leaves a sliver of the card showing. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/assets/AHHA-in-the-yurt.png"
             alt="Abraham and Halima in the yurt"
             className="w-full block"
-            style={{ height: "auto" }}
+            style={{ height: "auto", marginBottom: -1 }}
           />
           <div
             className="p-7 space-y-5 leading-relaxed"
