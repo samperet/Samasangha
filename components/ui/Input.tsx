@@ -6,7 +6,7 @@ const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>
     <input
       ref={ref}
       style={{
-        background: "#fff",
+        background: "var(--bg-raised)",
         border: "1px solid var(--surface-border)",
         color: "var(--fg1)",
         borderRadius: "8px",

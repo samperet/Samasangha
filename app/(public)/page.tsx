@@ -64,13 +64,9 @@ export default async function HomePage() {
         aria-label="About SamaSangha and regular gatherings"
         className="relative pt-14 pb-16 md:pb-20 px-5 text-center overflow-hidden"
         style={{
-          backgroundColor: "#3a90bb",
-          backgroundImage: "url('/assets/lotus-background-sama3.png')",
-          // Fixed to the section's width and tiled downwards, so a taller
-          // section shows more of the pattern rather than scaling it up.
-          backgroundSize: "100% auto",
-          backgroundRepeat: "repeat-y",
-          backgroundPosition: "top center",
+          // Flat tone drawn from the wallpaper's own blue. The lotus pattern
+          // now frames the page edges, so repeating it here would be noisy.
+          backgroundColor: "#5aa8c4",
           borderTop: "1px solid var(--surface-border)",
           borderBottom: "1px solid var(--surface-border)",
         }}
@@ -80,14 +76,14 @@ export default async function HomePage() {
             (stacked on mobile), with a link to the Welcome page. */}
         <div
           className="relative z-10 mx-auto flex flex-col md:flex-row items-center max-w-4xl rounded-2xl overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.97)", boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}
+          style={{ background: "var(--bg-raised)", border: "1px solid var(--surface-border)" }}
         >
           <Image
             src="/assets/AHHA.png"
             alt="Abraham and Halima"
-            width={480}
-            height={320}
-            className="block w-full md:w-1/2 shrink-0 self-stretch object-cover"
+            width={640}
+            height={258}
+            className="block w-full md:w-1/2 shrink-0 self-start object-contain"
           />
           <div className="text-center md:text-left px-6 pb-8 pt-6 md:p-9">
             <blockquote
@@ -101,8 +97,7 @@ export default async function HomePage() {
                 borderLeft: "none",
               }}
             >
-              SamaSangha is the community of seekers who have gathered in Massachusetts, and also
-              far and wide, with the guidance of Sufi Murshids Halima and Abraham.
+              We are rooted in the universal Sufi heart stream.
             </blockquote>
             <p className="mt-4 text-sm text-right">
               <Link href="/about/teachers" className="underline" style={{ color: "var(--link)" }}>
@@ -135,7 +130,7 @@ export default async function HomePage() {
               className="font-serif"
               style={{ fontSize: "2.25rem", fontWeight: 500, color: "var(--ink-900)", textTransform: "uppercase", letterSpacing: "0.04em" }}
             >
-              Home Retreats
+              Retreats
             </h2>
           </div>
 
@@ -152,7 +147,7 @@ export default async function HomePage() {
                 <div
                   key={event.id}
                   className="gold-shadow group rounded-[14px] overflow-hidden relative"
-                  style={{ background: "#fff", border: "1px solid var(--surface-border)" }}
+                  style={{ background: "var(--bg-raised)", border: "1px solid var(--surface-border)" }}
                 >
                   <div className="flex flex-col sm:flex-row">
                     {event.featuredImageUrl && (

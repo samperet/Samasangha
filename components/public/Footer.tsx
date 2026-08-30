@@ -46,7 +46,7 @@ export default async function Footer() {
             alt="Golden footprints inscribed with sacred symbols"
             width={1108}
             height={1172}
-            className="h-auto w-full max-w-[170px] sm:max-w-[210px] opacity-70"
+            className="h-auto w-full max-w-[190px] sm:max-w-[240px] opacity-80"
           />
         </div>
 
@@ -57,7 +57,6 @@ export default async function Footer() {
             style={{
               background: "var(--parch-50)",
               color: "var(--ink-900)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
               border: "1px solid var(--gold-400)",
             }}
           >
@@ -67,7 +66,7 @@ export default async function Footer() {
               aria-hidden
               width={600}
               height={272}
-              className="w-auto h-8"
+              className="w-auto h-11"
             />
             Mureeds Circle
           </Link>

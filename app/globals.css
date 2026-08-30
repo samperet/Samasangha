@@ -36,8 +36,10 @@
   --ink-800:   #3d3527;
   --ink-900:   #2a2118;
 
+  --wallpaper-blue: #7acddd;   /* page wallpaper ground (from the original site) */
+  --column-cream:   #fcf4db;   /* content column (from the original site) */
   --bg:             var(--parch-50);
-  --bg-raised:      #ffffff;
+  --bg-raised:      #fcf4db;
   --bg-cream:       var(--parch-100);
   --bg-ink:         #1c1710;
   --surface-border: #e6dcc4;
@@ -52,9 +54,12 @@
   --accent-strong: var(--gold-700);
   --deco-line:     rgba(156, 116, 33, 0.42);   /* soft gold for art-deco corners */
 
-  --shadow-sm: 0 1px 2px rgba(58,42,8,.06), 0 1px 3px rgba(58,42,8,.08);
-  --shadow-md: 0 4px 14px rgba(58,42,8,.10), 0 2px 6px rgba(58,42,8,.06);
-  --shadow-lg: 0 14px 40px rgba(42,33,24,.16), 0 4px 12px rgba(42,33,24,.08);
+  /* Boxes sit embedded in the page rather than floating on it, so the shadow
+     tokens are deliberately none; surfaces are defined by their hairline
+     border instead. Kept as tokens so existing call sites need no edits. */
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
 }
 
 /* ── Tailwind theme tokens ───────────────────────────────────────── */
@@ -111,7 +116,9 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--wallpaper-blue);
+  background-image: url("/assets/lotus-background-sama3.png");
+  background-repeat: repeat;
   color: var(--fg1);
   font-family: var(--font-sans);
   font-size: 1.0625rem;
@@ -141,6 +148,20 @@ blockquote {
   border-left: 3px solid var(--gold-400);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
+}
+
+/* The centred cream column. The wallpaper shows down either side of it, which
+   is the "border" the original site had. Deliberately wraps <main> only —
+   the sticky navbar must not get a new stacking context. */
+.page-column {
+  max-width: 1100px;
+  margin-inline: auto;
+  background: var(--column-cream);
+  border-left: 1px solid var(--surface-border);
+  border-right: 1px solid var(--surface-border);
+}
+@media (max-width: 1100px) {
+  .page-column { border-left: none; border-right: none; }
 }
 
 /* ── Reusable classes ────────────────────────────────────────────── */
@@ -356,13 +377,12 @@ details[open] > .calendar-options {
 
 /* Teacher/lineage card hover */
 .teacher-card {
-  background: #fff;
+  background: var(--bg-raised);
   border: 1px solid var(--surface-border);
-  box-shadow: 6px -6px 0 0 var(--gold-400);
-  transition: box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 .teacher-card:hover {
-  box-shadow: 8px -8px 0 0 var(--gold-400);
+  border-color: var(--gold-400);
 }
 
 @keyframes heartFadeIn {

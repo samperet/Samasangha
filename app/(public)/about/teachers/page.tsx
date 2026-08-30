@@ -69,17 +69,14 @@ export default async function TeachersPage() {
           <img
             src="/assets/AHHA-in-the-yurt.png"
             alt="Abraham and Halima in the yurt"
-            className="w-full object-cover block"
-            style={{ maxHeight: 320, objectPosition: "center 20%" }}
+            className="w-full block"
+            style={{ height: "auto" }}
           />
           <div
             className="p-7 space-y-5 leading-relaxed"
-            style={{ background: "#fff", color: "var(--fg2)", fontSize: "1.0625rem" }}
+            style={{ background: "var(--bg-raised)", color: "var(--fg2)", fontSize: "1.0625rem" }}
           >
-            <p>
-              SamaSangha is the community of seekers who have gathered in Massachusetts, and also
-              far and wide, with the guidance of Sufi Murshids Halima and Abraham.
-            </p>
+            <p>Welcome friends</p>
             <p>
               In the Sufi Ruhaniat lineage of Pir-o-Murshid Hazrat Inayat Khan and Murshid Samuel
               Lewis our sangha supports our collective realization that love, harmony, and beauty are
@@ -107,7 +104,7 @@ export default async function TeachersPage() {
       {ourTeachers.length > 0 && (
         <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-            Our teachers
+            Murshids Halima and Abraham
           </p>
 
           <div className="grid sm:grid-cols-2 gap-5">
@@ -157,7 +154,7 @@ export default async function TeachersPage() {
       {lineage.length > 0 && (
         <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <p className="eyebrow mb-2" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-            The silsila, our lineage
+            Our Roots
           </p>
           <p className="text-sm mb-10" style={{ color: "var(--fg2)", maxWidth: "52ch" }}>
             In Sufism the silsila is the unbroken chain of heart-to-heart transmission from
@@ -246,12 +243,9 @@ export default async function TeachersPage() {
         </section>
       )}
 
-      {/* ── Honored ancestors ────────────────────────────────────── */}
+      {/* ── Our Roots, continued: the honoured ancestors ─────────── */}
       {ancestors.length > 0 && (
-        <section className="pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          <p className="eyebrow mb-2" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-            Honored ancestors
-          </p>
+        <section className="pt-4">
           <p className="text-sm mb-8" style={{ color: "var(--fg2)", maxWidth: "48ch" }}>
             Elders and healers whose lives and work touched this lineage and the Cambridge community.
           </p>

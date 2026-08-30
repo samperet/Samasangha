@@ -36,7 +36,7 @@ export default async function UpcomingEventsPage() {
           {events.map((event) => (
             <div
               key={event.id}
-              className="group relative rounded-2xl border border-stone-200 bg-white px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5 transition-shadow hover:shadow-md"
+              className="group relative rounded-2xl border border-[var(--surface-border)] bg-[var(--bg-raised)] px-7 py-6 flex flex-col sm:flex-row sm:items-start gap-5 transition-shadow hover:shadow-md"
             >
               {/* Full-card link to the details page (stretched-link pattern) */}
               <Link

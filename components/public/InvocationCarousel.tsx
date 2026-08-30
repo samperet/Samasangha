@@ -4,7 +4,8 @@
 const INVOCATION =
   "Towards the One, the Perfection of Love, Harmony and Beauty, the Only Being, united with all the Illuminated Souls who form the Embodiment of the Master, the Spirit of Guidance.";
 
-const TEXT_BLUE = "#1b7187";
+// Darkened from #1b7187, which measured only ~4.0:1 against the masthead.
+const TEXT_BLUE = "#124a5c";
 
 export default function InvocationCarousel() {
   return (

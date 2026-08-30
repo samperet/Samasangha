@@ -6,7 +6,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLText
     <textarea
       ref={ref}
       style={{
-        background: "#fff",
+        background: "var(--bg-raised)",
         border: "1px solid var(--surface-border)",
         color: "var(--fg1)",
         borderRadius: "8px",

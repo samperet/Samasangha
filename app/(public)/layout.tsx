@@ -8,7 +8,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <PlayerProvider>
       <Navbar />
       <NotificationBanner />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 page-column">{children}</main>
       <Footer />
     </PlayerProvider>
   );

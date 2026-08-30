@@ -21,8 +21,8 @@ export const DESIGN_DEFAULTS: SiteDesign = {
   greenFrom: "#fbf7ec",
   greenTo: "#e8efe0",
   footerType: "solid",
-  footerFrom: "#eacb6c",
-  footerTo: "#d9b04a",
+  footerFrom: "#fcf4db",
+  footerTo: "#f3e6c4",
 };
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;

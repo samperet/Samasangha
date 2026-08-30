@@ -46,11 +46,22 @@ export default async function AlbumsPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-      <div className="max-w-2xl mb-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-700 mb-3">
-          Music
-        </p>
-        <h1 className="font-serif text-5xl text-ink-900 leading-tight">Albums</h1>
+      <div className="max-w-2xl mb-8">
+        <h1 className="font-serif text-5xl text-ink-900 leading-tight">Music</h1>
+        <p className="font-serif text-2xl text-ink-700 mt-1">Albums</p>
+      </div>
+
+      {/* Donate, up top alongside the albums as on the original site */}
+      <div className="mb-10">
+        <a
+          href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg text-sm transition-all duration-200"
+          style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
+        >
+          ♡ Donate here
+        </a>
       </div>
 
       {cards.length === 0 ? (
@@ -68,15 +79,6 @@ export default async function AlbumsPage() {
           Inspiration from SamaSangha and the Ruhaniat community. Play an album as you explore the
           site. All music is offered freely, and donations help us continue our work.
         </p>
-        <a
-          href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-5 font-semibold px-6 py-3 rounded-lg text-sm transition-all duration-200"
-          style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)", boxShadow: "var(--shadow-sm)" }}
-        >
-          ♡ Donate
-        </a>
       </div>
     </div>
   );

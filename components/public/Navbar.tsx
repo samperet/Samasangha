@@ -153,7 +153,7 @@ export default function Navbar() {
               balances the two sides and centers the heart on the page. */}
           <span
             className="leading-none select-none whitespace-nowrap"
-            style={{ fontFamily: "var(--font-sama)", fontSize: "clamp(0.9rem, 5.2vw, 3.75rem)", color: "#2c4264", paddingLeft: "1.115em", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
+            style={{ fontFamily: "var(--font-sama)", fontSize: "clamp(0.9rem, 5.2vw, 3.75rem)", color: "#2c4264", paddingLeft: "1.115em" }}
           >
             Sama
           </span>
@@ -190,7 +190,7 @@ export default function Navbar() {
           {/* "Sangha", right of the heart */}
           <span
             className="leading-none select-none whitespace-nowrap"
-            style={{ fontFamily: "var(--font-sama)", fontSize: "clamp(0.9rem, 5.2vw, 3.75rem)", color: "#2c4264", textShadow: "0 1px 12px rgba(247,238,219,0.95)" }}
+            style={{ fontFamily: "var(--font-sama)", fontSize: "clamp(0.9rem, 5.2vw, 3.75rem)", color: "#2c4264" }}
           >
             Sangha
           </span>

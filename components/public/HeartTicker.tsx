@@ -10,9 +10,9 @@ export default function HeartTicker() {
         className="font-serif text-center"
         style={{
           color: "var(--gold-900)",
-          opacity: 0.55,
-          fontSize: "0.95rem",
-          letterSpacing: "0.18em",
+          opacity: 0.85,
+          fontSize: "1.35rem",
+          letterSpacing: "0.2em",
           whiteSpace: "nowrap",
         }}
       >
