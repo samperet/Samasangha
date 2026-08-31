@@ -30,7 +30,7 @@ const GATHERINGS = [
 
 export default function GatheringCards() {
   return (
-    <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-x-6 gap-y-28 lg:gap-y-6 items-stretch">
+    <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch">
       {GATHERINGS.map((g) => (
         <Link
           key={g.href}
@@ -38,15 +38,14 @@ export default function GatheringCards() {
           className="gathering-card group rounded-2xl relative h-full flex flex-col"
           style={{ background: "var(--parch-50)", border: "1px solid var(--surface-border)" }}
         >
-          {/* Highlight image, protruding above the top of the card */}
-          <div className="flex justify-center">
+          {/* Highlight image, sitting wholly inside the card */}
+          <div className="flex justify-center pt-7 sm:pt-8">
             <Image
               src={g.image}
               alt={g.imageAlt}
               width={200}
               height={200}
               className="rounded-2xl"
-              style={{ marginTop: "-6rem" }}
             />
           </div>
 

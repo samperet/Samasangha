@@ -114,9 +114,8 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Regular gatherings. The generous top margin leaves room for the
-            card images, which protrude above their cards. */}
-        <div className="relative z-10 mt-32 md:mt-36">
+        {/* Regular gatherings */}
+        <div className="relative z-10 mt-12 md:mt-16">
           <GatheringCards />
         </div>
       </section>
