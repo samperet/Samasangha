@@ -22,6 +22,13 @@ function stripHtml(html: string, maxLen = 220) {
   return plain.length > maxLen ? plain.slice(0, maxLen).replace(/\s\w+$/, "") + "…" : plain;
 }
 
+// Halima and Abraham share one card and one page; their portraits are listed
+// here rather than read from the teacher rows, which now only drive Our Roots.
+const MURSHID_PORTRAITS = [
+  { src: "/assets/lineage/halima-sussman.gif", alt: "Murshida Halima Sussman" },
+  { src: "/assets/lineage/abraham-sussman.png", alt: "Murshid Abraham Sussman" },
+];
+
 // Small gold heart node on the silsila connector line
 function ChainHeart() {
   return (
@@ -34,7 +41,6 @@ function ChainHeart() {
 export default async function TeachersPage() {
   const teachers = await getTeachers();
 
-  const ourTeachers = teachers.filter((t) => t.order >= 5 && t.order <= 6); // Abraham, Halima
   const lineage     = teachers.filter((t) => t.order >= 1 && t.order <= 4); // Hazrat → Shabda
   const ancestors   = teachers.filter((t) => t.order >= 7);                 // Frida, Karmu
 
@@ -95,55 +101,47 @@ export default async function TeachersPage() {
         </div>
       </section>
 
-      {/* ── Our Teachers ─────────────────────────────────────────── */}
-      {ourTeachers.length > 0 && (
-        <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
+      {/* ── Murshids Halima and Abraham ──────────────────────────── */}
+      <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
             Murshids Halima and Abraham
           </p>
 
-          <div className="grid sm:grid-cols-2 gap-5">
-            {ourTeachers.map((t) => {
-              const meta = LINEAGE_META[t.slug];
-              return (
-                <Link
-                  key={t.id}
-                  href={`/welcome/${t.slug}`}
-                  className="teacher-card rounded-2xl overflow-hidden group"
+          <Link
+            href="/welcome/halima-and-abraham"
+            className="teacher-card rounded-2xl overflow-hidden group block"
+          >
+            <div className="p-6 flex flex-col sm:flex-row items-start gap-5">
+              <div className="flex gap-3 shrink-0">
+                {MURSHID_PORTRAITS.map((m) => (
+                  <img
+                    key={m.src}
+                    src={m.src}
+                    alt={m.alt}
+                    className="rounded-xl object-cover object-top"
+                    style={{ width: 88, height: 110, border: "2px solid var(--gold-200)", background: "var(--parch-100)" }}
+                  />
+                ))}
+              </div>
+              <div>
+                <h2
+                  className="font-serif leading-snug transition-colors duration-150 group-hover:[color:var(--crimson-700)]"
+                  style={{ fontSize: "1.35rem", fontWeight: 500, color: "var(--ink-900)" }}
                 >
-                  <div className="p-6">
-                    <div className="flex items-start gap-4 mb-4">
-                      <img
-                        src={meta?.portrait ?? t.photoUrl ?? ""}
-                        alt={t.name}
-                        className="rounded-xl object-cover object-top shrink-0"
-                        style={{ width: 88, height: 110, border: "2px solid var(--gold-200)", boxShadow: "var(--shadow-sm)", background: "var(--parch-100)" }}
-                      />
-                      <div>
-                        <h2
-                          className="font-serif leading-snug transition-colors duration-150 group-hover:[color:var(--crimson-700)]"
-                          style={{ fontSize: "1.35rem", fontWeight: 500, color: "var(--ink-900)" }}
-                        >
-                          {t.name}
-                        </h2>
-                        <p className="text-xs uppercase tracking-widest mt-1" style={{ color: "var(--gold-600)" }}>
-                          {meta?.role ?? "Murshid · SamaSangha"}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--fg2)" }}>
-                      {stripHtml(t.bio)}
-                    </p>
-                    <p className="text-xs mt-4 font-medium" style={{ color: "var(--crimson-700)" }}>
-                      Read more →
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-      )}
+                  Murshids Halima and Abraham
+                </h2>
+                <p className="text-sm leading-relaxed mt-3" style={{ color: "var(--fg2)" }}>
+                  Senior mentor teachers in the Sufi Ruhaniat and Dances of Universal Peace
+                  lineages, inspired musicians, and experienced guides in the path of the
+                  awakening heart.
+                </p>
+                <p className="text-xs mt-4 font-medium" style={{ color: "var(--crimson-700)" }}>
+                  Read more →
+                </p>
+              </div>
+            </div>
+          </Link>
+      </section>
 
       {/* ── The Silsila, chain of transmission ──────────────────── */}
       {lineage.length > 0 && (

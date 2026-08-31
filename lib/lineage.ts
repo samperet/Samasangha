@@ -105,13 +105,22 @@ export const LINEAGE_META: Record<string, LineageMeta> = {
 };
 
 // Display order for prev/next navigation on detail pages (mirrors Teacher.order).
+// Halima and Abraham share a single combined page, so any link to either of
+// them should land there rather than on a redirect.
+export const MURSHID_SLUGS = ["halima-sussman", "abraham-sussman"];
+export const MURSHIDS_HREF = "/welcome/halima-and-abraham";
+export const MURSHIDS_NAME = "Murshids Halima and Abraham";
+
+/** Where a teacher's name should link to. */
+export function teacherHref(slug: string): string {
+  return MURSHID_SLUGS.includes(slug) ? MURSHIDS_HREF : `/welcome/${slug}`;
+}
+
 export const LINEAGE_ORDER = [
   "hazrat-inayat-khan",
   "murshid-samuel-lewis",
   "pir-moineddin-jablonski",
   "pir-shabda-kahn",
-  "abraham-sussman",
-  "halima-sussman",
   "frida-waterhouse",
   "karmu",
 ];

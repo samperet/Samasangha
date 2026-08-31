@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { PostCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { MURSHIDS_NAME, teacherHref } from "@/lib/lineage";
 
 const CATEGORY_LABELS: Record<string, string> = {
   DHARMA_GEM: "Dharma Gem",
@@ -133,13 +134,17 @@ export async function GET(req: NextRequest) {
       href: `/events/${e.slug}`,
       group: "Events",
     })),
-    ...teachers.map((t) => ({
-      id: t.id,
-      label: t.name,
-      sublabel: "Teacher",
-      href: `/welcome/${t.slug}`,
-      group: "People",
-    })),
+    // Halima and Abraham share one page, so they surface as a single result
+    // rather than two rows pointing at the same place.
+    ...teachers
+      .filter((t) => t.slug !== "abraham-sussman")
+      .map((t) => ({
+        id: t.id,
+        label: t.slug === "halima-sussman" ? MURSHIDS_NAME : t.name,
+        sublabel: "Teacher",
+        href: teacherHref(t.slug),
+        group: "People",
+      })),
   ];
 
   return NextResponse.json({ results });

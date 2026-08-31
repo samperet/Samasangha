@@ -1,7 +1,6 @@
 import Link from "next/link";
 import InvocationCarousel from "@/components/public/InvocationCarousel";
 import GatheringCards from "@/components/public/GatheringCards";
-import SaveTheDate from "@/components/public/SaveTheDate";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
@@ -232,8 +231,6 @@ export default async function HomePage() {
               ))}
             </div>
           )}
-
-          <SaveTheDate className="mt-8" />
 
           <div className="mt-10 text-center">
             <Link

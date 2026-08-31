@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
   // /deepen was renamed to /teachings; keep old links working too.
   async redirects() {
     return [
+      // Halima and Abraham's bios were combined into one page.
+      { source: "/welcome/halima-sussman", destination: "/welcome/halima-and-abraham", permanent: true },
+      { source: "/welcome/abraham-sussman", destination: "/welcome/halima-and-abraham", permanent: true },
+      // ...and the old site's own URLs for that combined bio.
+      { source: "/abraham-halima-sussman", destination: "/welcome/halima-and-abraham", permanent: true },
+      { source: "/abraham-halima-2", destination: "/welcome/halima-and-abraham", permanent: true },
       // The Welcome page (and the bios under it) moved out of /about.
       { source: "/about/teachers", destination: "/welcome", permanent: true },
       { source: "/about/teachers/:path*", destination: "/welcome/:path*", permanent: true },

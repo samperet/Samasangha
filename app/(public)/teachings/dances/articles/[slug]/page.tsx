@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { teacherHref } from "@/lib/lineage";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -200,7 +201,7 @@ export default async function DanceArticlePage({ params }: { params: Promise<{ s
                     lineages. Original mureed of Murshid Samuel Lewis.
                   </p>
                   <Link
-                    href={`/welcome/${author.slug}`}
+                    href={teacherHref(author.slug)}
                     className="inline-block mt-3 text-xs underline underline-offset-2"
                     style={{ color: "var(--crimson-700)" }}
                   >
