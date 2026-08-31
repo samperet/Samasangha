@@ -60,7 +60,7 @@ export default async function AlbumsPage() {
           className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg text-sm transition-all duration-200"
           style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
         >
-          ♡ Donate here
+          <span aria-hidden style={{ color: "var(--crimson-700)" }}>♡</span> Donate here
         </a>
       </div>
 

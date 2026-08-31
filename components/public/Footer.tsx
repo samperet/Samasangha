@@ -84,7 +84,7 @@ export default async function Footer() {
             rel="noopener noreferrer"
             className="footer-donate inline-flex h-12 w-full max-w-xs items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold"
           >
-            ♡ Donate
+            <span aria-hidden style={{ color: "var(--crimson-700)" }}>♡</span> Donate
           </a>
           {/* Socials, under the Donate button */}
           <div className="flex items-center justify-center gap-x-5 gap-y-2 w-full max-w-xs">
