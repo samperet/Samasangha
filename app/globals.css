@@ -164,6 +164,14 @@ blockquote {
   .page-column { border-left: none; border-right: none; }
 }
 
+/* Whole-card link for the two regular gatherings. */
+.gathering-card {
+  transition: border-color 0.2s ease;
+}
+.gathering-card:hover {
+  border-color: var(--gold-400);
+}
+
 /* ── Reusable classes ────────────────────────────────────────────── */
 .no-scrollbar {
   -ms-overflow-style: none;   /* IE/Edge */
