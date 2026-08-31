@@ -41,24 +41,17 @@ export default async function TeachersPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
 
-      {/* ── Page header ──────────────────────────────────────────── */}
-      <div className="mb-12 text-center">
-        <h1
-          className="font-serif"
-          style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)", fontWeight: 400, color: "var(--ink-900)", lineHeight: 1.1 }}
-        >
-          Welcome
-        </h1>
-        <div className="flex justify-center mt-5" aria-hidden>
-          <img src="/assets/decorative-line.png" alt="" className="h-6 w-auto" />
-        </div>
-      </div>
+      {/* The page opens straight onto the photo. The heading is kept for
+          document structure but hidden, so the page still has a single h1 for
+          search engines and screen readers. */}
+      <h1
+        className="select-none"
+        style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}
+      >
+        Welcome
+      </h1>
 
-      {/* ── About us ─────────────────────────────────────────────── */}
       <section className="mb-20">
-        <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-          About us
-        </p>
 
         <div
           className="rounded-2xl overflow-hidden"
@@ -115,7 +108,7 @@ export default async function TeachersPage() {
               return (
                 <Link
                   key={t.id}
-                  href={`/about/teachers/${t.slug}`}
+                  href={`/welcome/${t.slug}`}
                   className="teacher-card rounded-2xl overflow-hidden group"
                 >
                   <div className="p-6">
@@ -177,7 +170,7 @@ export default async function TeachersPage() {
                 return (
                   <div key={t.id} className="relative">
                     <Link
-                      href={`/about/teachers/${t.slug}`}
+                      href={`/welcome/${t.slug}`}
                       className="teacher-card group flex flex-col sm:flex-row gap-5 rounded-2xl p-5 sm:items-start relative"
                     >
                       {/* Portrait on the thread */}
@@ -258,7 +251,7 @@ export default async function TeachersPage() {
               return (
                 <Link
                   key={t.id}
-                  href={`/about/teachers/${t.slug}`}
+                  href={`/welcome/${t.slug}`}
                   className="teacher-card group rounded-2xl overflow-hidden"
                 >
                   <div className="flex gap-5 items-start p-5">

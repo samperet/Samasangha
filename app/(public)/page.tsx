@@ -1,6 +1,7 @@
 import Link from "next/link";
 import InvocationCarousel from "@/components/public/InvocationCarousel";
 import GatheringCards from "@/components/public/GatheringCards";
+import SaveTheDate from "@/components/public/SaveTheDate";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
@@ -106,7 +107,7 @@ export default async function HomePage() {
               We are rooted in the universal Sufi heart stream.
             </blockquote>
             <p className="mt-4 text-sm">
-              <Link href="/about/teachers" className="underline" style={{ color: "var(--link)" }}>
+              <Link href="/welcome" className="underline" style={{ color: "var(--link)" }}>
                 Learn more on our Welcome page →
               </Link>
             </p>
@@ -232,6 +233,8 @@ export default async function HomePage() {
               ))}
             </div>
           )}
+
+          <SaveTheDate className="mt-8" />
 
           <div className="mt-10 text-center">
             <Link

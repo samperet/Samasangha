@@ -232,7 +232,7 @@ export default function Navbar() {
 
           {/* Welcome */}
           <Link
-            href="/about/teachers"
+            href="/welcome"
             className="font-serif transition-colors duration-200"
             style={{ ...DESKTOP_ITEM }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--crimson-700)")}
@@ -290,7 +290,7 @@ export default function Navbar() {
               <NavHeart />
             </>
           )}
-          <Link href="/about/teachers" className="font-serif" style={MOBILE_ITEM}>{DISCOVER.label}</Link>
+          <Link href="/welcome" className="font-serif" style={MOBILE_ITEM}>{DISCOVER.label}</Link>
           <NavHeart />
           <Link href="/teachings" className="font-serif" style={MOBILE_ITEM}>Teachings</Link>
           <NavHeart />

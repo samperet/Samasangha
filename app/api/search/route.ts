@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
       id: t.id,
       label: t.name,
       sublabel: "Teacher",
-      href: `/about/teachers/${t.slug}`,
+      href: `/welcome/${t.slug}`,
       group: "People",
     })),
   ];

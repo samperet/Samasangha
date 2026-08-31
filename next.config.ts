@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
   // /deepen was renamed to /teachings; keep old links working too.
   async redirects() {
     return [
+      // The Welcome page (and the bios under it) moved out of /about.
+      { source: "/about/teachers", destination: "/welcome", permanent: true },
+      { source: "/about/teachers/:path*", destination: "/welcome/:path*", permanent: true },
       { source: "/mureeds-corner", destination: "/mureeds-circle", permanent: true },
       { source: "/mureeds-corner/:path*", destination: "/mureeds-circle/:path*", permanent: true },
       { source: "/deepen", destination: "/teachings", permanent: true },

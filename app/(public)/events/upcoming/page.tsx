@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { formatDateRange } from "@/lib/utils";
 import Link from "next/link";
+import SaveTheDate from "@/components/public/SaveTheDate";
 
 export const metadata: Metadata = { title: "Upcoming Retreats" };
 export const revalidate = 60;
@@ -123,6 +124,8 @@ export default async function UpcomingEventsPage() {
           ))}
         </div>
       )}
+
+      <SaveTheDate className="mt-10" />
     </div>
   );
 }

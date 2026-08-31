@@ -48,7 +48,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <Link
-        href="/about/teachers"
+        href="/welcome"
         className="text-sm transition-colors mb-10 inline-block"
         style={{ color: "var(--fg3)" }}
       >
@@ -206,7 +206,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
           aria-label="Lineage navigation"
         >
           {prev ? (
-            <Link href={`/about/teachers/${prev.slug}`} className="group text-left">
+            <Link href={`/welcome/${prev.slug}`} className="group text-left">
               <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "var(--fg3)" }}>← Earlier in the lineage</p>
               <p className="font-serif transition-colors duration-150 group-hover:[color:var(--crimson-700)]" style={{ fontSize: "1.1rem", color: "var(--ink-900)" }}>
                 {prev.name}
@@ -214,7 +214,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ slug: 
             </Link>
           ) : <span />}
           {next ? (
-            <Link href={`/about/teachers/${next.slug}`} className="group text-right">
+            <Link href={`/welcome/${next.slug}`} className="group text-right">
               <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "var(--fg3)" }}>Later in the lineage →</p>
               <p className="font-serif transition-colors duration-150 group-hover:[color:var(--crimson-700)]" style={{ fontSize: "1.1rem", color: "var(--ink-900)" }}>
                 {next.name}
