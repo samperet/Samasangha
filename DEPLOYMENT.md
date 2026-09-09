@@ -145,6 +145,9 @@ value. Set all of these in **Vercel → Project → Settings → Environment Var
 | `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | ⬜ | checkout page | **Same value** as `PAYPAL_CLIENT_ID` (the browser SDK needs it) |
 | `CHECK_PAYABLE_TO` | ⬜ | `lib/mail.ts` | Payee name shown in check instructions (default `SamaSangha`) |
 | `CHECK_MAILING_ADDRESS` | ⬜ | `lib/mail.ts` | Address checks are mailed to; blank = "reply for the address" |
+| `MAILCHIMP_API_KEY` | ⬜ | `lib/mailchimp.ts` | Mailchimp API key (see §3.2) — blank means signups are only stored in the database |
+| `MAILCHIMP_AUDIENCE_ID` | ⬜ | `lib/mailchimp.ts` | Audience ID (see §3.2) |
+| `MAILCHIMP_SERVER_PREFIX` | ⬜ | `lib/mailchimp.ts` | Data centre, e.g. `us2`. Only if it can't be read off the key |
 
 \* Email vars are required for the contact form and retreat-registration emails to work.
 If you launch before email is ready, those POSTs will throw when sending — wire SMTP
@@ -185,6 +188,28 @@ app's **Client ID + Secret** (per environment).
 - Generate the session secret: `openssl rand -base64 32`.
 - After changing env vars in Vercel, **redeploy** — they're injected at build/runtime, not
   hot-reloaded.
+
+### 3.2 Mailchimp — the newsletter signup forms
+
+The footer form and the Contact page form both POST to `/api/subscribe`, which records the
+address in the `Subscriber` table and then adds it to the Mailchimp audience with
+**single opt-in** (`status: "subscribed"` — they're on the list straight away, no
+confirmation email).
+
+Two values, both from a logged-in Mailchimp:
+
+1. **API key** — Account & billing → Extras → API keys → *Create A Key*. It ends in the
+   data centre, e.g. `...-us2`, which is why `MAILCHIMP_SERVER_PREFIX` is usually not needed.
+   Treat it like a password: set it in Vercel, never commit it.
+2. **Audience ID** — Audience → Settings → *Audience name and defaults*. It's the short
+   hex string, and it also appears in the old hosted form URL as `id=`.
+
+With the key unset the forms still work and still store addresses locally — they just
+don't reach Mailchimp, and the server logs a warning for every signup.
+
+Two things Mailchimp will not let the API do, both handled with a message to the visitor:
+someone who previously unsubscribed can't be re-added by the API (they have to re-join
+themselves), and neither can an address Mailchimp has cleaned off the list.
 
 ### Local `.env` cleanup (optional but recommended)
 Align your local `.env` with what prod expects so the two don't drift:

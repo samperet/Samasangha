@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeartTicker from "./HeartTicker";
+import SubscribeForm from "./SubscribeForm";
 import { getSiteDesign, sectionBackground } from "@/lib/design";
 
 function FacebookIcon({ size = 17 }: { size?: number }) {
@@ -70,14 +71,9 @@ export default async function Footer() {
             />
             Mureeds Circle
           </Link>
-          <a
-            href="https://wordpress.us2.list-manage.com/subscribe?u=dbca5f3f5422b598395d3eaa1&id=b9cee861d5"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-cta inline-flex h-12 w-full max-w-xs items-center justify-center rounded-lg px-5 text-sm font-semibold"
-          >
-            Join the mailing list
-          </a>
+          {/* Signs people up in place, rather than sending them off to
+              Mailchimp's own hosted page and losing them from the site. */}
+          <SubscribeForm variant="footer" cta="Join the mailing list" />
           <a
             href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
             target="_blank"
