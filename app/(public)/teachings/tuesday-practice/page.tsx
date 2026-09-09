@@ -1,27 +1,64 @@
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = { title: "Weekly Zoom Practice" };
-export const revalidate = 300;
+// The copy lives here rather than in a Page row so it ships with the repo,
+// the way the Dances page does. The database row with slug "tuesday-practice"
+// is no longer read by this page.
+export const metadata: Metadata = { title: "Tuesday International SamaSangha Practice" };
 
-export default async function TuesdayPracticePage() {
-  let content = "";
-  try {
-    const page = await prisma.page.findUnique({ where: { slug: "tuesday-practice" } });
-    content = page?.content ?? "";
-  } catch {}
-
+export default function TuesdayPracticePage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-stone-800 mb-10">Weekly Zoom Practice</h1>
-      {content ? (
-        <div
-          className="prose prose-stone max-w-none leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-      ) : (
-        <p className="text-stone-400 italic">Details coming soon.</p>
-      )}
+    <div className="max-w-3xl mx-auto px-5 py-16">
+      <p className="eyebrow mb-3" style={{ color: "var(--gold-700)" }}>
+        Weekly gathering
+      </p>
+      <h1
+        className="font-serif mb-8"
+        style={{
+          fontSize: "clamp(1.9rem, 4.6vw, 3rem)",
+          fontWeight: 400,
+          color: "var(--ink-900)",
+          lineHeight: 1.12,
+          letterSpacing: "-0.01em",
+        }}
+      >
+        Tuesday International SamaSangha Practice
+      </h1>
+
+      <h2
+        className="font-serif mb-5"
+        style={{ fontSize: "1.4rem", fontWeight: 500, color: "var(--ink-900)", lineHeight: 1.3 }}
+      >
+        Weekly Tuesday Practice with Abraham, Halima and Sama Sangha
+      </h2>
+
+      <div className="space-y-5 leading-relaxed" style={{ color: "var(--fg2)" }}>
+        <p>
+          Join us Tuesday Mornings for Sufi Practice &amp; Meditation,{" "}
+          <strong style={{ color: "var(--ink-900)" }}>9 to 10 AM EST</strong> (Boston MA, USA). We
+          continue to advocate for actions and realizations that support a harmonious relationship
+          between people, nature, and life itself, knowing that this realization begins inside
+          ourselves. Our intentions are towards 7 generations, towards Peace on Earth.
+        </p>
+        <p>
+          Please arrive a few minutes early so we can begin together. Our practice time is
+          approximately 45 minutes long.
+        </p>
+        <p>
+          <strong style={{ color: "var(--ink-900)" }}>Practice is free.</strong> Feel free to
+          support us with a dana (donation).
+        </p>
+        <p>
+          Sign up to receive a reminder email for upcoming classes, or email{" "}
+          <a
+            href="mailto:northeastsufis@gmail.com"
+            className="underline underline-offset-2"
+            style={{ color: "var(--link)" }}
+          >
+            northeastsufis@gmail.com
+          </a>{" "}
+          to inquire about joining our ongoing weekly practice.
+        </p>
+      </div>
     </div>
   );
 }

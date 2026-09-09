@@ -11,10 +11,10 @@ const GATHERINGS = [
   {
     href: "/teachings/tuesday-practice",
     image: "/assets/TuesdayPractice.png",
-    imageAlt: "Weekly Zoom Practice, people in a circle",
-    title: "Weekly Zoom Practice",
+    imageAlt: "Tuesday International SamaSangha Practice, people in a circle",
+    title: "Tuesday International SamaSangha Practice",
     summary:
-      "Every Tuesday morning at 9 AM, online — Sufi practice and meditation, zikr, breath and heart awakening. All are welcome.",
+      "Every Tuesday, 9 to 10 AM EST, online — Sufi practice and meditation, zikr, breath and heart awakening. All are welcome.",
     cue: "About the practice",
   },
   {

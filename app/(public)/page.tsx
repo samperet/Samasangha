@@ -91,25 +91,14 @@ export default async function HomePage() {
             className="block w-full"
             style={{ marginBottom: -1 }}
           />
-          <div className="text-center px-6 pb-8 pt-6 md:p-9">
-            <blockquote
-              className="font-serif not-italic"
-              style={{
-                fontSize: "clamp(1.15rem, 2.5vw, 1.5rem)",
-                fontWeight: 500,
-                lineHeight: 1.6,
-                color: "var(--ink-900)",
-                margin: 0,
-                borderLeft: "none",
-              }}
+          <div className="text-center px-6 py-6 md:py-7">
+            <Link
+              href="/welcome"
+              className="inline-flex h-12 items-center justify-center rounded-lg px-8 font-semibold"
+              style={{ background: "var(--gold-600)", color: "var(--fg-on-gold)" }}
             >
-              We are rooted in the universal Sufi heart stream.
-            </blockquote>
-            <p className="mt-4 text-sm">
-              <Link href="/welcome" className="underline" style={{ color: "var(--link)" }}>
-                Learn more on our Welcome page →
-              </Link>
-            </p>
+              Welcome
+            </Link>
           </div>
         </div>
 

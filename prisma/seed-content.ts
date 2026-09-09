@@ -169,14 +169,16 @@ const pages = [
       ),
   },
   {
+    // Kept in step with app/(public)/teachings/tuesday-practice/page.tsx, which
+    // now carries this copy directly and no longer reads this row.
     slug: "tuesday-practice",
-    title: "Weekly Practice",
+    title: "Tuesday International SamaSangha Practice",
     content:
-      h2("Weekly Practice with Abraham, Halima and Sama Sangha") +
+      h2("Weekly Tuesday Practice with Abraham, Halima and Sama Sangha") +
       p(
-        "Join us Tuesday Mornings for Sufi Practice & Meditation beginning at <strong>9AM EST</strong> (Boston MA, USA). We continue to advocate for actions and realizations that support a harmonious relationship between people, nature, and life itself, knowing that this realization begins inside ourselves. Our intentions are towards 7 generations, towards Peace on Earth.",
+        "Join us Tuesday Mornings for Sufi Practice & Meditation, <strong>9 to 10 AM EST</strong> (Boston MA, USA). We continue to advocate for actions and realizations that support a harmonious relationship between people, nature, and life itself, knowing that this realization begins inside ourselves. Our intentions are towards 7 generations, towards Peace on Earth.",
         "Please arrive a few minutes early so we can begin together. Our practice time is approximately 45 minutes long.",
-        "<strong>Practice is free</strong>, but there are costs associated with gathering our beloved community, including digital platforms, Zoom costs, faculty support, and more. Feel free to support us with a dana (donation).",
+        "<strong>Practice is free.</strong> Feel free to support us with a dana (donation).",
         "Sign up to receive a reminder email for upcoming classes, or email <a href=\"mailto:northeastsufis@gmail.com\">northeastsufis@gmail.com</a> to inquire about joining our ongoing weekly practice."
       ),
   },
