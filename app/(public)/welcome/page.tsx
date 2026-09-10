@@ -22,11 +22,20 @@ function stripHtml(html: string, maxLen = 220) {
   return plain.length > maxLen ? plain.slice(0, maxLen).replace(/\s\w+$/, "") + "…" : plain;
 }
 
-// Halima and Abraham share one card and one page; their portraits are listed
-// here rather than read from the teacher rows, which now only drive Our Roots.
+// Halima and Abraham share one section here; their portraits are listed in this
+// file rather than read from the teacher rows, which now only drive Our Roots.
 const MURSHID_PORTRAITS = [
   { src: "/assets/lineage/halima-sussman.gif", alt: "Murshida Halima Sussman" },
   { src: "/assets/lineage/abraham-sussman.png", alt: "Murshid Abraham Sussman" },
+];
+
+// Their own combined bio, in the plural voice, exactly as they wrote it on
+// northeastsufis.org/abraham-halima-sussman. It lives here rather than in the
+// Teacher.bio column because it belongs to the pair, not to either record.
+const MURSHID_BIO = [
+  "Murshida Halima and Murshid Abraham Sussman are senior mentor teachers in the Sufi Ruhaniat and Dances of Universal Peace lineages, inspired musicians, and experienced guides in the path of the awakening heart. They share joy and clarity arising from their own practice and tap a depth that arises from a lifetime of integrating spiritual practice, psychological exploration, and a love of the natural world. They travel and teach internationally, returning home to Massachusetts, local family, and sangha.",
+  "Halima seeded her love of the Sufi path in Murshid Sam’s Marin Dance Meeting.",
+  "Abraham is an original mureed of Murshid Sam.",
 ];
 
 // Small gold heart node on the silsila connector line
@@ -76,46 +85,45 @@ export default async function TeachersPage() {
         </div>
       </section>
 
-      {/* ── Murshids Halima and Abraham ──────────────────────────── */}
-      <section className="mb-20 pt-14" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          <p className="eyebrow mb-6" style={{ fontSize: "0.72rem", color: "var(--gold-600)" }}>
-            Murshids Halima and Abraham
-          </p>
+      {/* ── Murshids Halima and Abraham ──────────────────────────────
+            Their bio in full, rather than a card linking away to it. The id
+            gives the old /welcome/halima-and-abraham links somewhere to land. */}
+      <section id="murshids" className="mb-20 pt-14 scroll-mt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
+        <div className="flex flex-col sm:flex-row gap-7 items-center sm:items-start mb-8">
+          <div className="flex gap-3 shrink-0">
+            {MURSHID_PORTRAITS.map((m) => (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                key={m.src}
+                src={m.src}
+                alt={m.alt}
+                className="rounded-2xl object-cover object-top"
+                style={{
+                  width: 132,
+                  border: "3px solid var(--gold-300)",
+                  background: "var(--parch-100)",
+                }}
+              />
+            ))}
+          </div>
+          <div className="text-center sm:text-left sm:pt-2">
+            <p className="eyebrow mb-2" style={{ fontSize: "0.7rem", color: "var(--gold-600)" }}>
+              Murshids · SamaSangha
+            </p>
+            <h2
+              className="font-serif leading-tight"
+              style={{ fontSize: "clamp(1.8rem, 4.2vw, 2.4rem)", fontWeight: 500, color: "var(--ink-900)" }}
+            >
+              Murshids Halima and Abraham
+            </h2>
+          </div>
+        </div>
 
-          <Link
-            href="/welcome/halima-and-abraham"
-            className="teacher-card rounded-2xl overflow-hidden group block"
-          >
-            <div className="p-6 flex flex-col sm:flex-row items-start gap-5">
-              <div className="flex gap-3 shrink-0">
-                {MURSHID_PORTRAITS.map((m) => (
-                  <img
-                    key={m.src}
-                    src={m.src}
-                    alt={m.alt}
-                    className="rounded-xl object-cover object-top"
-                    style={{ width: 88, height: 110, border: "2px solid var(--gold-200)", background: "var(--parch-100)" }}
-                  />
-                ))}
-              </div>
-              <div>
-                <h2
-                  className="font-serif leading-snug transition-colors duration-150 group-hover:[color:var(--crimson-700)]"
-                  style={{ fontSize: "1.35rem", fontWeight: 500, color: "var(--ink-900)" }}
-                >
-                  Murshids Halima and Abraham
-                </h2>
-                <p className="text-sm leading-relaxed mt-3" style={{ color: "var(--fg2)" }}>
-                  Senior mentor teachers in the Sufi Ruhaniat and Dances of Universal Peace
-                  lineages, inspired musicians, and experienced guides in the path of the
-                  awakening heart.
-                </p>
-                <p className="text-xs mt-4 font-medium" style={{ color: "var(--crimson-700)" }}>
-                  Read more →
-                </p>
-              </div>
-            </div>
-          </Link>
+        <div className="space-y-5 leading-relaxed" style={{ color: "var(--fg2)" }}>
+          {MURSHID_BIO.map((para) => (
+            <p key={para.slice(0, 40)}>{para}</p>
+          ))}
+        </div>
       </section>
 
       {/* ── The Silsila, chain of transmission ──────────────────── */}

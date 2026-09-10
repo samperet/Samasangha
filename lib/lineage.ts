@@ -108,7 +108,8 @@ export const LINEAGE_META: Record<string, LineageMeta> = {
 // Halima and Abraham share a single combined page, so any link to either of
 // them should land there rather than on a redirect.
 export const MURSHID_SLUGS = ["halima-sussman", "abraham-sussman"];
-export const MURSHIDS_HREF = "/welcome/halima-and-abraham";
+// Their bio is a section of the Welcome page, not a page of its own.
+export const MURSHIDS_HREF = "/welcome#murshids";
 export const MURSHIDS_NAME = "Murshids Halima and Abraham";
 
 /** Where a teacher's name should link to. */
