@@ -14,7 +14,7 @@ const GATHERINGS = [
     imageAlt: "Tuesday International SamaSangha Practice, people in a circle",
     title: "Tuesday International SamaSangha Practice",
     summary:
-      "Every Tuesday, 9 to 10 AM EST, online — Sufi practice and meditation, zikr, breath and heart awakening. All are welcome.",
+      "Every Tuesday, 9 to 10 AM EST, online. Sufi practice and meditation, zikr, breath and heart awakening. All are welcome.",
     cue: "About the practice",
   },
   {
@@ -23,7 +23,7 @@ const GATHERINGS = [
     imageAlt: "Dances of Universal Peace circle",
     title: "Dances of Universal Peace",
     summary:
-      "Third Saturday of the month in Cambridge — sacred circle dances drawing from the spiritual traditions of the world. No experience required.",
+      "Third Saturday of the month in Cambridge. Sacred circle dances drawing from the spiritual traditions of the world. No experience required.",
     cue: "About the Dances",
   },
 ];

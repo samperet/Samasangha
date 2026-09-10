@@ -52,6 +52,24 @@ export default async function Footer() {
         </div>
 
         <div className="flex flex-col items-center md:items-start gap-4">
+          {/* Signs people up in place, rather than sending them off to
+              Mailchimp's own hosted page and losing them from the site. */}
+          <SubscribeForm variant="footer" cta="Join the mailing list" />
+          <a
+            href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-donate inline-flex h-12 w-full max-w-xs items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold"
+          >
+            {/* Filled, not the outline ♡ — a hairline glyph shows almost none
+                of its colour, which is why the heart never looked red. */}
+            <span aria-hidden style={{ color: "var(--crimson-500)", fontSize: "1.05rem" }}>
+              ♥
+            </span>{" "}
+            Donate
+          </a>
+          {/* Mureeds Circle last: it's for people already in the community,
+              where the two above are for everyone. */}
           <Link
             href="/mureeds-circle"
             className="inline-flex h-12 w-full max-w-xs items-center justify-center gap-3 rounded-lg px-5 text-sm font-semibold"
@@ -71,17 +89,6 @@ export default async function Footer() {
             />
             Mureeds Circle
           </Link>
-          {/* Signs people up in place, rather than sending them off to
-              Mailchimp's own hosted page and losing them from the site. */}
-          <SubscribeForm variant="footer" cta="Join the mailing list" />
-          <a
-            href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-donate inline-flex h-12 w-full max-w-xs items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold"
-          >
-            <span aria-hidden style={{ color: "var(--crimson-700)" }}>♡</span> Donate
-          </a>
           {/* Socials, under the Donate button */}
           <div className="flex items-center justify-center gap-x-5 gap-y-2 w-full max-w-xs">
             <a
