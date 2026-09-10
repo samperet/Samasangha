@@ -60,16 +60,15 @@ A complete inventory of user-facing text on the SamaSangha public website, organ
 
 ### About card
 - Image alt: "Abraham and Halima"
-- Blockquote:
-  > SamaSangha is the community of seekers who have gathered in Massachusetts, and also far and wide, with the guidance of Sufi Murshids Halima and Abraham.
-- Link: "Learn more on our Welcome page →"
+- No text: the photo sits above a single gold **Welcome** button linking to /welcome.
+  (It replaced a blockquote and a "Learn more on our Welcome page →" link.)
 
-### Weekly Practice card
-- Image alt: "Weekly Practice, people in a circle"
-- Heading: "Weekly Practice"
+### Tuesday International SamaSangha Practice card
+- Image alt: "Tuesday International SamaSangha Practice, people in a circle"
+- Heading: "Tuesday International SamaSangha Practice"
 - Body:
-  > Every Tuesday morning Abraham, Halima, and the Sama Sangha gather online for Sufi practice and meditation, zikr, breath, and heart awakening. All are welcome.
-  > Our intentions are toward 7 generations, toward Peace on Earth. Practice is free, supported by dana.
+  > Every Tuesday, 9 to 10 AM EST, online — Sufi practice and meditation, zikr, breath and heart awakening. All are welcome.
+- Link: "About the practice →"
 - Detail list:
   - When: "Every Tuesday, 9 AM EST"
   - Where: "Online via Zoom, link sent via newsletter"
