@@ -360,6 +360,22 @@ details[open] > .calendar-options {
   color: var(--gold-900) !important;
   opacity: 1;
 }
+/* Modal dialogs built on <dialog>: strip the UA chrome and dim the page. */
+.sama-dialog {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  max-height: calc(100vh - 3rem);
+  /* A native <dialog> centres itself with `margin: auto`, which Tailwind's
+     preflight resets to 0 — without this it sits in the top-left corner. */
+  margin: auto;
+}
+.sama-dialog::backdrop {
+  background: rgba(26, 18, 8, 0.55);
+  backdrop-filter: blur(2px);
+}
+
 .footer-cta {
   background: var(--ink-900);
   color: var(--parch-50);

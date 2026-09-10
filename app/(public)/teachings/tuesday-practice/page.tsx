@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SubscribeDialog from "@/components/public/SubscribeDialog";
 
 // The copy lives here rather than in a Page row so it ships with the repo,
 // the way the Dances page does. The database row with slug "tuesday-practice"
@@ -58,6 +59,15 @@ export default function TuesdayPracticePage() {
           </a>{" "}
           to inquire about joining our ongoing weekly practice.
         </p>
+      </div>
+
+      {/* The paragraph above asks people to sign up; this is how. */}
+      <div className="mt-8">
+        <SubscribeDialog
+          cta="Sign up for class reminders"
+          title="Class reminders"
+          blurb="We'll email you before upcoming Tuesday classes, along with community news, a few times per month at most."
+        />
       </div>
     </div>
   );
