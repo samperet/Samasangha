@@ -5,7 +5,10 @@
 import { execSync } from "node:child_process";
 
 try {
-  execSync("npx prisma db push --skip-generate", { stdio: "inherit" });
+  // No --skip-generate: Prisma 7 removed the flag, and passing it made this
+  // command fail its usage check on every build, so the schema never synced.
+  // `prisma generate` already runs ahead of this in the build script.
+  execSync("npx prisma db push", { stdio: "inherit" });
 } catch {
   console.warn(
     "\n⚠  prisma db push did not complete — continuing the build.\n" +

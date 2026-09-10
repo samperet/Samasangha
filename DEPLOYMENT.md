@@ -191,10 +191,11 @@ app's **Client ID + Secret** (per environment).
 
 ### 3.2 Mailchimp — the newsletter signup forms
 
-The footer form and the Contact page form both POST to `/api/subscribe`, which records the
-address in the `Subscriber` table and then adds it to the Mailchimp audience with
-**single opt-in** (`status: "subscribed"` — they're on the list straight away, no
-confirmation email).
+The footer form and the Contact page form both collect first name, last name and email,
+and POST to `/api/subscribe`, which records them in the `Subscriber` table and then adds
+the person to the Mailchimp audience with **single opt-in** (`status: "subscribed"` —
+they're on the list straight away, no confirmation email). The names go into the `FNAME`
+and `LNAME` merge fields.
 
 Two values, both from a logged-in Mailchimp:
 
@@ -210,6 +211,13 @@ don't reach Mailchimp, and the server logs a warning for every signup.
 Two things Mailchimp will not let the API do, both handled with a message to the visitor:
 someone who previously unsubscribed can't be re-added by the API (they have to re-join
 themselves), and neither can an address Mailchimp has cleaned off the list.
+
+**If signups start failing**, sign in to the admin and open `/api/admin/mailchimp`. It
+checks the key, the audience id and the audience's merge fields, and says what's wrong and
+how to fix it. The usual cause is a merge field marked *required* that the form doesn't
+collect — the form supplies `FNAME` and `LNAME`, so anything else required (a phone
+number, say) rejects every signup until it's made optional under Audience → Settings →
+Audience fields and \*|MERGE|\* tags.
 
 ### Local `.env` cleanup (optional but recommended)
 Align your local `.env` with what prod expects so the two don't drift:

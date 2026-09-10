@@ -53,8 +53,18 @@ function subscriberHash(email: string): string {
  * twice, which is a normal thing for a person to do and shouldn't look like an
  * error to them.
  */
-export async function subscribeToMailchimp(email: string): Promise<SubscribeResult> {
+export async function subscribeToMailchimp(
+  email: string,
+  name?: { firstName?: string; lastName?: string }
+): Promise<SubscribeResult> {
   const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}/members/${subscriberHash(email)}`;
+
+  // FNAME and LNAME are the merge tags every Mailchimp audience is created
+  // with. Only send a tag we have a value for — an empty string still counts
+  // as empty against a required field, so it would fail the same way.
+  const merge_fields: Record<string, string> = {};
+  if (name?.firstName?.trim()) merge_fields.FNAME = name.firstName.trim();
+  if (name?.lastName?.trim()) merge_fields.LNAME = name.lastName.trim();
 
   let res: Response;
   try {
@@ -69,6 +79,7 @@ export async function subscribeToMailchimp(email: string): Promise<SubscribeResu
         email_address: email,
         status: "subscribed",
         status_if_new: "subscribed",
+        ...(Object.keys(merge_fields).length ? { merge_fields } : {}),
       }),
       // Don't let a slow Mailchimp hold the visitor's request open.
       signal: AbortSignal.timeout(8000),
@@ -139,8 +150,14 @@ export type MailchimpCheck = {
   fix?: string;
   config: { apiKey: string; serverPrefix: string; audienceId: string };
   audience?: { name: string; members: number };
-  requiredMergeFields?: { tag: string; name: string }[];
+  /** Everything the audience defines, so a renamed or missing tag is visible. */
+  mergeFields?: { tag: string; name: string; required: boolean }[];
+  /** Required fields the signup form has no value for — these block every signup. */
+  unsatisfiedMergeFields?: { tag: string; name: string }[];
 };
+
+/** Merge tags the signup form collects and sends. */
+const FORM_SUPPLIES = ["FNAME", "LNAME"];
 
 export async function checkMailchimp(): Promise<MailchimpCheck> {
   // Never echo the key itself, only enough of its shape to spot a bad paste.
@@ -202,22 +219,47 @@ export async function checkMailchimp(): Promise<MailchimpCheck> {
     headers,
     signal: AbortSignal.timeout(8000),
   }).catch(() => null);
-  const mergeFields = mfRes?.ok ? (await mfRes.json())?.merge_fields ?? [] : [];
-  const requiredMergeFields = (mergeFields as Record<string, unknown>[])
-    .filter((f) => f.required === true && f.tag !== "EMAIL")
-    .map((f) => ({ tag: String(f.tag), name: String(f.name) }));
+  const raw = mfRes?.ok ? (await mfRes.json())?.merge_fields ?? [] : [];
+  const mergeFields = (raw as Record<string, unknown>[]).map((f) => ({
+    tag: String(f.tag),
+    name: String(f.name),
+    required: f.required === true,
+  }));
 
-  if (requiredMergeFields.length) {
-    const tags = requiredMergeFields.map((f) => f.tag).join(", ");
+  // The form sends FNAME and LNAME, so those being required is fine. Anything
+  // else the audience insists on has no value to send, and blocks every signup.
+  const unsatisfiedMergeFields = mergeFields
+    .filter((f) => f.required && f.tag !== "EMAIL" && !FORM_SUPPLIES.includes(f.tag))
+    .map(({ tag, name }) => ({ tag, name }));
+
+  if (unsatisfiedMergeFields.length) {
+    const tags = unsatisfiedMergeFields.map((f) => f.tag).join(", ");
     return {
       ok: false,
-      problem: `The audience requires ${tags}, and the signup form only collects an email address, so Mailchimp rejects every signup.`,
+      problem: `The audience requires ${tags}, which the signup form doesn't collect, so Mailchimp rejects every signup.`,
       fix: "In Mailchimp: Audience → Settings → Audience fields and *|MERGE|* tags, untick 'Required' for those fields. (Or ask for the form to collect them.)",
       config,
       audience,
-      requiredMergeFields,
+      mergeFields,
+      unsatisfiedMergeFields,
     };
   }
 
-  return { ok: true, config, audience, requiredMergeFields: [] };
+  // A required FNAME/LNAME is satisfied by the form, but only if the audience
+  // actually uses those tags — a renamed tag would fail silently.
+  const missingExpected = FORM_SUPPLIES.filter(
+    (tag) => !mergeFields.some((f) => f.tag === tag)
+  );
+  if (missingExpected.length) {
+    return {
+      ok: false,
+      problem: `The audience has no ${missingExpected.join(" or ")} merge tag, so the names the form collects have nowhere to go.`,
+      fix: "Check Audience → Settings → Audience fields and *|MERGE|* tags. Send the tag names and the form can be pointed at them.",
+      config,
+      audience,
+      mergeFields,
+    };
+  }
+
+  return { ok: true, config, audience, mergeFields, unsatisfiedMergeFields: [] };
 }
