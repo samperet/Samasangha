@@ -46,6 +46,73 @@ function subscriberHash(email: string): string {
   return createHash("md5").update(email.trim().toLowerCase()).digest("hex");
 }
 
+// ── Merge tags ─────────────────────────────────────────────────────────────
+// FNAME and LNAME are only the *defaults*. Delete and recreate a field in
+// Mailchimp and it comes back as MMERGE2, MMERGE3 and so on, so the tag for
+// "Last" can be anything. Sending a tag the audience doesn't have means the
+// value is dropped, or the signup rejected outright when the field is
+// required — so ask the audience what its tags are instead of assuming.
+
+export type MergeField = { tag: string; name: string; required: boolean };
+
+function authHeader() {
+  return { Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}` };
+}
+
+function listUrl(path = "") {
+  return `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}${path}`;
+}
+
+export async function fetchMergeFields(): Promise<MergeField[] | null> {
+  try {
+    const res = await fetch(listUrl("/merge-fields?count=100"), {
+      headers: authHeader(),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const raw = (await res.json())?.merge_fields;
+    if (!Array.isArray(raw)) return null;
+    return (raw as Record<string, unknown>[]).map((f) => ({
+      tag: String(f.tag),
+      name: String(f.name),
+      required: f.required === true,
+    }));
+  } catch {
+    return null;
+  }
+}
+
+export type MergeTags = { first: string | null; last: string | null };
+
+/** Match on the tag first, then on what the field is called. */
+function pickTag(fields: MergeField[], preferred: string, nameMatch: RegExp): string | null {
+  const byTag = fields.find((f) => f.tag === preferred);
+  if (byTag) return byTag.tag;
+  const byName = fields.find((f) => nameMatch.test(f.name));
+  return byName ? byName.tag : null;
+}
+
+export function resolveMergeTags(fields: MergeField[]): MergeTags {
+  return {
+    first: pickTag(fields, "FNAME", /^\s*(first|given)/i),
+    last: pickTag(fields, "LNAME", /^\s*(last|surname|family)/i),
+  };
+}
+
+// One lookup serves every signup this instance handles. Short-lived, because a
+// field renamed in Mailchimp should not need a redeploy to take effect.
+const TAG_CACHE_MS = 15 * 60 * 1000;
+let tagCache: { tags: MergeTags; at: number } | null = null;
+
+async function getMergeTags(): Promise<MergeTags> {
+  if (tagCache && Date.now() - tagCache.at < TAG_CACHE_MS) return tagCache.tags;
+  const fields = await fetchMergeFields();
+  // Couldn't ask: fall back to the defaults rather than sending no name at all.
+  const tags = fields ? resolveMergeTags(fields) : { first: "FNAME", last: "LNAME" };
+  if (fields) tagCache = { tags, at: Date.now() };
+  return tags;
+}
+
 /**
  * Add the address to the audience, or leave it alone if it's already there.
  *
@@ -59,12 +126,13 @@ export async function subscribeToMailchimp(
 ): Promise<SubscribeResult> {
   const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}/members/${subscriberHash(email)}`;
 
-  // FNAME and LNAME are the merge tags every Mailchimp audience is created
-  // with. Only send a tag we have a value for — an empty string still counts
-  // as empty against a required field, so it would fail the same way.
+  // Ask the audience which tags it uses, then only send a tag we have a value
+  // for — an empty string still counts as empty against a required field, so
+  // it would fail the same way as sending nothing.
+  const tags = await getMergeTags();
   const merge_fields: Record<string, string> = {};
-  if (name?.firstName?.trim()) merge_fields.FNAME = name.firstName.trim();
-  if (name?.lastName?.trim()) merge_fields.LNAME = name.lastName.trim();
+  if (tags.first && name?.firstName?.trim()) merge_fields[tags.first] = name.firstName.trim();
+  if (tags.last && name?.lastName?.trim()) merge_fields[tags.last] = name.lastName.trim();
 
   let res: Response;
   try {
@@ -116,6 +184,13 @@ export async function subscribeToMailchimp(
     };
   }
 
+  // A complaint about merge fields means our cached tags are stale — the
+  // audience has been edited since we looked. Drop them so the next signup
+  // asks again rather than repeating the same mistake for fifteen minutes.
+  if (err.fieldErrors.some((f) => f.field !== "email_address") || /merge/i.test(err.detail)) {
+    tagCache = null;
+  }
+
   // Only blame the address when Mailchimp actually blamed the address. A 400
   // about a required merge field, or a misconfigured audience, is our problem,
   // not the visitor's, and telling them to check their typing sends them in
@@ -154,10 +229,9 @@ export type MailchimpCheck = {
   mergeFields?: { tag: string; name: string; required: boolean }[];
   /** Required fields the signup form has no value for — these block every signup. */
   unsatisfiedMergeFields?: { tag: string; name: string }[];
+  /** The tags the form will actually write the two names to. */
+  nameTags?: MergeTags;
 };
-
-/** Merge tags the signup form collects and sends. */
-const FORM_SUPPLIES = ["FNAME", "LNAME"];
 
 export async function checkMailchimp(): Promise<MailchimpCheck> {
   // Never echo the key itself, only enough of its shape to spot a bad paste.
@@ -176,10 +250,8 @@ export async function checkMailchimp(): Promise<MailchimpCheck> {
     };
   }
 
-  const headers = {
-    Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`,
-  };
-  const base = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}`;
+  const headers = authHeader();
+  const base = listUrl();
 
   let listRes: Response;
   try {
@@ -215,21 +287,16 @@ export async function checkMailchimp(): Promise<MailchimpCheck> {
     members: Number(list?.stats?.member_count ?? 0),
   };
 
-  const mfRes = await fetch(`${base}/merge-fields?count=100`, {
-    headers,
-    signal: AbortSignal.timeout(8000),
-  }).catch(() => null);
-  const raw = mfRes?.ok ? (await mfRes.json())?.merge_fields ?? [] : [];
-  const mergeFields = (raw as Record<string, unknown>[]).map((f) => ({
-    tag: String(f.tag),
-    name: String(f.name),
-    required: f.required === true,
-  }));
+  const mergeFields = (await fetchMergeFields()) ?? [];
+  // Whichever tags this audience actually uses for the two names — they are
+  // only FNAME/LNAME by default, and a recreated field comes back as MMERGE2.
+  const nameTags = resolveMergeTags(mergeFields);
+  const supplied = [nameTags.first, nameTags.last].filter(Boolean) as string[];
 
-  // The form sends FNAME and LNAME, so those being required is fine. Anything
-  // else the audience insists on has no value to send, and blocks every signup.
+  // Those two are filled by the form, so requiring them is fine. Anything else
+  // the audience insists on has no value to send, and blocks every signup.
   const unsatisfiedMergeFields = mergeFields
-    .filter((f) => f.required && f.tag !== "EMAIL" && !FORM_SUPPLIES.includes(f.tag))
+    .filter((f) => f.required && f.tag !== "EMAIL" && !supplied.includes(f.tag))
     .map(({ tag, name }) => ({ tag, name }));
 
   if (unsatisfiedMergeFields.length) {
@@ -242,24 +309,27 @@ export async function checkMailchimp(): Promise<MailchimpCheck> {
       audience,
       mergeFields,
       unsatisfiedMergeFields,
+      nameTags,
     };
   }
 
-  // A required FNAME/LNAME is satisfied by the form, but only if the audience
-  // actually uses those tags — a renamed tag would fail silently.
-  const missingExpected = FORM_SUPPLIES.filter(
-    (tag) => !mergeFields.some((f) => f.tag === tag)
-  );
-  if (missingExpected.length) {
+  // If no field looks like a name at all, the names the form collects have
+  // nowhere to go — they would be dropped without an error.
+  const missing = [
+    !nameTags.first ? "first name" : null,
+    !nameTags.last ? "last name" : null,
+  ].filter(Boolean);
+  if (missing.length) {
     return {
       ok: false,
-      problem: `The audience has no ${missingExpected.join(" or ")} merge tag, so the names the form collects have nowhere to go.`,
-      fix: "Check Audience → Settings → Audience fields and *|MERGE|* tags. Send the tag names and the form can be pointed at them.",
+      problem: `The audience has no ${missing.join(" or ")} field, so that part of every signup would be discarded.`,
+      fix: "Add the field under Audience → Settings → Audience fields and *|MERGE|* tags, naming it \"First Name\" / \"Last Name\" so it is recognised.",
       config,
       audience,
       mergeFields,
+      nameTags,
     };
   }
 
-  return { ok: true, config, audience, mergeFields, unsatisfiedMergeFields: [] };
+  return { ok: true, config, audience, mergeFields, unsatisfiedMergeFields: [], nameTags };
 }

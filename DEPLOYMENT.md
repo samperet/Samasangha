@@ -212,11 +212,16 @@ Two things Mailchimp will not let the API do, both handled with a message to the
 someone who previously unsubscribed can't be re-added by the API (they have to re-join
 themselves), and neither can an address Mailchimp has cleaned off the list.
 
+The names go to whichever merge tags the audience actually uses, looked up from Mailchimp
+and cached for fifteen minutes. `FNAME`/`LNAME` are only Mailchimp's defaults — delete and
+recreate a field and it comes back as `MMERGE2`, which is what this audience's "Last" field
+uses. A tag is matched first by its tag, then by its name ("First…", "Last…", "Surname…").
+
 **If signups start failing**, sign in to the admin and open `/api/admin/mailchimp`. It
 checks the key, the audience id and the audience's merge fields, and says what's wrong and
-how to fix it. The usual cause is a merge field marked *required* that the form doesn't
-collect — the form supplies `FNAME` and `LNAME`, so anything else required (a phone
-number, say) rejects every signup until it's made optional under Audience → Settings →
+how to fix it, as well as reporting which tags the two names will be written to. The usual
+cause is a merge field marked *required* that the form doesn't collect — a phone number,
+say — which rejects every signup until it's made optional under Audience → Settings →
 Audience fields and \*|MERGE|\* tags.
 
 ### Local `.env` cleanup (optional but recommended)
