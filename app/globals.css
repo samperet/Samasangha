@@ -150,10 +150,17 @@ blockquote {
   margin: 1.5rem 0;
 }
 
-/* The centred cream column. The wallpaper shows down either side of it, which
-   is the "border" the original site had. Deliberately wraps <main> only —
-   the sticky navbar must not get a new stacking context. */
+/* The centred column. The wallpaper shows down either side of it, which is the
+   "border" the original site had, and it runs past <main> onto the footer so
+   the blue margins reach the bottom of the page. Not the navbar, though: the
+   sticky masthead must not get a new stacking context. Elements that bring
+   their own background (the footer does) override the cream below. */
 .page-column {
+  /* width:100% matters. These are flex items in a column flex body, and
+     `margin-inline: auto` alone makes a flex item shrink-wrap its contents
+     rather than fill — so the column used to be as wide as whatever each page
+     put inside it, and main and the footer did not line up. */
+  width: 100%;
   max-width: 1100px;
   margin-inline: auto;
   background: var(--column-cream);

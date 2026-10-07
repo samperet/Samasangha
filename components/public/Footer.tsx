@@ -32,7 +32,7 @@ export default async function Footer() {
         backgroundColor: design.footerFrom,
         color: "var(--ink-900)",
       }}
-      className="mt-auto"
+      className="mt-auto page-column"
     >
       {/* Hearts */}
       <div className="py-4 px-4" style={{ borderBottom: "1px solid rgba(110,77,18,.18)" }}>
