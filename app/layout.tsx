@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Open_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { getSiteDesign } from "@/lib/design";
 
 // Brand wordmark font, used for the "Sama" / "Sangha" logo lockup
 const samaFont = localFont({
@@ -40,9 +41,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // The content column's colour is editable in /admin/design. Both tokens are
+  // the same cream by default and together form one surface — the column and
+  // the cards sitting on it — so a change to one without the other leaves the
+  // cards as visibly lighter patches.
+  const { bgColor } = await getSiteDesign();
+
   return (
-    <html lang="en" className={`h-full ${cormorant.variable} ${openSans.variable} ${samaFont.variable}`}>
+    <html
+      lang="en"
+      className={`h-full ${cormorant.variable} ${openSans.variable} ${samaFont.variable}`}
+      style={{ "--column-cream": bgColor, "--bg-raised": bgColor } as React.CSSProperties}
+    >
       <body className="min-h-full flex flex-col antialiased">{children}</body>
     </html>
   );

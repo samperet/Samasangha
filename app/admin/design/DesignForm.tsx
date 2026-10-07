@@ -15,15 +15,16 @@ function bg(type: string, from: string, to: string): string {
     : from;
 }
 
-// The footer is the only editable colour. The other SiteDesign columns are
-// left untouched on save, so nothing needs migrating.
-type ColorKey = "footerFrom" | "footerTo";
+// The footer and the page background are the editable colours. The other
+// SiteDesign columns are left untouched on save, so nothing needs migrating.
+type ColorKey = "footerFrom" | "footerTo" | "bgColor";
 
 const SECTIONS = [{ title: "Footer", prefix: "footer" }] as const;
 
 const KEY_LABELS: Record<ColorKey, string> = {
   footerFrom: "Footer — main colour",
   footerTo: "Footer — gradient end",
+  bgColor: "Page background — the cream column",
 };
 
 export default function DesignForm({ initial }: { initial: SiteDesign }) {
@@ -89,6 +90,12 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
           );
         })}
 
+        <BackgroundEditor
+          color={d.bgColor}
+          active={activeKey === "bgColor"}
+          onSelect={() => setActiveKey("bgColor")}
+        />
+
         <div className="flex items-center gap-3">
           <button
             onClick={save}
@@ -113,9 +120,33 @@ export default function DesignForm({ initial }: { initial: SiteDesign }) {
 
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Live preview</p>
-          <MiniFooter footerBg={bg(d.footerType, d.footerFrom, d.footerTo)} />
+          <MiniPage bgColor={d.bgColor} footerBg={bg(d.footerType, d.footerFrom, d.footerTo)} />
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── Page background: one solid colour ─────────────────────────────── */
+
+// No solid/gradient toggle here: the lotus pattern occupies the body's
+// background-image, so the colour behind it can only be flat.
+function BackgroundEditor({
+  color,
+  active,
+  onSelect,
+}: {
+  color: string;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <div className="bg-white rounded-xl border p-5">
+      <h2 className="font-semibold text-[#1a2744] mb-1">Page background</h2>
+      <p className="text-sm text-gray-500 mb-4">
+        The cream column the page text sits on, inside the blue wallpaper.
+      </p>
+      <SwatchButton label="Colour" color={color} active={active} onClick={onSelect} />
     </div>
   );
 }
@@ -456,12 +487,22 @@ function ColorStudio({ label, value, onChange }: { label: string; value: string;
 
 /* ── Mini footer preview ───────────────────────────────────────────── */
 
-function MiniFooter({ footerBg }: { footerBg: string }) {
+function MiniPage({ bgColor, footerBg }: { bgColor: string; footerBg: string }) {
   return (
     <div className="rounded-xl overflow-hidden border shadow-sm" style={{ borderColor: "var(--surface-border)" }}>
-      {/* A sliver of the page above, for context */}
-      <div className="px-4 py-6" style={{ background: "var(--parch-50)" }}>
-        <div className="mx-auto h-2.5 w-28 rounded" style={{ background: "var(--parch-300)" }} />
+      {/* The blue wallpaper with the content column over it: the column is the
+          colour being edited, framed by the wallpaper as on the real site. */}
+      <div
+        className="px-7 pt-6 pb-8"
+        style={{
+          backgroundImage: 'url("/assets/lotus-background-sama3.png")',
+          backgroundRepeat: "repeat",
+        }}
+      >
+        <div className="px-4 py-6" style={{ background: bgColor }}>
+          <div className="mx-auto h-2.5 w-28 rounded" style={{ background: "var(--parch-300)" }} />
+          <div className="mx-auto mt-2 h-2 w-20 rounded" style={{ background: "var(--parch-300)", opacity: 0.6 }} />
+        </div>
       </div>
 
       {/* Footer */}

@@ -288,5 +288,7 @@ model SiteDesign {
   footerType String   @default("gradient")
   footerFrom String   @default("#0a7d12")
   footerTo   String   @default("#024c06")
+  // The cream content column the page text sits on.
+  bgColor    String   @default("#fcf4db")
   updatedAt  DateTime @updatedAt
 }

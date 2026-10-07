@@ -11,7 +11,7 @@ export default async function AdminDesignPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-[#1a2744]">Design</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Set the footer colour. Choose a solid colour or a gradient, and watch the live preview.
+          Set the page background and the footer colour, and watch the live preview.
         </p>
       </div>
       <DesignForm initial={design} />

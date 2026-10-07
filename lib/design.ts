@@ -11,6 +11,8 @@ export type SiteDesign = {
   footerType: string;
   footerFrom: string;
   footerTo: string;
+  /** The cream content column the text sits on. Solid only. */
+  bgColor: string;
 };
 
 export const DESIGN_DEFAULTS: SiteDesign = {
@@ -23,6 +25,7 @@ export const DESIGN_DEFAULTS: SiteDesign = {
   footerType: "solid",
   footerFrom: "#fcf4db",
   footerTo: "#f3e6c4",
+  bgColor: "#fcf4db",
 };
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -44,6 +47,7 @@ export async function getSiteDesign(): Promise<SiteDesign> {
       footerType: row.footerType,
       footerFrom: row.footerFrom,
       footerTo: row.footerTo,
+      bgColor: row.bgColor,
     };
   } catch {
     return DESIGN_DEFAULTS;
@@ -74,5 +78,6 @@ export function sanitizeDesign(input: Record<string, unknown>): SiteDesign {
     footerType: type(input.footerType, DESIGN_DEFAULTS.footerType),
     footerFrom: color(input.footerFrom, DESIGN_DEFAULTS.footerFrom),
     footerTo: color(input.footerTo, DESIGN_DEFAULTS.footerTo),
+    bgColor: color(input.bgColor, DESIGN_DEFAULTS.bgColor),
   };
 }
