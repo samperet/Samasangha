@@ -45,14 +45,11 @@ export default async function AlbumsPage() {
     .sort((a, b) => Number(a.isSample) - Number(b.isSample));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-      <div className="max-w-2xl mb-8">
-        <h1 className="font-serif text-5xl text-ink-900 leading-tight">Music</h1>
-        <p className="font-serif text-2xl text-ink-700 mt-1">Albums</p>
-      </div>
-
-      {/* Donate, up top alongside the albums as on the original site */}
-      <div className="mb-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-16">
+      {/* Title and Donate share a row: stacked, they left a deep band of empty
+          space above the album grid. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 mb-8">
+        <h1 className="font-serif text-5xl text-ink-900 leading-tight">Albums</h1>
         <a
           href="https://www.paypal.com/donate/?hosted_button_id=77ADFBGTTU2QE"
           target="_blank"
